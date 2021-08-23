@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/taskListFragment">
+
+    <fragment
+        android:id="@+id/taskListFragment"
+        android:name="com.example.taskmanager.TaskListFragment"
+        android:label="Task Manager">
+        <action
+            android:id="@+id/action_taskListFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_taskListFragment_to_addTaskFragment"
+            app:destination="@id/add_task_fragment" />
+        <action
+            android:id="@+id/action_taskListFragment_to_editTaskFragment"
+            app:destination="@id/editTaskFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.taskmanager.SettingsFragment"
+        android:label="Settings" />
+    <fragment
+        android:id="@+id/add_task_fragment"
+        android:name="com.example.taskmanager.AddTaskFragment"
+        android:label="Add task">
+    </fragment>
+    <fragment
+        android:id="@+id/editTaskFragment"
+        android:name="com.example.taskmanager.EditTaskFragment"
+        android:label="Edit task">
+        <argument
+            android:name="task"
+            android:defaultValue="@null"
+            app:argType="com.example.taskmanager.Task"
+            app:nullable="true" />
+    </fragment>
+</navigation>
