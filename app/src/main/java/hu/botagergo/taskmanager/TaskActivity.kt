@@ -1,4 +1,4 @@
-package com.example.taskmanager
+package hu.botagergo.taskmanager
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
-import com.example.taskmanager.databinding.ActivityTaskBinding
+import hu.botagergo.taskmanager.databinding.ActivityTaskBinding
 
 const val EXTRA_TASK_TITLE = "com.example.taskmanager.TASK_TITLE"
 const val EXTRA_TASK_COMMENTS = "com.example.taskmanager.TASK_COMMENTS"

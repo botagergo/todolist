@@ -1,4 +1,4 @@
-package com.example.taskmanager
+package hu.botagergo.taskmanager
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat

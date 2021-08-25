@@ -1,4 +1,4 @@
-package com.example.taskmanager
+package hu.botagergo.taskmanager
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

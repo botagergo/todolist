@@ -24,13 +24,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".MainActivity">
+        tools:context="hu.botagergo.taskmanager.MainActivity">
 
         <ImageButton
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:background="#fffcf7"
+            android:background="#fff"
             android:insetTop="8dp"
             android:insetBottom="8dp"
             android:minWidth="0dp"
@@ -39,7 +39,7 @@
             android:paddingTop="0dp"
             android:paddingRight="24dp"
             android:paddingBottom="0dp"
-            android:src="@android:drawable/checkbox_on_background"
+            android:src="@drawable/ic_circle"
             android:text="@string/done"
             app:iconPadding="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -70,8 +70,8 @@
             android:layout_marginStart="16dp"
             android:gravity="center_vertical"
             android:paddingTop="0dp"
-            android:paddingBottom="4dp"
             android:textSize="11sp"
+            android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/textView_status"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/button"

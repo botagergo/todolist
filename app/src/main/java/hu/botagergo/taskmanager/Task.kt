@@ -1,4 +1,4 @@
-package com.example.taskmanager
+package hu.botagergo.taskmanager
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -24,6 +24,9 @@ data class Task (
         }
     }
 
+    @ColumnInfo(name = "done") var done: Boolean = false
+    @PrimaryKey(autoGenerate  = true) var uid: Int = 0
+
     constructor() : this("", "", Status.None)
 
     constructor(parcel: Parcel) : this(
@@ -34,10 +37,8 @@ data class Task (
         uid = parcel.readInt()
     }
 
-    @PrimaryKey(autoGenerate  = true) var uid: Int = 0
-
     override fun toString(): String {
-        return "{title=$title,comments=${comments.substring(0, comments.length.coerceAtMost(10))},status=$status,uid=$uid}"
+        return "{title=$title,comments=${comments.substring(0, comments.length.coerceAtMost(10))},status=$status,uid=$uid},done=$done"
     }
 
     override fun describeContents(): Int {

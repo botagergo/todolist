@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.taskmanager">
+    package="hu.botagergo.taskmanager">
 
     <application
         android:allowBackup="true"
@@ -10,11 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TaskManager">
         <activity
-            android:name=".TaskActivity"
+            android:name="hu.botagergo.taskmanager.TaskActivity"
             android:exported="true"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName="hu.botagergo.taskmanager.MainActivity"/>
         <activity
-            android:name=".MainActivity"
+            android:name="hu.botagergo.taskmanager.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

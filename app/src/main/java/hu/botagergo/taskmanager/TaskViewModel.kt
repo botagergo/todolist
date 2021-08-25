@@ -1,4 +1,4 @@
-package com.example.taskmanager
+package hu.botagergo.taskmanager
 
 import android.app.Application
 import android.util.Log
@@ -22,13 +22,18 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         _tasksLiveData.value = ArrayList(_taskDao.getAll())
     }
 
-    fun removeTask(task: Task) {
+    fun deleteTask(task: Task) {
         _taskDao.delete(task)
         _tasksLiveData.value = ArrayList(_taskDao.getAll())
     }
 
     fun deleteAll() {
         _taskDao.deleteAll()
+        _tasksLiveData.value = ArrayList(_taskDao.getAll())
+    }
+
+    fun updateTask(task: Task) {
+        _taskDao.update(task)
         _tasksLiveData.value = ArrayList(_taskDao.getAll())
     }
 

@@ -1,4 +1,4 @@
-package com.example.taskmanager
+package hu.botagergo.taskmanager
 
 import androidx.room.*
 
@@ -15,4 +15,7 @@ interface TaskDao {
 
     @Query("DELETE FROM task")
     fun deleteAll()
+
+    @Update
+    fun update(task: Task)
 }

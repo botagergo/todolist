@@ -1,4 +1,4 @@
-package com.example.taskmanager
+package hu.botagergo.taskmanager
 
 import android.content.Context
 import android.content.Intent
@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.taskmanager.databinding.FragmentTaskListBinding
+import hu.botagergo.taskmanager.databinding.FragmentTaskListBinding
 
 class TaskListFragment : Fragment() {
     private lateinit var adapter : TaskArrayAdapter
@@ -20,26 +20,11 @@ class TaskListFragment : Fragment() {
     private lateinit var binding: FragmentTaskListBinding
     private var listener: Listener? = null
 
-    inner class TaskArrayAdapterListener(private val viewModel: TaskViewModel) : TaskArrayAdapter.Listener {
-        override fun onDoneClicked(task: Task) {
-            listener?.onDoneTask(task)
-        }
-
-        override fun onTaskClicked(task: Task) {
-            listener?.onEditTask(task)
-        }
-
-        override fun onTaskLongClicked(anchor: View, task: Task) {
-            val popupMenu = PopupMenu(context!!, anchor)
-            popupMenu.menuInflater.inflate(R.menu.navigation_view_menu, popupMenu.menu)
-            popupMenu.show()
-        }
-    }
-
     interface Listener {
         fun onAddTask()
         fun onEditTask(task: Task)
-        fun onDoneTask(task: Task)
+        fun onDoneTask(task: Task, done: Boolean)
+        fun onDeleteTask(task: Task)
     }
 
     override fun onAttach(context: Context) {
@@ -61,11 +46,9 @@ class TaskListFragment : Fragment() {
         viewModel = ViewModelProvider(this.requireActivity()).get(TaskViewModel::class.java)
 
         adapter = TaskArrayAdapter(viewModel.getTasks().value!!)
-        adapter.listener = TaskArrayAdapterListener(viewModel)
-
         adapter.listener = object : TaskArrayAdapter.Listener {
-            override fun onDoneClicked(task: Task) {
-                listener?.onDoneTask(task)
+            override fun onDoneClicked(task: Task, done: Boolean) {
+                listener?.onDoneTask(task, done)
             }
 
             override fun onTaskClicked(task: Task) {
@@ -73,7 +56,17 @@ class TaskListFragment : Fragment() {
             }
 
             override fun onTaskLongClicked(anchor: View, task: Task) {
-                TODO("Not yet implemented")
+                val popupMenu = PopupMenu(context!!, anchor)
+                popupMenu.menuInflater.inflate(R.menu.menu_task_list_popup, popupMenu.menu)
+                popupMenu.setOnMenuItemClickListener {
+                    if (it.itemId == R.id.menu_item_delete) {
+                        listener?.onDeleteTask(task)
+                        true
+                    } else {
+                        false
+                    }
+                }
+                popupMenu.show()
             }
         }
 

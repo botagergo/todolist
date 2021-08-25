@@ -25,7 +25,7 @@
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/todo"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="#DCDBDB"
+        app:backgroundTint="#44d450"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
