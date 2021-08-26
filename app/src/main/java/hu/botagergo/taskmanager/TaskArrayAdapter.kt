@@ -1,10 +1,8 @@
 package hu.botagergo.taskmanager
 
+import android.app.Activity
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.opengl.Visibility
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +13,13 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.RecyclerView
 
-class TaskArrayAdapter(private var tasks: ArrayList<Task>) : RecyclerView.Adapter<TaskArrayAdapter.ViewHolder>() {
+class TaskArrayAdapter(private var tasks: ArrayList<Task>, private var activity: Activity)
+    : RecyclerView.Adapter<TaskArrayAdapter.ViewHolder>() {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.textView_title)
         val textViewStatus: TextView = itemView.findViewById(R.id.textView_status)
         val textViewComments: TextView = itemView.findViewById(R.id.textView_comments)
-        val imageButton: ImageButton = itemView.findViewById(R.id.button)
+        val imageButton: ImageButton = itemView.findViewById(R.id.imageButton)
         val cardView: CardView = itemView.findViewById(R.id.cardView)
     }
 
@@ -33,11 +32,13 @@ class TaskArrayAdapter(private var tasks: ArrayList<Task>) : RecyclerView.Adapte
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val taskView = inflater.inflate(R.layout.item_task, parent, false)
+        val itemTask = inflater.inflate(R.layout.item_task, parent, false)
 
-        val holder = ViewHolder(taskView)
+        val holder = ViewHolder(itemTask)
 
-        val cardView = taskView.findViewById<CardView>(R.id.cardView)
+        val cardView = itemTask.findViewById<CardView>(R.id.cardView)
+        val imageButton = itemTask.findViewById<ImageButton>(R.id.imageButton)
+
         cardView.setOnClickListener {
             val pos = holder.bindingAdapterPosition
             if (pos != -1) {
@@ -55,11 +56,9 @@ class TaskArrayAdapter(private var tasks: ArrayList<Task>) : RecyclerView.Adapte
             }
         }
 
-        val checkBox = taskView.findViewById<ImageButton>(R.id.button)
-        checkBox.setOnClickListener {
+        imageButton.setOnClickListener {
             val pos = holder.bindingAdapterPosition
             if (pos != -1) {
-                Log.d("TM-", "TaskArrayAdapter " + pos.toString())
                 listener?.onDoneClicked(tasks[pos], !tasks[pos].done)
             }
         }
@@ -68,37 +67,42 @@ class TaskArrayAdapter(private var tasks: ArrayList<Task>) : RecyclerView.Adapte
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        // Get the data model based on position
         val task: Task = tasks[position]
-        // Set item views based on your views and data model
+
         viewHolder.textView.text = task.title
         viewHolder.textViewStatus.text = task.status.value
         viewHolder.textViewComments.text = task.comments
-        when (task.status) {
-            Task.Status.NextAction -> viewHolder.textViewStatus.setTextColor(Color.parseColor("#53B556"))
-            Task.Status.Waiting -> viewHolder.textViewStatus.setTextColor(Color.parseColor("#B3BB2F"))
-            Task.Status.Planning -> viewHolder.textViewStatus.setTextColor(Color.parseColor("#4662B4"))
-            Task.Status.OnHold -> viewHolder.textViewStatus.setTextColor(Color.parseColor("#BF2424"))
-        }
+
+        val color = ResourcesCompat.getColor(viewHolder.textViewStatus.resources, when (task.status) {
+            Task.Status.NextAction -> R.color.status_next_action
+            Task.Status.Waiting -> R.color.status_waiting
+            Task.Status.Planning -> R.color.status_planning
+            Task.Status.OnHold -> R.color.status_on_hold
+            Task.Status.None -> R.color.status_none
+        }, null)
+
+        viewHolder.textViewStatus.setTextColor(color)
 
         viewHolder.textViewComments.visibility = if (task.comments.isEmpty()) View.GONE else View.VISIBLE
 
-        val resId: Int?
-        val background: ColorDrawable
-
         if (task.done) {
-            resId = R.drawable.ic_check_circle
-            viewHolder.cardView.background = Color.rgb(180, 237, 171).toDrawable()
-            viewHolder.imageButton.background = Color.rgb(180, 237, 171).toDrawable()
+            viewHolder.cardView.background = getColor(R.color.task_done_background).toDrawable()
+            viewHolder.imageButton.background = getColor(R.color.task_done_background).toDrawable()
+            viewHolder.imageButton.setImageDrawable(getDrawable(R.drawable.ic_check_circle))
         }
         else {
-            resId = R.drawable.ic_circle
-            viewHolder.cardView.background = Color.WHITE.toDrawable()
-            viewHolder.imageButton.background = Color.WHITE.toDrawable()
+            viewHolder.cardView.background = getColor(R.color.task_background).toDrawable()
+            viewHolder.imageButton.background = getColor(R.color.task_background).toDrawable()
+            viewHolder.imageButton.setImageDrawable(getDrawable(R.drawable.ic_circle))
         }
+    }
 
-        val drawable = ResourcesCompat.getDrawable(viewHolder.imageButton.resources, resId, null)
-        viewHolder.imageButton.setImageDrawable(drawable)
+    private fun getDrawable(id: Int): Drawable? {
+        return ResourcesCompat.getDrawable(activity.resources, id, null)
+    }
+
+    private fun getColor(id: Int): Color {
+        return Color.valueOf(ResourcesCompat.getColor(activity.resources, id, null))
     }
 
     override fun getItemCount(): Int {

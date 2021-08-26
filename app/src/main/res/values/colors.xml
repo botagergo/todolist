@@ -7,5 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="lightgrey">#fffcf7</color>
+    <color name="task_background">#FFFFFFFF</color>
+    <color name="task_done_background">#53B556</color>
+    <color name="green_3">#53B556</color>
+    <color name="status_next_action">#428705</color>
+    <color name="status_waiting">#B3BB2F</color>
+    <color name="status_planning">#4662B4</color>
+    <color name="status_on_hold">#BF2424</color>
+    <color name="status_none">#FF000000</color>
 </resources>

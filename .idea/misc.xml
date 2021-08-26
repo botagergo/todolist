@@ -3,9 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/botag/AndroidStudioProjects/TaskManager/app/src/main/res/layout/activity_task.xml" value="0.18153846153846154" />
         <entry key="..\:/Users/botag/AndroidStudioProjects/TaskManager/app/src/main/res/layout/fragment_add_task.xml" value="0.22" />
         <entry key="..\:/Users/botag/AndroidStudioProjects/TaskManager/app/src/main/res/layout/fragment_add_task1.xml" value="0.184375" />
         <entry key="..\:/Users/botag/AndroidStudioProjects/TaskManager/app/src/main/res/layout/fragment_edit_task.xml" value="0.184375" />
+        <entry key="..\:/Users/botag/AndroidStudioProjects/TaskManager/app/src/main/res/layout/item_task.xml" value="0.18153846153846154" />
         <entry key="..\:/Users/botag/AndroidStudioProjects/TaskManager/app/src/main/res/xml/root_preferences.xml" value="0.1" />
       </map>
     </option>

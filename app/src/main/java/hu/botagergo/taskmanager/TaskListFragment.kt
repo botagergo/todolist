@@ -1,21 +1,20 @@
 package hu.botagergo.taskmanager
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import hu.botagergo.taskmanager.databinding.FragmentTaskListBinding
 
 class TaskListFragment : Fragment() {
-    private lateinit var adapter : TaskArrayAdapter
+    private lateinit var adapter: TaskArrayAdapter
     private lateinit var viewModel: TaskViewModel
     private lateinit var binding: FragmentTaskListBinding
     private var listener: Listener? = null
@@ -45,7 +44,7 @@ class TaskListFragment : Fragment() {
 
         viewModel = ViewModelProvider(this.requireActivity()).get(TaskViewModel::class.java)
 
-        adapter = TaskArrayAdapter(viewModel.getTasks().value!!)
+        adapter = TaskArrayAdapter(viewModel.getTasks().value!!, activity as FragmentActivity)
         adapter.listener = object : TaskArrayAdapter.Listener {
             override fun onDoneClicked(task: Task, done: Boolean) {
                 listener?.onDoneTask(task, done)
@@ -83,30 +82,4 @@ class TaskListFragment : Fragment() {
         }
 
     }
-
-    private fun addTask(task: Task) {
-        val intent: Intent = Intent(this.context, TaskActivity::class.java).apply {
-            putExtra(EXTRA_TASK_TITLE, task.title)
-            putExtra(EXTRA_TASK_COMMENTS, task.comments)
-            putExtra(EXTRA_TASK_STATUS, task.status)
-            putExtra(EXTRA_TASK_UID, task.uid)
-        }
-        startActivityForResult(intent, 0)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.d(TAG, "onActivityResult")
-        if (requestCode == 0 && resultCode == AppCompatActivity.RESULT_OK) {
-            if (data != null) {
-                val task = Task(
-                    data.getStringExtra(EXTRA_TASK_TITLE) ?: String(),
-                    data.getStringExtra(EXTRA_TASK_COMMENTS) ?: String(),
-                    data.extras?.get(EXTRA_TASK_STATUS) as Task.Status
-                ).apply {
-                    uid = (data.extras?.get(EXTRA_TASK_UID) ?: 0) as Int
-                }
-                viewModel.addTask(task)
-            }
-        }
-    }}
+}

@@ -13,7 +13,6 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardBackgroundColor="#fffcf7"
     app:cardElevation="5dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -27,10 +26,9 @@
         tools:context="hu.botagergo.taskmanager.MainActivity">
 
         <ImageButton
-            android:id="@+id/button"
+            android:id="@+id/imageButton"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:background="#fff"
             android:insetTop="8dp"
             android:insetBottom="8dp"
             android:minWidth="0dp"
@@ -60,7 +58,7 @@
             android:textSize="22sp"
             app:layout_constraintBottom_toTopOf="@+id/textView_comments"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/button"
+            app:layout_constraintStart_toEndOf="@+id/imageButton"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -74,7 +72,7 @@
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/textView_status"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/button"
+            app:layout_constraintStart_toEndOf="@+id/imageButton"
             app:layout_constraintTop_toBottomOf="@+id/textView_title" />
 
         <TextView
@@ -87,12 +85,11 @@
             android:gravity="center_vertical"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:textColor="#000000"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/button"
+            app:layout_constraintStart_toEndOf="@+id/imageButton"
             app:layout_constraintTop_toBottomOf="@+id/textView_comments" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
