@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import hu.botagergo.taskmanager.databinding.FragmentTaskListBinding
 
@@ -44,7 +45,8 @@ class TaskListFragment : Fragment() {
 
         viewModel = ViewModelProvider(this.requireActivity()).get(TaskViewModel::class.java)
 
-        adapter = TaskArrayAdapter(viewModel.getTasks().value!!, activity as FragmentActivity)
+        adapter = TaskArrayAdapter(activity as FragmentActivity)
+        adapter.setTasks(viewModel.getTasks().value!!)
         adapter.listener = object : TaskArrayAdapter.Listener {
             override fun onDoneClicked(task: Task, done: Boolean) {
                 listener?.onDoneTask(task, done)
@@ -74,7 +76,7 @@ class TaskListFragment : Fragment() {
 
         viewModel.getTasks().observe(viewLifecycleOwner, {
             Log.d("TM-", "TaskViewModel changed")
-            adapter.setTasks(viewModel.getTasks().value!!)
+            adapter.setTasks(it)
         })
 
         binding.floatingActionButton.setOnClickListener {

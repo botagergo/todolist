@@ -3,6 +3,7 @@ package hu.botagergo.taskmanager
 import android.app.Activity
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +12,10 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toDrawable
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 
-class TaskArrayAdapter(private var tasks: ArrayList<Task>, private var activity: Activity)
+class TaskArrayAdapter(private var activity: Activity)
     : RecyclerView.Adapter<TaskArrayAdapter.ViewHolder>() {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textView: TextView = itemView.findViewById(R.id.textView_title)
@@ -23,11 +25,40 @@ class TaskArrayAdapter(private var tasks: ArrayList<Task>, private var activity:
         val cardView: CardView = itemView.findViewById(R.id.cardView)
     }
 
+    private var tasks: ArrayList<Task> = ArrayList()
+
+    class TaskDiffCallback(val old: ArrayList<Task>, val new: ArrayList<Task>) : DiffUtil.Callback() {
+        override fun getOldListSize(): Int {
+            return old.size
+        }
+
+        override fun getNewListSize(): Int {
+            return new.size
+        }
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return old[oldItemPosition].uid == new[newItemPosition].uid
+        }
+
+        override fun areContentsTheSame(
+            oldItemPosition: Int,
+            newItemPosition: Int
+        ): Boolean {
+            return old[oldItemPosition].equals(new[newItemPosition])
+        }
+    }
+
     var listener: Listener? = null
 
+    fun getTasks(): ArrayList<Task> {
+        return this.tasks
+    }
+
     fun setTasks(tasks: ArrayList<Task>) {
+        val diffResult = DiffUtil.calculateDiff(TaskDiffCallback(this.tasks, tasks))
+
         this.tasks = tasks
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
@@ -59,7 +90,7 @@ class TaskArrayAdapter(private var tasks: ArrayList<Task>, private var activity:
         imageButton.setOnClickListener {
             val pos = holder.bindingAdapterPosition
             if (pos != -1) {
-                listener?.onDoneClicked(tasks[pos], !tasks[pos].done)
+                listener?.onDoneClicked(tasks[pos].copy(), !tasks[pos].done)
             }
         }
 

@@ -17,7 +17,6 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun addTask(task: Task) {
-        Log.d("TM-", "TaskViewModel addTask")
         _taskDao.insert(task)
         _tasksLiveData.value = ArrayList(_taskDao.getAll())
     }

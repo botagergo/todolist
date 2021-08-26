@@ -5,6 +5,7 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity
 data class Task (
@@ -28,6 +29,26 @@ data class Task (
     @PrimaryKey(autoGenerate  = true) var uid: Int = 0
 
     constructor() : this("", "", Status.None)
+
+    fun copy(): Task {
+        return Task(title, comments, status).also {
+            it.uid = uid
+            it.done = done
+        }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        val otherTask = other as? Task
+        return uid == otherTask?.uid &&
+                title == otherTask.title &&
+                comments == otherTask.comments &&
+                status == otherTask.status &&
+                done == otherTask.done
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(uid, title, comments, status, done)
+    }
 
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",

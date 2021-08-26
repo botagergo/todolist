@@ -12,8 +12,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import hu.botagergo.taskmanager.databinding.ActivityMainBinding
-import com.google.android.material.snackbar.BaseTransientBottomBar.LENGTH_SHORT
-import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity(),
     AddTaskFragment.TaskListener, EditTaskFragment.Listener, TaskListFragment.Listener {
@@ -51,7 +49,6 @@ class MainActivity : AppCompatActivity(),
     override fun onAddTaskResult(task: Task) {
         Log.d("TM-", "onAddTaskResult: $task")
         viewModel.addTask(task)
-        Snackbar.make(binding.coordinatorLayout, "Task created", LENGTH_SHORT).show()
     }
 
     override fun onEditTask(task: Task) {
@@ -62,20 +59,18 @@ class MainActivity : AppCompatActivity(),
 
     override fun onEditTaskResult(task: Task) {
         Log.d("TM-", "onEditTaskResult: $task")
-        Snackbar.make(binding.coordinatorLayout, "Task edited", LENGTH_SHORT).show()
+        viewModel.updateTask(task)
     }
 
     override fun onDoneTask(task: Task, done: Boolean) {
         Log.d("TM-", "onDoneTask: $task")
         task.done = done
         viewModel.updateTask(task)
-        if (done)
-            Snackbar.make(binding.coordinatorLayout, "Task done", LENGTH_SHORT).show()    }
+    }
 
     override fun onDeleteTask(task: Task) {
         Log.d("TM-", "onDeleteTask: $task")
         viewModel.deleteTask(task)
-        Snackbar.make(binding.coordinatorLayout, "Task deleted", LENGTH_SHORT).show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -94,7 +89,6 @@ class MainActivity : AppCompatActivity(),
             R.id.menu_item_delete_all -> {
                 viewModel.deleteAll()
                 binding.drawerLayout.closeDrawer(GravityCompat.START)
-                Snackbar.make(binding.coordinatorLayout, "All tasks deleted", LENGTH_SHORT).show()
                 true
             }
             else -> {

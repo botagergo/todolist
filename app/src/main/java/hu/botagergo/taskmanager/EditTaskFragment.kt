@@ -55,7 +55,9 @@ class EditTaskFragment : Fragment() {
     private fun onEditTaskResult() {
         val task = Task(binding.editTextTitle.text.toString(),
             binding.editTextComments.text.toString(),
-            binding.spinnerStatus.selectedItem as Task.Status)
+            binding.spinnerStatus.selectedItem as Task.Status).also {
+                it.uid = task.uid
+        }
         listener?.onEditTaskResult(task)
         findNavController().popBackStack()
     }
