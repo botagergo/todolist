@@ -1,75 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/textView_title"
+    <data>
+        <variable
+            name="viewModel"
+            type="hu.botagergo.taskmanager.view_model.TaskViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/title"
-        app:layout_constraintBottom_toTopOf="@+id/editText_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-    <EditText
-        android:id="@+id/editText_title"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginBottom="16dp"
-        android:ems="10"
-        android:hint="@string/title"
-        android:inputType="none"
-        app:layout_constraintBottom_toTopOf="@+id/textView_comments"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_title" />
+        <TextView
+            android:id="@+id/textView_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title"
+            app:layout_constraintBottom_toTopOf="@+id/editText_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView_comments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/comments"
-        app:layout_constraintBottom_toTopOf="@+id/editText_comments"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_title" />
+        <EditText
+            android:id="@+id/editText_title"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="16dp"
+            android:ems="10"
+            android:text="@={viewModel.title}"
+            android:hint="@string/title"
+            android:inputType="none"
+            app:layout_constraintBottom_toTopOf="@+id/textView_comments"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_title" />
 
-    <EditText
-        android:id="@+id/editText_comments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="40dp"
-        android:layout_marginBottom="16dp"
-        android:ems="10"
-        android:hint="@string/comments"
-        android:inputType="textMultiLine"
-        app:layout_constraintBottom_toTopOf="@+id/textView_status"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_comments" />
+        <TextView
+            android:id="@+id/textView_comments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/comments"
+            app:layout_constraintBottom_toTopOf="@+id/editText_comments"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText_title" />
 
-    <TextView
-        android:id="@+id/textView_status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/status"
-        app:layout_constraintBottom_toTopOf="@+id/spinner_status"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText_comments" />
+        <EditText
+            android:id="@+id/editText_comments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:ems="10"
+            android:text="@={viewModel.comments}"
+            android:hint="@string/comments"
+            android:inputType="textMultiLine"
+            android:minHeight="40dp"
+            app:layout_constraintBottom_toTopOf="@+id/textView_status"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_comments" />
 
-    <Spinner
-        android:id="@+id/spinner_status"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_status"
-        tools:ignore="SpeakableTextPresentCheck" />
+        <TextView
+            android:id="@+id/textView_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/status"
+            app:layout_constraintBottom_toTopOf="@+id/spinner_status"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText_comments" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Spinner
+            android:id="@+id/spinner_status"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginBottom="16dp"
+            android:selectedItemPosition="@={viewModel.statusIndex}"
+            app:layout_constraintBottom_toTopOf="@+id/textView_context"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_status"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <TextView
+            android:id="@+id/textView_context"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:text="@string/context"
+            app:layout_constraintBottom_toTopOf="@+id/spinner_context"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinner_status" />
+
+        <Spinner
+            android:id="@+id/spinner_context"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:selectedItemPosition="@={viewModel.contextIndex}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView_context" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

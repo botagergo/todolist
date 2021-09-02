@@ -1,7 +1,8 @@
-package hu.botagergo.taskmanager
+package hu.botagergo.taskmanager.view
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
+import hu.botagergo.taskmanager.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
 

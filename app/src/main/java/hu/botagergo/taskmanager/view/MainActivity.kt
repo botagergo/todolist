@@ -1,4 +1,4 @@
-package hu.botagergo.taskmanager
+package hu.botagergo.taskmanager.view
 
 import android.os.Bundle
 import android.util.Log
@@ -11,24 +11,29 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import hu.botagergo.taskmanager.*
 import hu.botagergo.taskmanager.databinding.ActivityMainBinding
+import hu.botagergo.taskmanager.log.logd
+import hu.botagergo.taskmanager.model.Task
+import hu.botagergo.taskmanager.view_model.TaskListViewModel
 
 class MainActivity : AppCompatActivity(),
     AddTaskFragment.TaskListener, EditTaskFragment.Listener, TaskListFragment.Listener {
 
-    private lateinit var viewModel: TaskViewModel
+    private lateinit var viewModel: TaskListViewModel
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private lateinit var taskListFragment: TaskListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        logd(this, "onCreate")
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         setSupportActionBar(binding.toolbar)
 
-        viewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(TaskListViewModel::class.java)
         viewModel.setSampleData()
 
         val fragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment)!!
@@ -39,6 +44,37 @@ class MainActivity : AppCompatActivity(),
 
         binding.navView.setupWithNavController(navController)
         binding.navView.setNavigationItemSelectedListener(::onNavigationItemSelected)
+    }
+
+    override fun onCreate(taskListFragment: TaskListFragment) {
+        this.taskListFragment = taskListFragment
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d("TM-", "onOptionsItemSelected")
+        return if (item.itemId == android.R.id.home) {
+            binding.drawerLayout.openDrawer(GravityCompat.START)
+            true
+        } else {
+            false
+        }
+    }
+
+    private fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
+        logd(this, "onNavigationItemSelected")
+        return when (menuItem.itemId) {
+            R.id.menu_item_show_status -> {
+                taskListFragment.onNavViewTaskStatusClicked(this)
+                true
+            }
+            R.id.menu_item_show_context -> {
+                taskListFragment.onNavViewTaskContextClicked(this)
+                true
+            }
+            else -> {
+                false
+            }
+        }
     }
 
     override fun onAddTask() {
@@ -53,7 +89,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onEditTask(task: Task) {
         Log.d("TM-", "onEditTask: $task")
-        val bundle = bundleOf("task" to task)
+        val bundle = bundleOf("uid" to task.uid)
         navController.navigate(R.id.action_taskListFragment_to_editTaskFragment, bundle)
     }
 
@@ -64,36 +100,11 @@ class MainActivity : AppCompatActivity(),
 
     override fun onDoneTask(task: Task, done: Boolean) {
         Log.d("TM-", "onDoneTask: $task")
-        task.done = done
-        viewModel.updateTask(task)
+        viewModel.updateTask(task.copy(done = done))
     }
 
     override fun onDeleteTask(task: Task) {
         Log.d("TM-", "onDeleteTask: $task")
         viewModel.deleteTask(task)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d("TM-", "onOptionsItemSelected")
-        return if (item.itemId == android.R.id.home) {
-            binding.drawerLayout.openDrawer(GravityCompat.START)
-            true
-        } else {
-            false
-        }
-    }
-
-    private fun onNavigationItemSelected(menuItem: MenuItem) : Boolean {
-        Log.d("TM-", "onNavigationItemSelected")
-        return when (menuItem.itemId) {
-            R.id.menu_item_delete_all -> {
-                viewModel.deleteAll()
-                binding.drawerLayout.closeDrawer(GravityCompat.START)
-                true
-            }
-            else -> {
-                false
-            }
-        }
     }
 }

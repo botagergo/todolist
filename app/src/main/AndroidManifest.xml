@@ -9,12 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TaskManager">
+
         <activity
-            android:name="hu.botagergo.taskmanager.TaskActivity"
-            android:exported="true"
-            android:parentActivityName="hu.botagergo.taskmanager.MainActivity"/>
-        <activity
-            android:name="hu.botagergo.taskmanager.MainActivity"
+            android:name="hu.botagergo.taskmanager.view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

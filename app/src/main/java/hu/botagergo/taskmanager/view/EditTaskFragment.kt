@@ -1,29 +1,30 @@
-package hu.botagergo.taskmanager
+package hu.botagergo.taskmanager.view
 
 import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.ArrayAdapter
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import hu.botagergo.taskmanager.R
+import hu.botagergo.taskmanager.model.Task
 import hu.botagergo.taskmanager.databinding.FragmentEditTaskBinding
+import hu.botagergo.taskmanager.view_model.TaskViewModel
+import hu.botagergo.taskmanager.view_model.TaskViewModelFactory
 
 class EditTaskFragment : Fragment() {
 
     interface Listener {
         fun onEditTaskResult(task: Task)
     }
-
     private var listener: Listener? = null
-    private lateinit var adapter: ArrayAdapter<Task.Status>
-    private lateinit var binding: FragmentEditTaskBinding
-    private lateinit var task: Task
 
-    private fun setTask(task: Task) {
-        this.task = task
-        binding.editTextTitle.setText(task.title)
-        binding.editTextComments.setText(task.comments)
-        binding.spinnerStatus.setSelection(adapter.getPosition(task.status))
+    private lateinit var binding: FragmentEditTaskBinding
+
+    private val viewModel: TaskViewModel by activityViewModels {
+        TaskViewModelFactory(requireActivity().application, arguments?.getLong("uid") ?: 0)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,26 +41,21 @@ class EditTaskFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentEditTaskBinding.inflate(inflater)
+        binding = DataBindingUtil.inflate(
+            inflater, R.layout.fragment_edit_task,
+            container, false)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = ArrayAdapter(view.context, android.R.layout.simple_spinner_dropdown_item, Task.Status.values())
-        binding.spinnerStatus.adapter = adapter
-        setTask(arguments?.getParcelable("task") ?: Task())
+        binding.spinnerStatus.adapter = ArrayAdapter(
+            view.context, android.R.layout.simple_spinner_dropdown_item, Task.Status.values())
+        binding.spinnerContext.adapter = ArrayAdapter(
+            view.context, android.R.layout.simple_spinner_dropdown_item, Task.Context.values())
+
         super.onViewCreated(view, savedInstanceState)
-    }
-
-
-    private fun onEditTaskResult() {
-        val task = Task(binding.editTextTitle.text.toString(),
-            binding.editTextComments.text.toString(),
-            binding.spinnerStatus.selectedItem as Task.Status).also {
-                it.uid = task.uid
-        }
-        listener?.onEditTaskResult(task)
-        findNavController().popBackStack()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)  {
@@ -74,5 +70,10 @@ class EditTaskFragment : Fragment() {
             onEditTaskResult()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun onEditTaskResult() {
+        listener?.onEditTaskResult(viewModel.task)
+        findNavController().popBackStack()
     }
 }
