@@ -16,5 +16,10 @@
             android:id="@+id/menu_item_show_context"
             android:title="@string/show_context" />
 
+        <item
+            android:id="@+id/menu_item_group_by"
+            android:title="@string/group_by"
+            app:actionLayout="@layout/item_empty" />
+
     </group>
 </menu>

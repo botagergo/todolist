@@ -71,6 +71,10 @@ class MainActivity : AppCompatActivity(),
                 taskListFragment.onNavViewTaskContextClicked(this)
                 true
             }
+            R.id.menu_item_group_by -> {
+                taskListFragment.onNavViewGroupByClicked(this, menuItem.actionView)
+                true
+            }
             else -> {
                 false
             }
@@ -100,7 +104,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun onDoneTask(task: Task, done: Boolean) {
         Log.d("TM-", "onDoneTask: $task")
-        viewModel.updateTask(task.copy(done = done))
+        viewModel.updateTask(task.copy(done = !done))
     }
 
     override fun onDeleteTask(task: Task) {

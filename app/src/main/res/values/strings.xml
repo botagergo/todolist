@@ -28,4 +28,5 @@
     <string name="show_status">Show Status</string>
     <string name="context">Context</string>
     <string name="show_context">Show Context</string>
+    <string name="group_by">Group By</string>
 </resources>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
@@ -16,8 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
 import hu.botagergo.taskmanager.*
 import hu.botagergo.taskmanager.databinding.FragmentTaskListBinding
+import hu.botagergo.taskmanager.group.PropertyGrouper
 import hu.botagergo.taskmanager.log.logd
 import hu.botagergo.taskmanager.model.Task
+import hu.botagergo.taskmanager.task_filter.ConjugateTaskFilter
 import hu.botagergo.taskmanager.view_model.TaskListViewModel
 import java.util.*
 
@@ -41,9 +44,14 @@ class TaskListFragment : Fragment() {
         val activity = requireActivity()
         adapter = TaskArrayAdapter(activity)
 
-        adapter.setTasks(viewModel.getTasks().value!!)
+        adapter.tasks = viewModel.getTasks().value!!
+        adapter.filter = ConjugateTaskFilter()
+        adapter.grouper = PropertyGrouper(Task::status) { p1, p2 ->
+            p1.toString().compareTo(p2.toString())
+        }
         adapter.listener = object : TaskArrayAdapter.Listener {
             override fun onDoneClicked(task: Task, done: Boolean) {
+                logd(this, "onDoneClicked")
                 listener?.onDoneTask(task, done)
             }
 
@@ -65,6 +73,7 @@ class TaskListFragment : Fragment() {
                 popupMenu.show()
             }
         }
+        adapter.refresh()
 
         listener?.onCreate(this)
     }
@@ -90,15 +99,16 @@ class TaskListFragment : Fragment() {
         val actionView = navView.menu.findItem(R.id.menu_item_show_done).actionView
         val switch = actionView.findViewById<SwitchCompat>(R.id.switch_showDone)
         switch.setOnCheckedChangeListener { _, b ->
-            adapter.filter.doneFilter.showDone = b
-            adapter.onFilterChanged()
+            adapter.filter!!.doneFilter.showDone = b
+            adapter.refresh()
         }
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(view.context)
 
         viewModel.getTasks().observe(viewLifecycleOwner, {
             Log.d("TM-", "TaskViewModel changed")
-            adapter.setTasks(it)
+            adapter.tasks = it
+            adapter.refresh()
         })
 
         binding.floatingActionButton.setOnClickListener {
@@ -121,13 +131,13 @@ class TaskListFragment : Fragment() {
                 }
             }
             logd(this, set)
-            adapter.filter.statusFilter.showStatus = set
-            adapter.onFilterChanged()
+            adapter.filter!!.statusFilter.showStatus = set
+            adapter.refresh()
             dialogInterface.dismiss()
         }
 
         val array = BooleanArray(Task.Status.values().size)
-        val showStatus = adapter.filter.statusFilter.showStatus
+        val showStatus = adapter.filter!!.statusFilter.showStatus
         for (i in Task.Status.values().indices) {
             array[i] = showStatus.contains(Task.Status.values()[i])
         }
@@ -155,14 +165,14 @@ class TaskListFragment : Fragment() {
                 }
             }
             logd(this, set)
-            adapter.filter.contextFilter.showContext = set
-            adapter.onFilterChanged()
+            adapter.filter!!.contextFilter.showContext = set
+            adapter.refresh()
             dialogInterface.dismiss()
         }
 
         val array = BooleanArray(Task.Context.values().size)
-        val showContext = adapter.filter.contextFilter.showContext
-        for (i in Task.Status.values().indices) {
+        val showContext = adapter.filter!!.contextFilter.showContext
+        for (i in Task.Context.values().indices) {
             array[i] = showContext.contains(Task.Context.values()[i])
         }
 
@@ -172,5 +182,29 @@ class TaskListFragment : Fragment() {
 
         val dialog = builder.create()
         dialog.show()
+    }
+
+    fun onNavViewGroupByClicked(context: Context, view: View) {
+        val popupMenu = PopupMenu(this.requireContext(), view)
+        popupMenu.menu.add(Menu.NONE, 0, Menu.NONE, "Status")
+        popupMenu.menu.add(Menu.NONE, 1, Menu.NONE, "Context")
+        popupMenu.setOnMenuItemClickListener {
+            if (it.itemId == 0) {
+                adapter.grouper = PropertyGrouper(Task::status) {p1, p2 ->
+                    p1.toString().compareTo(p2.toString())
+                }
+                adapter.refresh()
+            } else if (it.itemId == 1) {
+                adapter.grouper = PropertyGrouper(Task::context) {p1, p2 ->
+                    p1.toString().compareTo(p2.toString())
+                }
+                adapter.refresh()
+            } else {
+                false
+            }
+            true
+        }
+
+        popupMenu.show()
     }
 }

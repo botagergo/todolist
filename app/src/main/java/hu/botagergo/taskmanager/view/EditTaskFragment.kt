@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import hu.botagergo.taskmanager.R
 import hu.botagergo.taskmanager.model.Task
@@ -23,7 +24,7 @@ class EditTaskFragment : Fragment() {
 
     private lateinit var binding: FragmentEditTaskBinding
 
-    private val viewModel: TaskViewModel by activityViewModels {
+    private val viewModel: TaskViewModel by viewModels {
         TaskViewModelFactory(requireActivity().application, arguments?.getLong("uid") ?: 0)
     }
 
