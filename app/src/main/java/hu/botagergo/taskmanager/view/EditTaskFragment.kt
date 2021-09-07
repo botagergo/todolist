@@ -1,6 +1,5 @@
 package hu.botagergo.taskmanager.view
 
-import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment

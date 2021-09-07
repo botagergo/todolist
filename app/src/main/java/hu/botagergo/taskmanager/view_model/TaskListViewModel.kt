@@ -5,7 +5,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
-import hu.botagergo.taskmanager.log.logd
 import hu.botagergo.taskmanager.model.Task
 import hu.botagergo.taskmanager.model.AppDatabase
 import hu.botagergo.taskmanager.model.TaskDao

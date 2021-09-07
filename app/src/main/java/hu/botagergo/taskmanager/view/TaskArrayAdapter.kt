@@ -81,7 +81,7 @@ class TaskArrayAdapter(private var activity: Activity,
                 this.taskCount = filteredTasks.size
                 this.showGroups = grouper != null
                 this.displayTasksField = grouper?.group(filteredTasks) ?:
-                        sortedMapOf({p1, p2 -> 0}, "" to filteredTasks)
+                        sortedMapOf({_, _ -> 0}, "" to filteredTasks)
                 dataChanged = false
             }
             return displayTasksField!!
@@ -100,9 +100,7 @@ class TaskArrayAdapter(private var activity: Activity,
         val inflater = LayoutInflater.from(parent.context)
         val itemTask = inflater.inflate(R.layout.item_task, parent, false)
 
-        val holder = ViewHolder(itemTask)
-
-        return holder
+        return ViewHolder(itemTask)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
@@ -149,20 +147,17 @@ class TaskArrayAdapter(private var activity: Activity,
 
         val cardView = viewHolder.cardView
         val imageButton = viewHolder.imageButton
-        val holder = viewHolder
 
         cardView.setOnClickListener {
-            val pos = holder.bindingAdapterPosition
+            val pos = viewHolder.bindingAdapterPosition
             if (pos != -1) {
-                val task = getTask(pos).third
                 listener?.onTaskClicked(task)
             }
         }
 
         cardView.setOnLongClickListener {
-            val pos = holder.bindingAdapterPosition
+            val pos = viewHolder.bindingAdapterPosition
             if (pos != -1) {
-                val task = getTask(pos).third
                 listener?.onTaskLongClicked(it, task)
                 true
             } else {
@@ -172,9 +167,8 @@ class TaskArrayAdapter(private var activity: Activity,
 
         imageButton.setOnClickListener {
             logd(this, "imageButton.onClickListener")
-            val pos = holder.bindingAdapterPosition
+            val pos = viewHolder.bindingAdapterPosition
             if (pos != -1) {
-                val task = getTask(pos).third
                 listener?.onDoneClicked(task, task.done)
             }
         }
