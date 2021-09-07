@@ -1,6 +1,5 @@
 package hu.botagergo.taskmanager.view
 
-import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -12,30 +11,22 @@ import androidx.navigation.fragment.findNavController
 import hu.botagergo.taskmanager.R
 import hu.botagergo.taskmanager.model.Task
 import hu.botagergo.taskmanager.databinding.FragmentAddTaskBinding
+import hu.botagergo.taskmanager.view_model.TaskListViewModel
 import hu.botagergo.taskmanager.view_model.TaskViewModel
 import hu.botagergo.taskmanager.view_model.TaskViewModelFactory
 
 class AddTaskFragment : Fragment() {
-
-    interface TaskListener {
-        fun onAddTaskResult(task: Task)
-    }
-    private var listener: TaskListener? = null
-
     private lateinit var binding: FragmentAddTaskBinding
 
-    private val viewModel: TaskViewModel by viewModels {
+    private val taskViewModel: TaskViewModel by viewModels {
         TaskViewModelFactory(requireActivity().application, 0)
     }
+
+    private val taskListViewModel: TaskListViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
-    }
-
-    override fun onAttach(context: Context) {
-        listener = context as TaskListener
-        super.onAttach(context)
     }
 
     override fun onCreateView(
@@ -46,7 +37,7 @@ class AddTaskFragment : Fragment() {
             inflater, R.layout.fragment_add_task,
             container, false)
         binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+        binding.viewModel = taskViewModel
         return binding.root
     }
 
@@ -66,15 +57,11 @@ class AddTaskFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if ((item.itemId == android.R.id.home) or (item.itemId == R.id.menu_item_cancel)) {
-            activity?.onBackPressed()
+            findNavController().popBackStack()
         } else if (item.itemId == R.id.menu_item_done) {
-            onAddTaskResult()
+            taskListViewModel.addTask(taskViewModel.task)
+            findNavController().popBackStack()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun onAddTaskResult() {
-        listener?.onAddTaskResult(viewModel.task)
-        findNavController().popBackStack()
     }
 }

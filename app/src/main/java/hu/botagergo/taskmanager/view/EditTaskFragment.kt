@@ -12,15 +12,11 @@ import androidx.navigation.fragment.findNavController
 import hu.botagergo.taskmanager.R
 import hu.botagergo.taskmanager.model.Task
 import hu.botagergo.taskmanager.databinding.FragmentEditTaskBinding
+import hu.botagergo.taskmanager.view_model.TaskListViewModel
 import hu.botagergo.taskmanager.view_model.TaskViewModel
 import hu.botagergo.taskmanager.view_model.TaskViewModelFactory
 
 class EditTaskFragment : Fragment() {
-
-    interface Listener {
-        fun onEditTaskResult(task: Task)
-    }
-    private var listener: Listener? = null
 
     private lateinit var binding: FragmentEditTaskBinding
 
@@ -28,14 +24,11 @@ class EditTaskFragment : Fragment() {
         TaskViewModelFactory(requireActivity().application, arguments?.getLong("uid") ?: 0)
     }
 
+    private val taskListViewModel: TaskListViewModel by activityViewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
         super.onCreate(savedInstanceState)
-    }
-
-    override fun onAttach(context: Context) {
-        listener = context as Listener
-        super.onAttach(context)
     }
 
     override fun onCreateView(
@@ -66,15 +59,11 @@ class EditTaskFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if ((item.itemId == android.R.id.home) or (item.itemId == R.id.menu_item_cancel)) {
-            activity?.onBackPressed()
+            findNavController().popBackStack()
         } else if (item.itemId == R.id.menu_item_done) {
-            onEditTaskResult()
+            taskListViewModel.updateTask(viewModel.task)
+            findNavController().popBackStack()
         }
         return super.onOptionsItemSelected(item)
     }
-
-    private fun onEditTaskResult() {
-        listener?.onEditTaskResult(viewModel.task)
-        findNavController().popBackStack()
-    }
-}
+ }

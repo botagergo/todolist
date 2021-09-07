@@ -11,8 +11,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.os.bundleOf
 import androidx.core.util.forEach
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
 import hu.botagergo.taskmanager.*
@@ -28,15 +30,7 @@ class TaskListFragment : Fragment() {
     private lateinit var adapter: TaskArrayAdapter
     private val viewModel: TaskListViewModel by activityViewModels()
     private lateinit var binding: FragmentTaskListBinding
-    private var listener: Listener? = null
 
-    interface Listener {
-        fun onAddTask()
-        fun onEditTask(task: Task)
-        fun onDoneTask(task: Task, done: Boolean)
-        fun onDeleteTask(task: Task)
-        fun onCreate(taskListFragment: TaskListFragment)
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         logd(this, "onCreate")
         super.onCreate(savedInstanceState)
@@ -52,11 +46,12 @@ class TaskListFragment : Fragment() {
         adapter.listener = object : TaskArrayAdapter.Listener {
             override fun onDoneClicked(task: Task, done: Boolean) {
                 logd(this, "onDoneClicked")
-                listener?.onDoneTask(task, done)
+                viewModel.updateTask(task.copy(done = !done))
             }
 
             override fun onTaskClicked(task: Task) {
-                listener?.onEditTask(task)
+                val bundle = bundleOf("uid" to task.uid)
+                findNavController().navigate(R.id.action_taskListFragment_to_editTaskFragment, bundle)
             }
 
             override fun onTaskLongClicked(anchor: View, task: Task) {
@@ -64,7 +59,7 @@ class TaskListFragment : Fragment() {
                 popupMenu.menuInflater.inflate(R.menu.menu_task_list_popup, popupMenu.menu)
                 popupMenu.setOnMenuItemClickListener {
                     if (it.itemId == R.id.menu_item_delete) {
-                        listener?.onDeleteTask(task)
+                        viewModel.deleteTask(task)
                         true
                     } else {
                         false
@@ -74,13 +69,6 @@ class TaskListFragment : Fragment() {
             }
         }
         adapter.refresh()
-
-        listener?.onCreate(this)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        listener = context as Listener
     }
 
     override fun onCreateView(
@@ -112,7 +100,7 @@ class TaskListFragment : Fragment() {
         })
 
         binding.floatingActionButton.setOnClickListener {
-            listener?.onAddTask()
+            findNavController().navigate(R.id.action_taskListFragment_to_addTaskFragment)
         }
     }
 
@@ -120,7 +108,7 @@ class TaskListFragment : Fragment() {
         val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme)
         builder.setTitle("Task Status")
 
-        builder.setPositiveButton("OK") { dialogInterface, i ->
+        builder.setPositiveButton("OK") { dialogInterface, _ ->
             val dialog = dialogInterface as AlertDialog
             val positions = dialog.listView.checkedItemPositions
             val set: EnumSet<Task.Status> = EnumSet.noneOf(Task.Status::class.java)
@@ -154,7 +142,7 @@ class TaskListFragment : Fragment() {
         val builder = AlertDialog.Builder(context, R.style.AlertDialogTheme)
         builder.setTitle("Task Context")
 
-        builder.setPositiveButton("OK") { dialogInterface, i ->
+        builder.setPositiveButton("OK") { dialogInterface, _ ->
             val dialog = dialogInterface as AlertDialog
             val positions = dialog.listView.checkedItemPositions
             val set: EnumSet<Task.Context> = EnumSet.noneOf(Task.Context::class.java)
@@ -184,7 +172,7 @@ class TaskListFragment : Fragment() {
         dialog.show()
     }
 
-    fun onNavViewGroupByClicked(context: Context, view: View) {
+    fun onNavViewGroupByClicked(view: View) {
         val popupMenu = PopupMenu(this.requireContext(), view)
         popupMenu.menu.add(Menu.NONE, 0, Menu.NONE, "Status")
         popupMenu.menu.add(Menu.NONE, 1, Menu.NONE, "Context")
@@ -199,8 +187,6 @@ class TaskListFragment : Fragment() {
                     p1.toString().compareTo(p2.toString())
                 }
                 adapter.refresh()
-            } else {
-                false
             }
             true
         }

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -14,11 +13,9 @@ import androidx.navigation.ui.setupWithNavController
 import hu.botagergo.taskmanager.*
 import hu.botagergo.taskmanager.databinding.ActivityMainBinding
 import hu.botagergo.taskmanager.log.logd
-import hu.botagergo.taskmanager.model.Task
 import hu.botagergo.taskmanager.view_model.TaskListViewModel
 
-class MainActivity : AppCompatActivity(),
-    AddTaskFragment.TaskListener, EditTaskFragment.Listener, TaskListFragment.Listener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: TaskListViewModel
     private lateinit var binding: ActivityMainBinding
@@ -46,10 +43,6 @@ class MainActivity : AppCompatActivity(),
         binding.navView.setNavigationItemSelectedListener(::onNavigationItemSelected)
     }
 
-    override fun onCreate(taskListFragment: TaskListFragment) {
-        this.taskListFragment = taskListFragment
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Log.d("TM-", "onOptionsItemSelected")
         return if (item.itemId == android.R.id.home) {
@@ -72,43 +65,12 @@ class MainActivity : AppCompatActivity(),
                 true
             }
             R.id.menu_item_group_by -> {
-                taskListFragment.onNavViewGroupByClicked(this, menuItem.actionView)
+                taskListFragment.onNavViewGroupByClicked(menuItem.actionView)
                 true
             }
             else -> {
                 false
             }
         }
-    }
-
-    override fun onAddTask() {
-        Log.d("TM-", "onAddTask")
-        navController.navigate(R.id.action_taskListFragment_to_addTaskFragment)
-    }
-
-    override fun onAddTaskResult(task: Task) {
-        Log.d("TM-", "onAddTaskResult: $task")
-        viewModel.addTask(task)
-    }
-
-    override fun onEditTask(task: Task) {
-        Log.d("TM-", "onEditTask: $task")
-        val bundle = bundleOf("uid" to task.uid)
-        navController.navigate(R.id.action_taskListFragment_to_editTaskFragment, bundle)
-    }
-
-    override fun onEditTaskResult(task: Task) {
-        Log.d("TM-", "onEditTaskResult: $task")
-        viewModel.updateTask(task)
-    }
-
-    override fun onDoneTask(task: Task, done: Boolean) {
-        Log.d("TM-", "onDoneTask: $task")
-        viewModel.updateTask(task.copy(done = !done))
-    }
-
-    override fun onDeleteTask(task: Task) {
-        Log.d("TM-", "onDeleteTask: $task")
-        viewModel.deleteTask(task)
     }
 }
