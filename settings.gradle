@@ -5,5 +5,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "TaskManager"
+rootProject.name = "ToDoList"
 include ':app'

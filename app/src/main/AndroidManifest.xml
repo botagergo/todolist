@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="hu.botagergo.taskmanager">
+    package="hu.botagergo.todolist">
 
     <application
         android:allowBackup="true"
@@ -9,10 +9,10 @@
         android:appCategory="productivity"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TaskManager">
+        android:theme="@style/Theme.ToDoList">
 
         <activity
-            android:name="hu.botagergo.taskmanager.view.MainActivity"
+            android:name="hu.botagergo.todolist.view.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

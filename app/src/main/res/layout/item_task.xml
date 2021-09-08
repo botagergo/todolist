@@ -38,7 +38,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context="hu.botagergo.taskmanager.view.MainActivity">
+            tools:context="hu.botagergo.todolist.view.MainActivity">
 
             <ImageButton
                 android:id="@+id/imageButton"

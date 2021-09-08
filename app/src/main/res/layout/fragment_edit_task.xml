@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="hu.botagergo.taskmanager.view_model.TaskViewModel" />
+            type="hu.botagergo.todolist.view_model.TaskViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

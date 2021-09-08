@@ -31,7 +31,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "hu.botagergo.taskmanager"
+        applicationId "hu.botagergo.todolist"
         minSdk 29
         targetSdk 31
         versionCode 1

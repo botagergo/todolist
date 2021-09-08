@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Task Manager</string>
+    <string name="app_name">ToDo List</string>
     <string name="name">Name</string>
     <string name="status">Status</string>
     <string name="comments">Comments</string>

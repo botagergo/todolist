@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/taskListFragment"
-        android:name="hu.botagergo.taskmanager.view.TaskListFragment"
+        android:name="hu.botagergo.todolist.view.TaskListFragment"
         android:label="Task Manager">
         <action
             android:id="@+id/action_taskListFragment_to_settingsFragment"
@@ -20,21 +20,21 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="hu.botagergo.taskmanager.view.SettingsFragment"
+        android:name="hu.botagergo.todolist.view.SettingsFragment"
         android:label="Settings" />
     <fragment
         android:id="@+id/add_task_fragment"
-        android:name="hu.botagergo.taskmanager.view.AddTaskFragment"
+        android:name="hu.botagergo.todolist.view.AddTaskFragment"
         android:label="Add task">
     </fragment>
     <fragment
         android:id="@+id/editTaskFragment"
-        android:name="hu.botagergo.taskmanager.view.EditTaskFragment"
+        android:name="hu.botagergo.todolist.view.EditTaskFragment"
         android:label="Edit task">
         <argument
             android:name="task"
             android:defaultValue="@null"
-            app:argType="hu.botagergo.taskmanager.model.Task"
+            app:argType="hu.botagergo.todolist.model.Task"
             app:nullable="true" />
     </fragment>
 </navigation>
