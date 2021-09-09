@@ -29,4 +29,5 @@
     <string name="context">Context</string>
     <string name="show_context">Show Context</string>
     <string name="group_by">Group By</string>
+    <string name="add_sample_data">Add Sample Data</string>
 </resources>

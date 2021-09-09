@@ -4,6 +4,14 @@
     <group>
 
         <item
+            android:id="@+id/menu_item_add_sample_data"
+            android:title="@string/add_sample_data" />
+
+        <item
+            android:id="@+id/menu_item_delete_all"
+            android:title="@string/delete_all" />
+
+        <item
             android:id="@+id/menu_item_show_done"
             android:title="@string/show_done"
             app:actionLayout="@layout/item_show_done" />

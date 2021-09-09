@@ -56,9 +56,7 @@ class TaskListViewModel(application: Application)
         _tasksLiveData.value = _tasks
     }
 
-    fun setSampleData() {
-        deleteAll()
-
+    fun addSampleData() {
         addTask(Task("Go for a walk", "If you enjoy (re)watching it once in a while, you might as well do it now, because it’s getting removed from Netflix. Why? Because all Nickelodeon content is being moved to Paramount+, a new streaming service.", Task.Status.NextAction, Task.Context.Work))
         addTask(Task("Take out trash", "Did you know many of the earlier episodes were lost, simply because BBC cleaned their archives once in a while?", Task.Status.Planning, Task.Context.Work))
         addTask(Task("Feed cat", "Download your free ebook and learn how a headless approach can boost your business in a number of ways. ", Task.Status.NextAction, Task.Context.Work))
