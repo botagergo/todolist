@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <group>
 
         <item
@@ -10,24 +9,6 @@
         <item
             android:id="@+id/menu_item_delete_all"
             android:title="@string/delete_all" />
-
-        <item
-            android:id="@+id/menu_item_show_done"
-            android:title="@string/show_done"
-            app:actionLayout="@layout/item_show_done" />
-
-        <item
-            android:id="@+id/menu_item_show_status"
-            android:title="@string/show_status" />
-
-        <item
-            android:id="@+id/menu_item_show_context"
-            android:title="@string/show_context" />
-
-        <item
-            android:id="@+id/menu_item_group_by"
-            android:title="@string/group_by"
-            app:actionLayout="@layout/item_empty" />
 
     </group>
 </menu>

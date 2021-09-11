@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/taskListFragment"
-        android:name="hu.botagergo.todolist.view.TaskListFragment"
+        android:name="hu.botagergo.todolist.view.TaskListMainFragment"
         android:label="Task Manager">
         <action
             android:id="@+id/action_taskListFragment_to_settingsFragment"

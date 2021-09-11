@@ -6,6 +6,8 @@ import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.task_filter.ConjugateTaskFilter
 
 class Configuration {
-    var taskFilter: MutableLiveData<ConjugateTaskFilter?> = MutableLiveData(null)
-    var taskGrouper: MutableLiveData<Grouper<Any, Task>?> = MutableLiveData(null)
+    class TaskListView(var name: String,
+                       var filter: MutableLiveData<ConjugateTaskFilter?>,
+                       var grouper: MutableLiveData<Grouper<Any, Task>?>) {}
+    lateinit var taskListViews: List<TaskListView>
 }

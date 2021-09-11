@@ -51,7 +51,7 @@ class AddTaskFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.add_task_fragment_options_menu, menu)
+        inflater.inflate(R.menu.menu_add_task_fragment, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
