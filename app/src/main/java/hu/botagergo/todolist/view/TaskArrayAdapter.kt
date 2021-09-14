@@ -17,45 +17,39 @@ import hu.botagergo.todolist.R
 import hu.botagergo.todolist.group.Grouper
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.model.Task
+import hu.botagergo.todolist.sorter.PropertySorter
+import hu.botagergo.todolist.sorter.Sorter
 import hu.botagergo.todolist.task_filter.ConjugateTaskFilter
 import java.lang.RuntimeException
 import java.util.*
 import kotlin.collections.ArrayList
 
-class TaskArrayAdapter(private var activity: Activity,
-                       filter: ConjugateTaskFilter? = null, grouper: Grouper<Any, Task>? = null) :
-    RecyclerView.Adapter<TaskArrayAdapter.ViewHolder>() {
+class TaskArrayAdapter(
+    private var activity: Activity
+) : RecyclerView.Adapter<TaskArrayAdapter.MyViewHolder>() {
 
-    var tasks: ArrayList<Task>? = null
+    private val TYPE_TASK = 0
+    private val TYPE_GROUP_NAME = 1
+
+    var tasks: ArrayList<Task> = ArrayList()
         set(value) {
-            val newTasks = if (value != null) ArrayList<Task>().apply {
+            val newTasks = ArrayList<Task>().apply {
                 this.addAll(value)
-            } else null
+            }
 
             field = newTasks
-            dataChanged = true
-
-            //val diffResult =
-            //    DiffUtil.calculateDiff(TaskDiffCallback(this.filteredTasks, newFilteredTasks))
-            //diffResult.dispatchUpdatesTo(this)
         }
 
+    private var filteredTasks: ArrayList<Task> = ArrayList()
+    private var groupedTasks: ArrayList<Task?>? = null
+    private var groups: ArrayList<Pair<String, Int>>? = null
 
     var filter: ConjugateTaskFilter? = null
-        set(value) {
-            field = value
-            dataChanged = true
-        }
-
     var grouper: Grouper<Any, Task>? = null
-        set(value) {
-            field = value
-            dataChanged = true
-        }
+    var sorter: Sorter<Task>? = null
 
-    init {
-        this.filter = filter
-        this.grouper = grouper
+    fun isTask(position: Int): Boolean {
+        return groupedTasks?.get(position) != null
     }
 
     interface Listener {
@@ -63,116 +57,128 @@ class TaskArrayAdapter(private var activity: Activity,
         fun onTaskClicked(task: Task)
         fun onTaskLongClicked(anchor: View, task: Task)
     }
+
     var listener: Listener? = null
 
-    private var dataChanged = true
+    private fun calculateActualTasks() {
+        filteredTasks = ArrayList()
+        groups = null
+        filteredTasks.addAll(tasks)
+        filter?.apply(filteredTasks)
+        sorter?.sort(filteredTasks)
 
-    private var displayTasksField: SortedMap<Any, List<Task>>? = null
-    private val displayTasks: SortedMap<Any, List<Task>>
-        get() {
-            if (dataChanged) {
-                logd(this, "dataChanged")
-                val filteredTasks = ArrayList<Task>().apply {
-                    if (tasks != null) {
-                        this.addAll(tasks!!)
-                        filter?.apply(this)
-                    }
-                }
-                this.taskCount = filteredTasks.size
-                this.showGroups = grouper != null
-                this.displayTasksField = grouper?.group(filteredTasks) ?:
-                        sortedMapOf({_, _ -> 0}, "" to filteredTasks)
-                dataChanged = false
+        if (grouper != null) {
+            val grouped = grouper!!.group(filteredTasks)
+            groups = ArrayList()
+            groupedTasks = ArrayList()
+
+            for (group in grouped) {
+                groupedTasks!!.add(null)
+                groups!!.add(group.key.toString() to groupedTasks!!.size - 1)
+                groupedTasks!!.addAll(group.value)
             }
-            return displayTasksField!!
         }
-
-    private var taskCount: Int = 0
-    private var showGroups: Boolean = false
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     fun refresh() {
-        dataChanged = true
+        calculateActualTasks()
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemTask = inflater.inflate(R.layout.item_task, parent, false)
 
-        return ViewHolder(itemTask)
+        return if (viewType == TYPE_TASK) {
+            TaskViewHolder(inflater.inflate(R.layout.item_task, parent, false))
+        } else {
+            GroupNameViewHolder(inflater.inflate(R.layout.item_task_group_name, parent, false))
+        }
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(viewHolder: MyViewHolder, position: Int) {
         logd(this, "onBindViewHolder")
-        val (groupName, ind, task) = getTask(position)
 
-        viewHolder.textView.text = task.title
-        viewHolder.textViewStatus.text = task.status.value
-        viewHolder.textViewContext.text =
-            if (task.context != Task.Context.None) task.context.value else ""
-        viewHolder.textViewComments.text = task.comments
-
-        val color = ResourcesCompat.getColor(
-            viewHolder.textViewStatus.resources, when (task.status) {
-                Task.Status.NextAction -> R.color.status_next_action
-                Task.Status.Waiting -> R.color.status_waiting
-                Task.Status.Planning -> R.color.status_planning
-                Task.Status.OnHold -> R.color.status_on_hold
-                Task.Status.None -> R.color.status_none
-            }, null
-        )
-
-        viewHolder.textViewStatus.setTextColor(color)
-
-        viewHolder.textViewComments.visibility =
-            if (task.comments.isEmpty()) View.GONE else View.VISIBLE
-
-        if (task.done) {
-            viewHolder.cardView.background = getColor(R.color.task_done_background).toDrawable()
-            viewHolder.imageButton.background = getColor(R.color.task_done_background).toDrawable()
-            viewHolder.imageButton.setImageDrawable(getDrawable(R.drawable.ic_check_circle))
-        } else {
-            viewHolder.cardView.background = getColor(R.color.task_background).toDrawable()
-            viewHolder.imageButton.background = getColor(R.color.task_background).toDrawable()
-            viewHolder.imageButton.setImageDrawable(getDrawable(R.drawable.ic_circle))
-        }
-
-        if (showGroups && groupName != null && ind == 0) {
-            viewHolder.textViewGroup.visibility = View.VISIBLE
-            viewHolder.textViewGroup.text = groupName.toString()
-        } else {
-            viewHolder.textViewGroup.visibility = View.GONE
-        }
-
-        val cardView = viewHolder.cardView
-        val imageButton = viewHolder.imageButton
-
-        cardView.setOnClickListener {
-            val pos = viewHolder.bindingAdapterPosition
-            if (pos != -1) {
-                listener?.onTaskClicked(task)
+        viewHolder.group = null
+        if (groups != null) {
+            for (group in groups!!.reversed()) {
+                if (group.second <= position) {
+                    viewHolder.group = group.first
+                    break
+                }
             }
         }
 
-        cardView.setOnLongClickListener {
-            val pos = viewHolder.bindingAdapterPosition
-            if (pos != -1) {
-                listener?.onTaskLongClicked(it, task)
-                true
+        if (viewHolder.itemViewType == TYPE_TASK) {
+            val taskViewHolder = viewHolder as TaskViewHolder
+            val task = groupedTasks?.get(position) ?: filteredTasks[position]
+            taskViewHolder.task = task
+
+            taskViewHolder.textView.text = task.title
+            taskViewHolder.textViewStatus.text = task.status.value
+            taskViewHolder.textViewContext.text =
+                if (task.context != Task.Context.None) task.context.value else ""
+            taskViewHolder.textViewComments.text = task.comments
+
+            val color = ResourcesCompat.getColor(
+                taskViewHolder.textViewStatus.resources, when (task.status) {
+                    Task.Status.NextAction -> R.color.status_next_action
+                    Task.Status.Waiting -> R.color.status_waiting
+                    Task.Status.Planning -> R.color.status_planning
+                    Task.Status.OnHold -> R.color.status_on_hold
+                    Task.Status.None -> R.color.status_none
+                }, null
+            )
+
+            taskViewHolder.textViewStatus.setTextColor(color)
+
+            taskViewHolder.textViewComments.visibility =
+                if (task.comments.isEmpty()) View.GONE else View.VISIBLE
+
+            if (task.done) {
+                taskViewHolder.cardView.background =
+                    getColor(R.color.task_done_background).toDrawable()
+                taskViewHolder.imageButton.background =
+                    getColor(R.color.task_done_background).toDrawable()
+                taskViewHolder.imageButton.setImageDrawable(getDrawable(R.drawable.ic_check_circle))
             } else {
-                false
+                taskViewHolder.cardView.background = getColor(R.color.task_background).toDrawable()
+                taskViewHolder.imageButton.background =
+                    getColor(R.color.task_background).toDrawable()
+                taskViewHolder.imageButton.setImageDrawable(getDrawable(R.drawable.ic_circle))
             }
-        }
 
-        imageButton.setOnClickListener {
-            logd(this, "imageButton.onClickListener")
-            val pos = viewHolder.bindingAdapterPosition
-            if (pos != -1) {
-                listener?.onDoneClicked(task, task.done)
+            val cardView = taskViewHolder.cardView
+            val imageButton = taskViewHolder.imageButton
+
+            cardView.setOnClickListener {
+                val pos = taskViewHolder.bindingAdapterPosition
+                if (pos != -1) {
+                    listener?.onTaskClicked(task)
+                }
             }
-        }
 
+            cardView.setOnLongClickListener {
+                val pos = taskViewHolder.bindingAdapterPosition
+                if (pos != -1) {
+                    listener?.onTaskLongClicked(it, task)
+                    true
+                } else {
+                    false
+                }
+            }
+
+            imageButton.setOnClickListener {
+                logd(this, "imageButton.onClickListener")
+                val pos = taskViewHolder.bindingAdapterPosition
+                if (pos != -1) {
+                    listener?.onDoneClicked(task, task.done)
+                }
+            }
+        } else {
+            val groupNameViewHolder = viewHolder as GroupNameViewHolder
+            groupNameViewHolder.textViewGroupName.text = viewHolder.group!!.toString()
+        }
     }
 
     private fun getDrawable(id: Int): Drawable? {
@@ -184,26 +190,31 @@ class TaskArrayAdapter(private var activity: Activity,
     }
 
     override fun getItemCount(): Int {
-        this.displayTasks
-        return taskCount
+        return groupedTasks?.size ?: filteredTasks.size
     }
 
-    private fun getTask(position: Int): Triple<Any?, Int, Task> {
-        var pos = position
-        for (entry in displayTasks.entries) {
-            if (pos < entry.value.size) {
-                return Triple(entry.key, pos, entry.value[pos])
-            } else {
-                pos -= entry.value.size
+    override fun getItemViewType(position: Int): Int {
+        if (groups == null) {
+            return TYPE_TASK
+        }
+
+        for (group in groups!!) {
+            if (group.second == position) {
+                return TYPE_GROUP_NAME
             }
         }
 
-        throw RuntimeException()
+        return TYPE_TASK
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    open inner class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var group: Any? = null
+    }
+
+    inner class TaskViewHolder(itemView: View) : MyViewHolder(itemView) {
+        var task: Task? = null
+
         val cardView: CardView = itemView.findViewById(R.id.cardView)
-        val textViewGroup: TextView = itemView.findViewById(R.id.textView_group)
 
         val textView: TextView = itemView.findViewById(R.id.textView_title)
         val textViewStatus: TextView = itemView.findViewById(R.id.textView_status)
@@ -211,4 +222,9 @@ class TaskArrayAdapter(private var activity: Activity,
         val textViewComments: TextView = itemView.findViewById(R.id.textView_comments)
         val imageButton: ImageButton = itemView.findViewById(R.id.imageButton)
     }
+
+    inner class GroupNameViewHolder(itemView: View) : MyViewHolder(itemView) {
+        val textViewGroupName: TextView = itemView.findViewById(R.id.textView_groupName)
+    }
+
 }

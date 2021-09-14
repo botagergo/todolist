@@ -16,6 +16,8 @@ import hu.botagergo.todolist.databinding.ActivityMainBinding
 import hu.botagergo.todolist.group.PropertyGrouper
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.model.Task
+import hu.botagergo.todolist.sorter.PropertySorter
+import hu.botagergo.todolist.sorter.TaskReorderableSorter
 import hu.botagergo.todolist.task_filter.ConjugateTaskFilter
 import hu.botagergo.todolist.task_filter.ContextTaskFilter
 import hu.botagergo.todolist.task_filter.DoneTaskFilter
@@ -54,7 +56,9 @@ class MainActivity : AppCompatActivity() {
                 )),
                 MutableLiveData(PropertyGrouper(Task::context) { p1, p2 ->
                     p1.toString().compareTo(p2.toString())
-                })
+                }),
+                MutableLiveData(TaskReorderableSorter())
+
             ),
             Configuration.TaskListView(
                 "Work",
@@ -65,21 +69,26 @@ class MainActivity : AppCompatActivity() {
                 )),
                 MutableLiveData(PropertyGrouper(Task::status) { p1, p2 ->
                     p1.toString().compareTo(p2.toString())
-                })
+                }),
+                MutableLiveData(TaskReorderableSorter())
+
             ),
             Configuration.TaskListView(
                 "All",
                 MutableLiveData(ConjugateTaskFilter()),
                 MutableLiveData(PropertyGrouper(Task::status) { p1, p2 ->
                     p1.toString().compareTo(p2.toString())
-                })
+                }),
+                MutableLiveData(TaskReorderableSorter())
             ),
             Configuration.TaskListView(
                 "Done",
                 MutableLiveData(ConjugateTaskFilter(
                     DoneTaskFilter(true, false)
                 )),
-                MutableLiveData(null)
+                MutableLiveData(null),
+                MutableLiveData(TaskReorderableSorter())
+
             )
         )
     }
