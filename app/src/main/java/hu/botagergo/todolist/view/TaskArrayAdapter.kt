@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -138,18 +139,11 @@ class TaskArrayAdapter(
             if (task.done) {
                 taskViewHolder.cardView.background =
                     getColor(R.color.task_done_background).toDrawable()
-                taskViewHolder.imageButton.background =
-                    getColor(R.color.task_done_background).toDrawable()
-                taskViewHolder.imageButton.setImageDrawable(getDrawable(R.drawable.ic_check_circle))
             } else {
                 taskViewHolder.cardView.background = getColor(R.color.task_background).toDrawable()
-                taskViewHolder.imageButton.background =
-                    getColor(R.color.task_background).toDrawable()
-                taskViewHolder.imageButton.setImageDrawable(getDrawable(R.drawable.ic_circle))
             }
 
             val cardView = taskViewHolder.cardView
-            val imageButton = taskViewHolder.imageButton
 
             cardView.setOnClickListener {
                 val pos = taskViewHolder.bindingAdapterPosition
@@ -165,14 +159,6 @@ class TaskArrayAdapter(
                     true
                 } else {
                     false
-                }
-            }
-
-            imageButton.setOnClickListener {
-                logd(this, "imageButton.onClickListener")
-                val pos = taskViewHolder.bindingAdapterPosition
-                if (pos != -1) {
-                    listener?.onDoneClicked(task, task.done)
                 }
             }
         } else {
@@ -220,11 +206,10 @@ class TaskArrayAdapter(
         val textViewStatus: TextView = itemView.findViewById(R.id.textView_status)
         val textViewContext: TextView = itemView.findViewById(R.id.textView_context)
         val textViewComments: TextView = itemView.findViewById(R.id.textView_comments)
-        val imageButton: ImageButton = itemView.findViewById(R.id.imageButton)
     }
 
     inner class GroupNameViewHolder(itemView: View) : MyViewHolder(itemView) {
-        val textViewGroupName: TextView = itemView.findViewById(R.id.textView_groupName)
+        val textViewGroupName: Button = itemView.findViewById(R.id.textView_groupName)
     }
 
 }

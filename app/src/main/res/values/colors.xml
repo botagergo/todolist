@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="task_background">#FFFFFFFF</color>
-    <color name="task_done_background">#82fa98</color>
+    <color name="task_done_background">#c5fada</color>
     <color name="green_3">#53B556</color>
     <color name="status_next_action">#53B556</color>
     <color name="status_waiting">#B3BB2F</color>

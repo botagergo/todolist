@@ -152,9 +152,7 @@ class TaskListFragment(private val taskListView: Configuration.TaskListView) : F
                     ItemTouchHelper.UP or ItemTouchHelper.DOWN
                 } else 0
 
-                val swipeFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-
-                return makeMovementFlags(dragFlags, swipeFlags)
+                return makeMovementFlags(dragFlags, 0)
             }
         }
 
