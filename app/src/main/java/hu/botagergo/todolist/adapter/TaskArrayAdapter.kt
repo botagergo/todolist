@@ -1,4 +1,4 @@
-package hu.botagergo.todolist.view
+package hu.botagergo.todolist.adapter
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -18,11 +18,8 @@ import hu.botagergo.todolist.R
 import hu.botagergo.todolist.group.Grouper
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.sorter.PropertySorter
 import hu.botagergo.todolist.sorter.Sorter
 import hu.botagergo.todolist.task_filter.ConjugateTaskFilter
-import java.lang.RuntimeException
-import java.util.*
 import kotlin.collections.ArrayList
 
 class TaskArrayAdapter(
@@ -49,12 +46,15 @@ class TaskArrayAdapter(
     var grouper: Grouper<Any, Task>? = null
     var sorter: Sorter<Task>? = null
 
+    var selectedTaskIndex: Int = -1
+
     fun isTask(position: Int): Boolean {
         return groupedTasks?.get(position) != null
     }
 
     interface Listener {
-        fun onDoneClicked(task: Task, done: Boolean)
+        fun onDoneOrUndoneClicked(task: Task, done: Boolean)
+        fun onDeleteClicked(task: Task)
         fun onTaskClicked(task: Task)
         fun onTaskLongClicked(anchor: View, task: Task)
     }
@@ -83,8 +83,20 @@ class TaskArrayAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     fun refresh() {
+        selectedTaskIndex = -1
+
         calculateActualTasks()
         notifyDataSetChanged()
+    }
+
+    fun refreshOnMoved(from: Int, to: Int) {
+        if (from == selectedTaskIndex) {
+            selectedTaskIndex = to
+        } else if (to == selectedTaskIndex) {
+            selectedTaskIndex = to + 1
+        }
+
+        notifyItemMoved(from, to)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -133,8 +145,43 @@ class TaskArrayAdapter(
 
             taskViewHolder.textViewStatus.setTextColor(color)
 
-            taskViewHolder.textViewComments.visibility =
-                if (task.comments.isEmpty()) View.GONE else View.VISIBLE
+            val visibility = if (position == selectedTaskIndex) View.VISIBLE else View.GONE
+            taskViewHolder.layoutActions.visibility = visibility
+            if (visibility == View.VISIBLE) {
+                if (task.done) {
+                    taskViewHolder.imageButtonDone.setImageResource(R.drawable.ic_undo)
+                } else {
+                    taskViewHolder.imageButtonDone.setImageResource(R.drawable.ic_done)
+                }
+
+                taskViewHolder.imageButtonDone.setOnClickListener {
+                    val pos = taskViewHolder.absoluteAdapterPosition
+                    if (pos != -1) {
+                        listener?.onDoneOrUndoneClicked(task, !task.done)
+                    }
+                }
+
+                taskViewHolder.imageButtonEdit.setOnClickListener {
+                    val pos = taskViewHolder.absoluteAdapterPosition
+                    if (pos != -1) {
+                        listener?.onTaskClicked(task)
+                    }
+                }
+
+                taskViewHolder.imageButtonDelete.setOnClickListener {
+                    val pos = taskViewHolder.absoluteAdapterPosition
+                    if (pos != -1) {
+                        listener?.onDeleteClicked(task)
+                    }
+                }
+            }
+
+
+            if (task.comments.isEmpty()) {
+                taskViewHolder.textViewComments.visibility = View.GONE
+            } else {
+                taskViewHolder.textViewComments.visibility = visibility
+            }
 
             if (task.done) {
                 taskViewHolder.cardView.background =
@@ -146,14 +193,22 @@ class TaskArrayAdapter(
             val cardView = taskViewHolder.cardView
 
             cardView.setOnClickListener {
-                val pos = taskViewHolder.bindingAdapterPosition
-                if (pos != -1) {
-                    listener?.onTaskClicked(task)
+                val prevInd = selectedTaskIndex
+                selectedTaskIndex = if (prevInd == taskViewHolder.absoluteAdapterPosition) {
+                    -1
+                } else {
+                    taskViewHolder.absoluteAdapterPosition
                 }
+
+                if (prevInd != -1) {
+                    notifyItemChanged(prevInd)
+                }
+
+                notifyItemChanged(selectedTaskIndex)
             }
 
             cardView.setOnLongClickListener {
-                val pos = taskViewHolder.bindingAdapterPosition
+                val pos = taskViewHolder.absoluteAdapterPosition
                 if (pos != -1) {
                     listener?.onTaskLongClicked(it, task)
                     true
@@ -206,6 +261,11 @@ class TaskArrayAdapter(
         val textViewStatus: TextView = itemView.findViewById(R.id.textView_status)
         val textViewContext: TextView = itemView.findViewById(R.id.textView_context)
         val textViewComments: TextView = itemView.findViewById(R.id.textView_comments)
+        val layoutActions: View = itemView.findViewById(R.id.linearLayout)
+
+        val imageButtonDone: ImageButton = itemView.findViewById(R.id.imageButton_done)
+        val imageButtonEdit: ImageButton = itemView.findViewById(R.id.imageButton_edit)
+        val imageButtonDelete: ImageButton = itemView.findViewById(R.id.imageButton_delete)
     }
 
     inner class GroupNameViewHolder(itemView: View) : MyViewHolder(itemView) {

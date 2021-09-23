@@ -28,14 +28,15 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="16dp"
+            android:paddingBottom="8dp"
             tools:context="hu.botagergo.todolist.view.MainActivity">
 
             <TextView
                 android:id="@+id/textView_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:ems="10"
                 android:focusable="true"
@@ -51,11 +52,10 @@
                 android:id="@+id/textView_comments"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:gravity="center_vertical"
                 android:paddingTop="0dp"
                 android:textSize="11sp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/textView_status"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -65,14 +65,12 @@
                 android:id="@+id/textView_status"
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:foregroundTintMode="add"
                 android:gravity="center_vertical"
                 android:paddingTop="4dp"
-                android:paddingBottom="4dp"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/linearLayout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_comments" />
 
@@ -81,15 +79,43 @@
                 android:layout_width="90dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:foregroundTintMode="add"
                 android:gravity="center_vertical"
                 android:paddingTop="4dp"
-                android:paddingBottom="4dp"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/linearLayout"
                 app:layout_constraintEnd_toEndOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/textView_context">
+
+                <ImageButton
+                    android:id="@+id/imageButton_done"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"/>
+
+                <ImageButton
+                    android:id="@+id/imageButton_edit"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_edit"/>
+
+                <ImageButton
+                    android:id="@+id/imageButton_delete"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:src="@drawable/ic_delete"/>
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
+
 </androidx.appcompat.widget.LinearLayoutCompat>

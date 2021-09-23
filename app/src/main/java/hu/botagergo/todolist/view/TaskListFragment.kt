@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -12,8 +11,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import hu.botagergo.todolist.*
+import hu.botagergo.todolist.adapter.*
 import hu.botagergo.todolist.databinding.FragmentTaskListBinding
-import hu.botagergo.todolist.group.PropertyGrouper
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.sorter.TaskReorderableSorter
@@ -21,7 +20,8 @@ import hu.botagergo.todolist.view_model.TaskListViewModel
 import java.util.*
 
 class TaskListFragment(private val taskListView: Configuration.TaskListView) : Fragment() {
-    private lateinit var adapter: TaskArrayAdapter
+    private lateinit var  itemTouchHelper: ItemTouchHelper
+    private lateinit var adapter: Adapter
     private lateinit var binding: FragmentTaskListBinding
     private val viewModel: TaskListViewModel by activityViewModels()
 
@@ -32,28 +32,34 @@ class TaskListFragment(private val taskListView: Configuration.TaskListView) : F
         setHasOptionsMenu(true)
 
         val activity = requireActivity()
-        adapter = TaskArrayAdapter(activity)
-
-        adapter.tasks = viewModel.getTasks().value!!
+        adapter =
+            if (taskListView.grouper.value != null )
+                TaskGroupListAdapter(activity, viewModel.getTasks().value!!, viewModel, taskListView)
+            else
+                TaskListAdapter(activity, viewModel.getTasks().value!!, viewModel, taskListView, null)
 
         taskListView.filter.observe(requireActivity()) {
-            adapter.filter = it
-            adapter.refresh()
+            adapter.refreshAll()
         }
         taskListView.grouper.observe(requireActivity()) {
-            adapter.grouper = it
-            adapter.refresh()
+            adapter.refreshAll()
         }
 
         taskListView.sorter.observe(requireActivity()) {
-            adapter.sorter = it
-            adapter.refresh()
+            adapter.refreshAll()
         }
 
-        adapter.listener = object : TaskArrayAdapter.Listener {
-            override fun onDoneClicked(task: Task, done: Boolean) {
+        adapter.listener = object : Adapter.Listener {
+            override fun onDoneOrUndoneClicked(task: Task, done: Boolean) {
                 logd(this, "onDoneClicked")
-                viewModel.updateTask(task.copy(done = !done))
+                viewModel.updateTask(task.copy(done = done))
+                adapter.refreshAll()
+            }
+
+            override fun onDeleteClicked(task: Task) {
+                logd(this, "onDeleteClicked")
+                viewModel.deleteTask(task)
+                adapter.refreshAll()
             }
 
             override fun onTaskClicked(task: Task) {
@@ -65,14 +71,21 @@ class TaskListFragment(private val taskListView: Configuration.TaskListView) : F
 
             }
         }
-        adapter.refresh()
+
+        val touchCallback =
+            if (adapter is TaskListAdapter) TaskTouchCallback(adapter as TaskListAdapter)
+            else TaskGroupTouchCallback(adapter as TaskGroupListAdapter)
+
+        itemTouchHelper = ItemTouchHelper(touchCallback)
     }
 
     override fun onResume() {
         adapter.tasks = viewModel.getTasks().value!!
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        adapter.refresh()
+        //(binding.recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+
+        adapter.refreshAll()
         super.onResume()
     }
 
@@ -91,73 +104,13 @@ class TaskListFragment(private val taskListView: Configuration.TaskListView) : F
 
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(view.context)
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
 
         viewModel.getTasks().observe(viewLifecycleOwner, {
             Log.d("TM-", "TaskViewModel changed")
             adapter.tasks = it
-            adapter.refresh()
+            adapter.refreshAll()
         })
-
-        val itemTouchHelperCallback = object: ItemTouchHelper.SimpleCallback(
-                    ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
-        ) {
-
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                val sorter = adapter.sorter as TaskReorderableSorter
-                val viewHolderFrom = viewHolder as TaskArrayAdapter.TaskViewHolder
-                val viewHolderTo = target as TaskArrayAdapter.MyViewHolder
-
-                if (viewHolderTo is TaskArrayAdapter.TaskViewHolder) {
-                    val indFrom = sorter.taskUidList.indexOf(viewHolderFrom.task!!.uid)
-                    val indTo = sorter.taskUidList.indexOf(viewHolderTo.task!!.uid)
-                    Collections.swap(sorter.taskUidList, indFrom, indTo)
-                    adapter.notifyItemMoved(viewHolderFrom.bindingAdapterPosition, viewHolderTo.bindingAdapterPosition)
-                }
-
-                return true
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                TODO("Not yet implemented")
-            }
-
-            override fun canDropOver(
-                recyclerView: RecyclerView,
-                current: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                if (current is TaskArrayAdapter.MyViewHolder &&
-                    target is TaskArrayAdapter.MyViewHolder) {
-                    if (target !is TaskArrayAdapter.GroupNameViewHolder
-                        && current.group == target.group) {
-                        return true
-                    }
-                }
-                return false
-            }
-
-            override fun getMovementFlags(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder
-            ): Int {
-                if (viewHolder !is TaskArrayAdapter.TaskViewHolder) {
-                    return makeMovementFlags(0, 0)
-                }
-
-                val dragFlags = if (adapter.sorter is TaskReorderableSorter) {
-                    ItemTouchHelper.UP or ItemTouchHelper.DOWN
-                } else 0
-
-                return makeMovementFlags(dragFlags, 0)
-            }
-        }
-
-        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

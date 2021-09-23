@@ -61,22 +61,10 @@ class MainActivity : AppCompatActivity() {
 
             ),
             Configuration.TaskListView(
-                "Work",
-                MutableLiveData(ConjugateTaskFilter(
-                    DoneTaskFilter(),
-                    StatusTaskFilter(),
-                    ContextTaskFilter(setOf(Task.Context.Work))
-                )),
-                MutableLiveData(PropertyGrouper(Task::status) { p1, p2 ->
-                    p1.toString().compareTo(p2.toString())
-                }),
-                MutableLiveData(TaskReorderableSorter())
-
-            ),
-            Configuration.TaskListView(
                 "All",
-                MutableLiveData(ConjugateTaskFilter()),
-                MutableLiveData(PropertyGrouper(Task::status) { p1, p2 ->
+                MutableLiveData(ConjugateTaskFilter(
+                    DoneTaskFilter(true, true)
+                )),                MutableLiveData(PropertyGrouper(Task::status) { p1, p2 ->
                     p1.toString().compareTo(p2.toString())
                 }),
                 MutableLiveData(TaskReorderableSorter())
