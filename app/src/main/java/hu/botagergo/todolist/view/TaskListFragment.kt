@@ -1,91 +1,50 @@
 package hu.botagergo.todolist.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.xwray.groupie.ExpandableGroup
+import com.xwray.groupie.Section
+import com.xwray.groupie.TouchCallback
 import hu.botagergo.todolist.*
-import hu.botagergo.todolist.adapter.*
+import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.FragmentTaskListBinding
 import hu.botagergo.todolist.log.logd
+import hu.botagergo.todolist.view_model.TaskListViewModel
+
+import hu.botagergo.todolist.adapter.Adapter
+import hu.botagergo.todolist.adapter.SimpleTaskListAdapter
+import hu.botagergo.todolist.adapter.TaskItem
+import hu.botagergo.todolist.adapter.createAdapter
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.sorter.TaskReorderableSorter
-import hu.botagergo.todolist.view_model.TaskListViewModel
-import java.util.*
 
-class TaskListFragment(private val taskListView: Configuration.TaskListView) : Fragment() {
-    private lateinit var  itemTouchHelper: ItemTouchHelper
+class TaskListFragment(private val taskListView: Configuration.TaskListView)
+    : Fragment() {
     private lateinit var adapter: Adapter
     private lateinit var binding: FragmentTaskListBinding
     private val viewModel: TaskListViewModel by activityViewModels()
+    private val app: ToDoListApplication by lazy { requireActivity().application as ToDoListApplication }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         logd(this, "onCreate")
         super.onCreate(savedInstanceState)
 
-        setHasOptionsMenu(true)
-
-        val activity = requireActivity()
-        adapter =
-            if (taskListView.grouper.value != null )
-                TaskGroupListAdapter(activity, viewModel.getTasks().value!!, viewModel, taskListView)
-            else
-                TaskListAdapter(activity, viewModel.getTasks().value!!, viewModel, taskListView, null)
-
-        taskListView.filter.observe(requireActivity()) {
-            adapter.refreshAll()
-        }
-        taskListView.grouper.observe(requireActivity()) {
-            adapter.refreshAll()
-        }
-
-        taskListView.sorter.observe(requireActivity()) {
-            adapter.refreshAll()
-        }
-
-        adapter.listener = object : Adapter.Listener {
-            override fun onDoneOrUndoneClicked(task: Task, done: Boolean) {
-                logd(this, "onDoneClicked")
-                viewModel.updateTask(task.copy(done = done))
-                adapter.refreshAll()
-            }
-
-            override fun onDeleteClicked(task: Task) {
-                logd(this, "onDeleteClicked")
-                viewModel.deleteTask(task)
-                adapter.refreshAll()
-            }
-
-            override fun onTaskClicked(task: Task) {
-                val bundle = bundleOf("uid" to task.uid)
-                findNavController().navigate(R.id.action_taskListFragment_to_editTaskFragment, bundle)
-            }
-
-            override fun onTaskLongClicked(anchor: View, task: Task) {
-
-            }
-        }
-
-        val touchCallback =
-            if (adapter is TaskListAdapter) TaskTouchCallback(adapter as TaskListAdapter)
-            else TaskGroupTouchCallback(adapter as TaskGroupListAdapter)
-
-        itemTouchHelper = ItemTouchHelper(touchCallback)
     }
 
     override fun onResume() {
-        adapter.tasks = viewModel.getTasks().value!!
-        binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        //adapter.tasks = viewModel.getTasks().value!!
+        //binding.recyclerView.adapter = adapter
+        //binding.recyclerView.layoutManager = LinearLayoutManager(context)
         //(binding.recyclerView.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
 
-        adapter.refreshAll()
+        //adapter.refreshAll()
         super.onResume()
     }
 
@@ -102,15 +61,33 @@ class TaskListFragment(private val taskListView: Configuration.TaskListView) : F
         logd(this, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
 
+        adapter = createAdapter(this.requireActivity().application as ToDoListApplication, viewModel.getTasks().value!!, taskListView)
+
+        adapter.setOnItemDoneClickedListener {
+            viewModel.updateTask(it.copy(done = !it.done))
+        }
+
+        adapter.setOnItemClickedListener {
+            val bundle = bundleOf("uid" to it.uid)
+            findNavController().navigate(R.id.action_taskListFragment_to_editTaskFragment, bundle)
+        }
+
+        adapter.setOnItemDeleteClickedListener {
+            viewModel.deleteTask(it)
+        }
+
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(view.context)
+        adapter.refresh()
+
+
+
+        binding.recyclerView.adapter = adapter
+
+        val itemTouchHelper = ItemTouchHelper(adapter.getTouchCallback())
         itemTouchHelper.attachToRecyclerView(binding.recyclerView)
 
-        viewModel.getTasks().observe(viewLifecycleOwner, {
-            Log.d("TM-", "TaskViewModel changed")
-            adapter.tasks = it
-            adapter.refreshAll()
-        })
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -122,7 +99,9 @@ class TaskListFragment(private val taskListView: Configuration.TaskListView) : F
         if (item.itemId == R.id.menu_item_add) {
             findNavController().navigate(R.id.action_taskListFragment_to_addTaskFragment)
             return true
+            R.id.action_taskListFragment_to_editTaskFragment
         }
         return false
     }
+
 }

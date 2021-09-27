@@ -7,10 +7,10 @@
     >
 
     <Button
-        android:id="@+id/button_groupHeader"
+        android:id="@+id/textView_groupName"
         android:textColor="@color/black"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:textAlignment="textStart"
         android:paddingStart="40dp"
         app:layout_constraintEnd_toEndOf="parent"

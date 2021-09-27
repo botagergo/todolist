@@ -8,5 +8,12 @@ import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.task_filter.ConjugateTaskFilter
 
 class ToDoListApplication : Application() {
+
     val configuration: Configuration = Configuration()
+
+    val taskAddedEvent: Event<Task> = Event()
+    val taskChangedEvent: Event<Task> = Event()
+    val taskRemovedEvent: Event<Task> = Event()
+    val taskDataSetChangedEvent: Event<Unit> = Event()
+
 }

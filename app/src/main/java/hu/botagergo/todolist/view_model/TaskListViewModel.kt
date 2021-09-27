@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
+import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.model.AppDatabase
 import hu.botagergo.todolist.model.TaskDao
@@ -14,6 +15,9 @@ class TaskListViewModel(application: Application)
     private var _tasksLiveData: MutableLiveData<ArrayList<Task>>
     private var _tasks: ArrayList<Task>
     private var _taskDao: TaskDao
+    private var app: ToDoListApplication = application as ToDoListApplication
+    private val unit: ()->Unit = {}
+
 
     init {
         val db = Room.databaseBuilder(
@@ -39,12 +43,15 @@ class TaskListViewModel(application: Application)
         _taskDao.delete(task)
         _tasks.remove(task)
         _tasksLiveData.value = _tasks
+        app.taskRemovedEvent.signal(task)
     }
 
     fun deleteAll() {
         _taskDao.deleteAll()
         _tasks.clear()
         _tasksLiveData.value = _tasks
+
+        app.taskDataSetChangedEvent.signal(unit())
     }
 
     fun updateTask(task: Task) {
@@ -54,7 +61,12 @@ class TaskListViewModel(application: Application)
         _tasks[index] = task
 
         _tasksLiveData.value = _tasks
+
+        //app.taskChangedEvent.signal(task)
+        app.taskDataSetChangedEvent.signal(unit())
     }
+
+    
 
     fun addSampleData() {
         addTask(Task("Go for a walk", "If you enjoy (re)watching it once in a while, you might as well do it now, because it’s getting removed from Netflix. Why? Because all Nickelodeon content is being moved to Paramount+, a new streaming service.", Task.Status.NextAction, Task.Context.Work))
@@ -68,6 +80,8 @@ class TaskListViewModel(application: Application)
         addTask(Task("Take exam", "I think people don’t realize how empty South American countries are. Argentina is a massive country with roughly the same population as Ukraine, and only sligthly more than California (45m pop.) Peru has a population of around 32 million, 6m less than Poland and 2m more than Texas. Chile has 17 million people, the same as the Netherlands, or 2 million less than New York.", Task.Status.Waiting))
         addTask(Task("Read a book", "", Task.Status.OnHold))
         addTask(Task("Go to dentist", "", Task.Status.OnHold))
+
+        app.taskDataSetChangedEvent.signal(unit())
 
     }
 }
