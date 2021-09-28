@@ -62,20 +62,6 @@ class TaskItem(private val adapter: Adapter, val task: Task) : Item() {
         viewHolder.root.cardView.setOnClickListener {
             adapter.onItemSelected(this)
         }
-
-        /*
-
-
-viewHolder.cardView.setOnLongClickListener {
-    val pos = taskViewHolder.absoluteAdapterPosition
-    if (pos != -1) {
-        listener?.onTaskLongClicked(it, task)
-        true
-    } else {
-        false
-    }
-}
-*/
     }
 
     override fun getLayout(): Int {
@@ -99,7 +85,7 @@ viewHolder.cardView.setOnLongClickListener {
     }
 
     override fun getDragDirs(): Int {
-        return ItemTouchHelper.UP or ItemTouchHelper.DOWN;
+        return ItemTouchHelper.UP or ItemTouchHelper.DOWN
     }
 
 }

@@ -37,6 +37,7 @@ class TaskListViewModel(application: Application)
         val uid = _taskDao.insert(task.copy())
         _tasks.add(task.copy(uid = uid))
         _tasksLiveData.value = _tasks
+        app.taskAddedEvent.signal(task)
     }
 
     fun deleteTask(task: Task) {

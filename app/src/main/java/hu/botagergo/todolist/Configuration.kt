@@ -10,6 +10,16 @@ class Configuration {
     class TaskListView(var name: String,
                        var filter: MutableLiveData<ConjugateTaskFilter?>,
                        var grouper: MutableLiveData<Grouper<Any, Task>?>,
-                       var sorter: MutableLiveData<Sorter<Task>?>) {}
+                       var sorter: MutableLiveData<Sorter<Task>?>) {
+
+        class State {
+            var groups: List<Pair<String, Boolean>> = ArrayList()
+            var taskOrder: List<Long> = ArrayList()
+        }
+
+        var state: State = State()
+
+    }
+
     lateinit var taskListViews: List<TaskListView>
 }

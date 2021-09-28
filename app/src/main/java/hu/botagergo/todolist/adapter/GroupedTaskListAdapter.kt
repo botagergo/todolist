@@ -1,15 +1,12 @@
 package hu.botagergo.todolist.adapter
 
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.xwray.groupie.ExpandableGroup
-import com.xwray.groupie.Group
-import com.xwray.groupie.Section
-import com.xwray.groupie.TouchCallback
+import com.xwray.groupie.*
 import hu.botagergo.todolist.Configuration
 import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.sorter.TaskReorderableSorter
-import java.util.*
 import kotlin.collections.ArrayList
 
 class GroupedTaskListAdapter(
@@ -20,9 +17,11 @@ class GroupedTaskListAdapter(
     private lateinit var groupedTasks: MutableList<Pair<Any, List<Task>>>
     private var selectedItem: TaskItem? = null
 
-    private var thisAdapter = this
-
     init {
+        application.taskAddedEvent.subscribe {
+            refresh()
+        }
+
         application.taskRemovedEvent.subscribe {
             val item = getItemFromTask(it)
             item?.first?.remove(item.second)
@@ -52,114 +51,138 @@ class GroupedTaskListAdapter(
     }
 
     private fun refreshItems() {
+        val adapter = this
         this.clear()
+
         section = Section()
 
-        val adapter = this
+        this.add(section.apply {
+            for (taskGroup in groupedTasks) {
+                this.add(ExpandableGroup(TaskGroupHeaderItem(taskGroup.first.toString())).apply {
+                    this.add(Section().apply {
+                        for (task in taskGroup.second) {
+                            this.add(TaskItem(adapter, task))
+                        }
 
-        for (taskGroup in groupedTasks) {
-            section.add(ExpandableGroup(TaskGroupHeaderItem(taskGroup.first.toString())).apply {
-                this.add(Section().apply {
-                    for (task in taskGroup.second) {
-                        this.add(TaskItem(adapter, task))
-                    }
-
+                    })
+                    this.isExpanded = true
                 })
-                this.isExpanded = true
-            })
-        }
-
-        this.add(section)
+            }
+        })
     }
 
     override fun refresh() {
         val sortedTasks = ArrayList<Task>().apply {
             addAll(tasks)
         }
+
         taskListView.filter.value?.apply(sortedTasks)
         taskListView.sorter.value?.sort(sortedTasks)
-
         groupedTasks = taskListView.grouper.value!!.group(sortedTasks)
 
         refreshItems()
     }
 
-    private fun getItemFromTask(task: Task): Pair<ExpandableGroup, TaskItem>? {
-
-        for (i in 0 until groupCount) {
-            val group = getTopLevelGroup(i)
-            for (j in 0 until group.itemCount) {
-                val item = group.getItem(j) as? TaskItem
-                if (item?.task?.uid == task.uid) {
-                    return Pair(group as ExpandableGroup, item)
+    private fun getItemFromTask(task: Task): Pair<Section, TaskItem>? {
+        val section = this.getTopLevelGroup(0) as? Section ?: return null
+        for (i in 0 until section.groupCount) {
+            val group = section.getGroup(i) as? ExpandableGroup ?: return null
+            val groupSection = group.getGroup(1) as? Section ?: return null
+            for (j in 0 until groupSection.itemCount) {
+                val item = groupSection.getItem(j) as? TaskItem ?: return null
+                if (item.task.uid == task.uid) {
+                    return Pair(groupSection, item)
                 }
             }
         }
         return null
     }
 
-    override fun getTouchCallback() = object : TouchCallback() {
+    override fun getItemTouchHelper(): ItemTouchHelper {
+        return ItemTouchHelper(MyTouchCallback())
+    }
+
+    inner class MyTouchCallback : TouchCallback() {
         override fun onMove(
             recyclerView: RecyclerView,
-            viewHolder: RecyclerView.ViewHolder,
+            source: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
         ): Boolean {
-
-            val sourceItem = thisAdapter.getItem(viewHolder.adapterPosition)
-            val targetItem = thisAdapter.getItem(target.adapterPosition)
+            val adapter = this@GroupedTaskListAdapter
+            val sourceItem = adapter.getItem(source.bindingAdapterPosition)
+            val targetItem = adapter.getItem(target.bindingAdapterPosition)
 
             if (sourceItem is TaskGroupHeaderItem && targetItem is TaskGroupHeaderItem) {
-                var fromGroupIndex: Int = -1
                 var toGroupIndex: Int = -1
+                var fromGroup: Group? = null
 
                 for ((i, group) in section.groups.withIndex()) {
-                    if (group is ExpandableGroup){
+                    if (group is ExpandableGroup) {
                         if (group.getItem(0) == sourceItem) {
-                            fromGroupIndex = i
+                            fromGroup = group
                         } else if (group.getItem(0) == targetItem) {
                             toGroupIndex = i
                         }
                     }
                 }
 
-                val group = thisAdapter.groupedTasks.removeAt(fromGroupIndex)
-                thisAdapter.groupedTasks.add(toGroupIndex, group)
-
-                thisAdapter.refreshItems()
-            } else if (sourceItem is TaskItem && targetItem is TaskItem) {
-                var fromGroup: Group? = null
-                var toGroup: Group? = null
-
-                for (group in thisAdapter.section.groups) {
-                    val expandableGroup = group as ExpandableGroup
-                    val section = expandableGroup.getGroup(1) as Section
-
+                if (toGroupIndex != -1 && fromGroup != null) {
                     val items = section.groups
-                    val sourceIndex = items.indexOf(sourceItem)
-                    val targetIndex = items.indexOf(targetItem)
+                    items.remove(fromGroup)
+                    items.add(toGroupIndex, fromGroup)
+                    section.update(items)
+                    return true
+                }
+            } else if (sourceItem is TaskItem && targetItem is TaskItem) {
+                var fromSection: Section? = null
+                var toSection: Section? = null
 
-                    if (sourceIndex != -1 && targetIndex != -1) {
+                var targetIndex = -1
+
+                for (group in adapter.section.groups) {
+                    val expandableGroup = group as? ExpandableGroup ?: return false
+                    val section = expandableGroup.getGroup(1) as? Section ?: return false
+
+                    if (fromSection == null) {
+                        val sourceIndex = section.groups.indexOf(sourceItem)
+                        if (sourceIndex != -1) {
+                            fromSection = section
+                        }
+                    }
+
+                    if (toSection == null) {
+                        targetIndex = section.groups.indexOf(targetItem)
+                        if (targetIndex != -1) {
+                            toSection = section
+                        }
+                    }
+                }
+
+                if (fromSection != null && toSection != null) {
+                    if (fromSection == toSection) {
+                        val items = fromSection.groups
                         items.remove(sourceItem)
                         items.add(targetIndex, sourceItem)
-                        section.update(items)
+                        fromSection.update(items)
 
-                        val sorter = thisAdapter.taskListView.sorter.value
+                        val sorter = adapter.taskListView.sorter.value
                         if (sorter is TaskReorderableSorter) {
                             val toInd = sorter.taskUidList.indexOf(targetItem.task.uid)
                             sorter.taskUidList.remove(sourceItem.task.uid)
                             sorter.taskUidList.add(toInd, sourceItem.task.uid)
                         }
 
-                        break
+                        return true
                     }
                 }
             }
 
-            return true
+            return false
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             throw NotImplementedError()
         }
     }
+
 }

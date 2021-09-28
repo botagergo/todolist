@@ -1,13 +1,13 @@
 package hu.botagergo.todolist.adapter
 
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
-import com.xwray.groupie.TouchCallback
 import hu.botagergo.todolist.Configuration
 import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.model.Task
 
-open abstract class Adapter(
+abstract class Adapter(
     val application: ToDoListApplication,
     var tasks: ArrayList<Task>, var taskListView: Configuration.TaskListView
 ) : GroupieAdapter() {
@@ -16,7 +16,7 @@ open abstract class Adapter(
 
     abstract fun refresh()
     abstract fun onItemSelected(taskItem: TaskItem)
-    abstract fun getTouchCallback(): TouchCallback
+    abstract fun getItemTouchHelper(): ItemTouchHelper
 
     private var onItemDoneClicked: ((Task) -> Unit)? = null
     fun setOnItemDoneClickedListener(listener: (Task) -> Unit) {
