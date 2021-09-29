@@ -38,7 +38,7 @@ class TaskItem(private val adapter: Adapter, val task: Task) : Item() {
         ).toDrawable()
 
         if (selected) {
-            viewHolder.root.linearLayout.visibility = View.VISIBLE
+            viewHolder.root.constraintLayout_menu.visibility = View.VISIBLE
 
             viewHolder.root.imageButton_done.setImageResource(
                 if (task.done) R.drawable.ic_undo else R.drawable.ic_done
@@ -56,7 +56,7 @@ class TaskItem(private val adapter: Adapter, val task: Task) : Item() {
                 adapter.onItemDeleteClicked(this)
             }
         } else {
-            viewHolder.root.linearLayout.visibility = View.GONE
+            viewHolder.root.constraintLayout_menu.visibility = View.GONE
         }
 
         viewHolder.root.cardView.setOnClickListener {
