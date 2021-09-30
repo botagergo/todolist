@@ -12,7 +12,7 @@ import hu.botagergo.todolist.R
 import kotlinx.android.synthetic.main.item_task_group_header.view.*
 
 
-class TaskGroupHeaderItem(private val groupName: String) : Item(), ExpandableItem {
+class TaskGroupHeaderItem(private val adapter: GroupedTaskListAdapter, val groupName: String) : Item(), ExpandableItem {
 
     private lateinit var expandableGroup: ExpandableGroup
 
@@ -33,6 +33,7 @@ class TaskGroupHeaderItem(private val groupName: String) : Item(), ExpandableIte
             viewHolder.root.button_groupName.setCompoundDrawables(
                 getIcon(viewHolder.root.context, expandableGroup.isExpanded), null, null, null
             )
+            adapter.onGroupHeaderClicked(groupName, expandableGroup.isExpanded)
         }
     }
 

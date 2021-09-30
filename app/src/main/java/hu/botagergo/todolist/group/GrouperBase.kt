@@ -1,11 +1,22 @@
 package hu.botagergo.todolist.group
 
-import java.util.*
+abstract class GrouperBase<K, T>: Grouper<K, T> {
 
-abstract class GrouperBase<K, T>(var comp: Comparator<K>): Grouper<K, T> {
-
-    override fun group(items: List<T>, order: List<K>?): MutableList<Pair<K, List<T>>> {
-        return items.groupBy(::key).toSortedMap(comp).toList().toMutableList()
+    override fun group(items: List<T>, order: MutableList<K>?): MutableList<Pair<K, List<T>>> {
+        val groupedItems = items.groupBy(::key).toList()
+        return if (order != null) {
+            var pos = order.size
+            groupedItems.sortedBy {
+                var ind = order.indexOf(it.first)
+                if (ind == -1) {
+                    ind = pos++
+                    order.add(it.first)
+                }
+                ind
+            }.toMutableList()
+        } else {
+            groupedItems.toMutableList()
+        }
     }
 
     abstract fun key(item: T): K

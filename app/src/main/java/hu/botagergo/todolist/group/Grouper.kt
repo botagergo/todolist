@@ -1,5 +1,7 @@
 package hu.botagergo.todolist.group
 
-interface Grouper<K, T> {
-    fun group(items: List<T>, order: List<K>? = null): MutableList<Pair<K, List<T>>>
+import java.io.Serializable
+
+interface Grouper<K, T> : Serializable {
+    fun group(items: List<T>, order: MutableList<K>? = null): MutableList<Pair<K, List<T>>>
 }

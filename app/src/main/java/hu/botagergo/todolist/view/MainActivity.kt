@@ -44,39 +44,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.navView.setupWithNavController(navController)
         binding.navView.setNavigationItemSelectedListener(::onNavigationItemSelected)
+    }
 
-        app.configuration.taskListViews = listOf(
-            Configuration.TaskListView(
-                "Next Action",
-                MutableLiveData(ConjugateTaskFilter(
-                    DoneTaskFilter(),
-                    StatusTaskFilter(setOf(Task.Status.NextAction))
-                )),
-                MutableLiveData(PropertyGrouper(Task::context) { p1, p2 ->
-                    p1.toString().compareTo(p2.toString())
-                }),
-                MutableLiveData(TaskReorderableSorter())
-
-            ),
-            Configuration.TaskListView(
-                "All",
-                MutableLiveData(ConjugateTaskFilter(
-                    DoneTaskFilter(showDone = true, showNotDone = true)
-                )),                MutableLiveData(PropertyGrouper(Task::status) { p1, p2 ->
-                    p1.toString().compareTo(p2.toString())
-                }),
-                MutableLiveData(TaskReorderableSorter())
-            ),
-            Configuration.TaskListView(
-                "Done",
-                MutableLiveData(ConjugateTaskFilter(
-                    DoneTaskFilter(showDone = true, showNotDone = false)
-                )),
-                MutableLiveData(null),
-                MutableLiveData(TaskReorderableSorter())
-
-            )
-        )
+    override fun onPause() {
+        app.storeConfig()
+        super.onPause()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

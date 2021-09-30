@@ -1,5 +1,7 @@
 package hu.botagergo.todolist.sorter
 
-interface Sorter<T> {
+import java.io.Serializable
+
+interface Sorter<T> : Serializable{
     fun sort(items: ArrayList<T>)
 }

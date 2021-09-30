@@ -10,8 +10,24 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.ToDoListApplication
+import hu.botagergo.todolist.databinding.FragmentTaskListMainBinding
+
 
 class TaskListMainFragment : Fragment() {
+
+    private lateinit var binding: FragmentTaskListMainBinding
+
+    private val viewPager: ViewPager by lazy {
+        binding.viewPager
+    }
+
+    private val tabLayout: TabLayout by lazy {
+        binding.tabLayout
+    }
+
+    private val app: ToDoListApplication by lazy {
+        requireActivity().application as ToDoListApplication
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
@@ -22,15 +38,30 @@ class TaskListMainFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_task_list_main, container, false)
+    ): View {
+        binding = FragmentTaskListMainBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val viewPager = view.findViewById<ViewPager>(R.id.viewPager)
-        viewPager.adapter = ScreenSlidePagerAdapter(requireActivity().application as ToDoListApplication, childFragmentManager)
+        initViewPager()
+        initTabLayout()
+    }
 
-        val tabLayout = view.findViewById<TabLayout>(R.id.tabLayout)
+    private fun initViewPager() {
+        viewPager.adapter = ScreenSlidePagerAdapter(app, childFragmentManager)
+        viewPager.currentItem = app.configuration.taskListViews.indexOfFirst {
+            it.name == app.configuration.state.selectedTaskListViewName
+        }
+        viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+            override fun onPageSelected(position: Int) {
+                app.configuration.state.selectedTaskListViewName = app.configuration.taskListViews[position].name
+                super.onPageSelected(position)
+            }
+        })
+    }
+
+    private fun initTabLayout() {
         tabLayout.setupWithViewPager(viewPager)
         tabLayout.tabRippleColor = null
     }
@@ -45,6 +76,7 @@ class TaskListMainFragment : Fragment() {
         override fun getPageTitle(position: Int): CharSequence {
             return app.configuration.taskListViews[position].name
         }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -58,6 +90,11 @@ class TaskListMainFragment : Fragment() {
             return true
         }
         return false
+    }
+
+    override fun onDestroy() {
+        viewPager.clearOnPageChangeListeners()
+        super.onDestroy()
     }
 
 }

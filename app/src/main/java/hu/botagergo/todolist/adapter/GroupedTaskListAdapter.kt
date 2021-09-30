@@ -5,8 +5,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.*
 import hu.botagergo.todolist.Configuration
 import hu.botagergo.todolist.ToDoListApplication
+import hu.botagergo.todolist.log.loge
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.sorter.TaskReorderableSorter
+import java.util.*
 import kotlin.collections.ArrayList
 
 class GroupedTaskListAdapter(
@@ -38,6 +40,10 @@ class GroupedTaskListAdapter(
         refresh()
     }
 
+    fun onGroupHeaderClicked(groupName: String, expanded: Boolean) {
+        taskListView.taskListViewState.groupExpanded[groupName] = expanded
+    }
+
     override fun onItemSelected(taskItem: TaskItem) {
         taskItem.selected = !taskItem.selected
         if (taskItem.selected) {
@@ -47,6 +53,7 @@ class GroupedTaskListAdapter(
         } else {
             selectedItem = null
         }
+
         taskItem.notifyChanged()
     }
 
@@ -58,14 +65,15 @@ class GroupedTaskListAdapter(
 
         this.add(section.apply {
             for (taskGroup in groupedTasks) {
-                this.add(ExpandableGroup(TaskGroupHeaderItem(taskGroup.first.toString())).apply {
+                val groupName = taskGroup.first.toString()
+                this.add(ExpandableGroup(TaskGroupHeaderItem(adapter, groupName)).apply {
                     this.add(Section().apply {
                         for (task in taskGroup.second) {
                             this.add(TaskItem(adapter, task))
                         }
 
                     })
-                    this.isExpanded = true
+                    this.isExpanded = taskListView.taskListViewState.groupExpanded[groupName] ?: true
                 })
             }
         })
@@ -78,7 +86,7 @@ class GroupedTaskListAdapter(
 
         taskListView.filter.value?.apply(sortedTasks)
         taskListView.sorter.value?.sort(sortedTasks)
-        groupedTasks = taskListView.grouper.value!!.group(sortedTasks)
+        groupedTasks = taskListView.grouper.value!!.group(sortedTasks, taskListView.taskListViewState.groupOrder)
 
         refreshItems()
     }
@@ -131,6 +139,20 @@ class GroupedTaskListAdapter(
                     items.remove(fromGroup)
                     items.add(toGroupIndex, fromGroup)
                     section.update(items)
+
+                    val groupOrder = taskListView.taskListViewState.groupOrder
+                    val ind1 = groupOrder.indexOfFirst {
+                        it.toString() == sourceItem.groupName
+                    }
+                    val ind2 = groupOrder.indexOfFirst {
+                        it.toString() == targetItem.groupName
+                    }
+                    if (ind1 != -1 && ind2 != -1) {
+                        Collections.swap(groupOrder, ind1, ind2)
+                    } else {
+                        loge(this, "Group not found in group order list")
+                    }
+
                     return true
                 }
             } else if (sourceItem is TaskItem && targetItem is TaskItem) {
