@@ -26,7 +26,13 @@ class GroupedTaskListAdapter(
 
         application.taskRemovedEvent.subscribe {
             val item = getItemFromTask(it)
-            item?.first?.remove(item.second)
+            if (item != null) {
+                item.second.remove(item.third)
+
+                if (item.second.groupCount == 0) {
+                    section.remove(item.first)
+                }
+            }
         }
 
         application.taskChangedEvent.subscribe {
@@ -71,7 +77,6 @@ class GroupedTaskListAdapter(
                         for (task in taskGroup.second) {
                             this.add(TaskItem(adapter, task))
                         }
-
                     })
                     this.isExpanded = taskListView.taskListViewState.groupExpanded[groupName] ?: true
                 })
@@ -91,15 +96,14 @@ class GroupedTaskListAdapter(
         refreshItems()
     }
 
-    private fun getItemFromTask(task: Task): Pair<Section, TaskItem>? {
-        val section = this.getTopLevelGroup(0) as? Section ?: return null
+    private fun getItemFromTask(task: Task): Triple<Group, Section, TaskItem>? {
         for (i in 0 until section.groupCount) {
             val group = section.getGroup(i) as? ExpandableGroup ?: return null
             val groupSection = group.getGroup(1) as? Section ?: return null
             for (j in 0 until groupSection.itemCount) {
                 val item = groupSection.getItem(j) as? TaskItem ?: return null
                 if (item.task.uid == task.uid) {
-                    return Pair(groupSection, item)
+                    return Triple(group, groupSection, item)
                 }
             }
         }
