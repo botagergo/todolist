@@ -18,7 +18,6 @@ class TaskListViewModel(application: Application)
     private var app: ToDoListApplication = application as ToDoListApplication
     private val unit: ()->Unit = {}
 
-
     init {
         val db = Room.databaseBuilder(
             application, AppDatabase::class.java, "task"
@@ -29,9 +28,10 @@ class TaskListViewModel(application: Application)
         _tasksLiveData = MutableLiveData(_tasks)
     }
 
-    fun getTasks() : LiveData<ArrayList<Task>> {
-        return _tasksLiveData
-    }
+    val tasks: LiveData<ArrayList<Task>>
+        get() {
+            return _tasksLiveData
+        }
 
     fun addTask(task: Task) {
         val uid = _taskDao.insert(task.copy())

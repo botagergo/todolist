@@ -34,8 +34,13 @@ class Configuration : Serializable {
         private fun readObject(ois: ObjectInputStream) {
             name = ois.readObject() as String
             filter = MutableLiveData(ois.readObject() as ConjugateTaskFilter?)
+
+            @Suppress("UNCHECKED_CAST")
             grouper = MutableLiveData(ois.readObject() as Grouper<Any, Task>?)
+
+            @Suppress("UNCHECKED_CAST")
             sorter = MutableLiveData(ois.readObject() as Sorter<Task>?)
+
             taskListViewState = ois.readObject() as TaskListViewState
         }
 

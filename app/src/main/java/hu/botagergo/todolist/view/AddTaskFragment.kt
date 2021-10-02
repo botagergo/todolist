@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.ArrayAdapter
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -16,9 +15,10 @@ import hu.botagergo.todolist.view_model.TaskViewModel
 import hu.botagergo.todolist.view_model.TaskViewModelFactory
 
 class AddTaskFragment : Fragment() {
+
     private lateinit var binding: FragmentAddTaskBinding
 
-    private val taskViewModel: TaskViewModel by viewModels {
+    private val viewModel: TaskViewModel by viewModels {
         TaskViewModelFactory(requireActivity().application, 0)
     }
 
@@ -33,11 +33,9 @@ class AddTaskFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(
-            inflater, R.layout.fragment_add_task,
-            container, false)
+        binding = FragmentAddTaskBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
-        binding.viewModel = taskViewModel
+        binding.viewModel = viewModel
         return binding.root
     }
 
@@ -59,7 +57,7 @@ class AddTaskFragment : Fragment() {
         if ((item.itemId == android.R.id.home) or (item.itemId == R.id.menu_item_cancel)) {
             findNavController().popBackStack()
         } else if (item.itemId == R.id.menu_item_done) {
-            taskListViewModel.addTask(taskViewModel.task)
+            taskListViewModel.addTask(viewModel.task)
             findNavController().popBackStack()
         }
         return super.onOptionsItemSelected(item)

@@ -41,7 +41,7 @@ class TaskListFragment(private val taskListView: Configuration.TaskListView)
         logd(this, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = createAdapter(this.requireActivity().application as ToDoListApplication, viewModel.getTasks().value!!, taskListView)
+        adapter = createAdapter(this.requireActivity().application as ToDoListApplication, viewModel.tasks.value!!, taskListView)
 
         adapter.setOnItemDoneClickedListener {
             viewModel.updateTask(it.copy(done = !it.done))

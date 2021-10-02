@@ -7,7 +7,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.databinding.FragmentTaskListMainBinding
@@ -56,9 +55,12 @@ class TaskListMainFragment : Fragment() {
     private fun initTabLayout() {
         binding.tabLayout.setupWithViewPager(binding.viewPager)
         binding.tabLayout.tabRippleColor = null
+        binding.tabLayout.isLongClickable = false
+        binding.tabLayout.setOnLongClickListener { false }
     }
 
-    private inner class ScreenSlidePagerAdapter(val app: ToDoListApplication, fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    private inner class ScreenSlidePagerAdapter(val app: ToDoListApplication, fm: FragmentManager)
+        : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         override fun getCount(): Int = app.configuration.taskListViews.size
 
         override fun getItem(position: Int): Fragment {

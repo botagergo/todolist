@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph"
     app:startDestination="@id/taskListFragment">
 
     <fragment
@@ -9,19 +8,12 @@
         android:name="hu.botagergo.todolist.view.TaskListMainFragment"
         android:label="Task Manager">
         <action
-            android:id="@+id/action_taskListFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
-        <action
             android:id="@+id/action_taskListFragment_to_addTaskFragment"
             app:destination="@id/add_task_fragment" />
         <action
             android:id="@+id/action_taskListFragment_to_editTaskFragment"
             app:destination="@id/editTaskFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/settingsFragment"
-        android:name="hu.botagergo.todolist.view.SettingsFragment"
-        android:label="Settings" />
     <fragment
         android:id="@+id/add_task_fragment"
         android:name="hu.botagergo.todolist.view.AddTaskFragment"

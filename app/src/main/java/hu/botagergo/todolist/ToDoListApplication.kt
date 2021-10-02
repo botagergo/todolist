@@ -1,10 +1,7 @@
 package hu.botagergo.todolist
 
 import android.app.Application
-import android.content.Context
-import android.graphics.Bitmap
 import androidx.lifecycle.MutableLiveData
-import hu.botagergo.todolist.group.Grouper
 import hu.botagergo.todolist.group.PropertyGrouper
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.log.logi
@@ -13,8 +10,6 @@ import hu.botagergo.todolist.sorter.TaskReorderableSorter
 import hu.botagergo.todolist.task_filter.ConjugateTaskFilter
 import hu.botagergo.todolist.task_filter.DoneTaskFilter
 import hu.botagergo.todolist.task_filter.StatusTaskFilter
-import java.io.File
-import java.io.FileNotFoundException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.lang.Exception
@@ -70,9 +65,7 @@ class ToDoListApplication : Application() {
                         StatusTaskFilter(setOf(Task.Status.NextAction))
                     )
                 ),
-                MutableLiveData(PropertyGrouper(Task::context) { p1, p2 ->
-                    p1.toString().compareTo(p2.toString())
-                }),
+                MutableLiveData(PropertyGrouper(Task::context)),
                 MutableLiveData(TaskReorderableSorter())
 
             ),
@@ -82,9 +75,7 @@ class ToDoListApplication : Application() {
                     ConjugateTaskFilter(
                         DoneTaskFilter(showDone = true, showNotDone = true)
                     )
-                ), MutableLiveData(PropertyGrouper(Task::status) { p1, p2 ->
-                    p1.toString().compareTo(p2.toString())
-                }),
+                ), MutableLiveData(PropertyGrouper(Task::status)),
                 MutableLiveData(TaskReorderableSorter())
             ),
             Configuration.TaskListView(

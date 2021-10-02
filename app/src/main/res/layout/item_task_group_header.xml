@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
+    <data>
+        <variable
+            name="data"
+            type="hu.botagergo.todolist.adapter.TaskGroupHeaderItem" />
+    </data>
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -8,13 +14,14 @@
 
         <Button
             android:id="@+id/button_groupName"
-            style="?android:attr/borderlessButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:paddingStart="30dp"
+            android:paddingEnd="30dp"
             android:textAlignment="textStart"
             android:textColor="@color/black"
-            />
+            android:text="@{data.groupName}"
+            style="?android:attr/borderlessButtonStyle" />
 
     </LinearLayout>
 </layout>

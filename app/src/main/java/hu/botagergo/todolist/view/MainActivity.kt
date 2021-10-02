@@ -6,20 +6,13 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import hu.botagergo.todolist.*
 import hu.botagergo.todolist.databinding.ActivityMainBinding
-import hu.botagergo.todolist.group.PropertyGrouper
 import hu.botagergo.todolist.log.logd
-import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.sorter.TaskReorderableSorter
-import hu.botagergo.todolist.task_filter.ConjugateTaskFilter
-import hu.botagergo.todolist.task_filter.DoneTaskFilter
-import hu.botagergo.todolist.task_filter.StatusTaskFilter
 import hu.botagergo.todolist.view_model.TaskListViewModel
 
 class MainActivity : AppCompatActivity() {
