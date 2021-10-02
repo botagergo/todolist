@@ -17,14 +17,6 @@ class TaskListMainFragment : Fragment() {
 
     private lateinit var binding: FragmentTaskListMainBinding
 
-    private val viewPager: ViewPager by lazy {
-        binding.viewPager
-    }
-
-    private val tabLayout: TabLayout by lazy {
-        binding.tabLayout
-    }
-
     private val app: ToDoListApplication by lazy {
         requireActivity().application as ToDoListApplication
     }
@@ -49,11 +41,11 @@ class TaskListMainFragment : Fragment() {
     }
 
     private fun initViewPager() {
-        viewPager.adapter = ScreenSlidePagerAdapter(app, childFragmentManager)
-        viewPager.currentItem = app.configuration.taskListViews.indexOfFirst {
+        binding.viewPager.adapter = ScreenSlidePagerAdapter(app, childFragmentManager)
+        binding.viewPager.currentItem = app.configuration.taskListViews.indexOfFirst {
             it.name == app.configuration.state.selectedTaskListViewName
         }
-        viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
+        binding.viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 app.configuration.state.selectedTaskListViewName = app.configuration.taskListViews[position].name
                 super.onPageSelected(position)
@@ -62,8 +54,8 @@ class TaskListMainFragment : Fragment() {
     }
 
     private fun initTabLayout() {
-        tabLayout.setupWithViewPager(viewPager)
-        tabLayout.tabRippleColor = null
+        binding.tabLayout.setupWithViewPager(binding.viewPager)
+        binding.tabLayout.tabRippleColor = null
     }
 
     private inner class ScreenSlidePagerAdapter(val app: ToDoListApplication, fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
@@ -93,7 +85,7 @@ class TaskListMainFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        viewPager.clearOnPageChangeListeners()
+        binding.viewPager.clearOnPageChangeListeners()
         super.onDestroy()
     }
 
