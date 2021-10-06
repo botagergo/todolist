@@ -12,4 +12,8 @@
     <string name="delete_all">Delete all</string>
     <string name="context">Context</string>
     <string name="add_sample_data">Add Sample Data</string>
+    <string name="views">Views</string>
+    <string name="selected_views">Selected Views</string>
+    <string name="available_views">Available Views</string>
+    <string name="reset_config">Reset config</string>
 </resources>

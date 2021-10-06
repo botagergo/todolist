@@ -2,14 +2,10 @@ package hu.botagergo.todolist.task_filter
 
 import hu.botagergo.todolist.model.Task
 
-class ConjugateTaskFilter(var doneFilter: DoneTaskFilter = DoneTaskFilter(),
-                          var statusFilter: StatusTaskFilter = StatusTaskFilter(),
-                          var contextFilter: ContextTaskFilter = ContextTaskFilter()) : TaskFilter() {
-
+class ConjugateTaskFilter(private vararg val filters: TaskFilter) : TaskFilter() {
     override fun include(task: Task): Boolean {
-        return doneFilter.include(task)
-                && statusFilter.include(task)
-                && contextFilter.include(task)
+        return filters.all {
+            it.include(task)
+        }
     }
-
 }

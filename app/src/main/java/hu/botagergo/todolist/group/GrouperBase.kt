@@ -1,6 +1,6 @@
 package hu.botagergo.todolist.group
 
-abstract class GrouperBase<K, T>: Grouper<K, T> {
+abstract class GrouperBase<K, T> : Grouper<K, T> {
 
     override fun group(items: List<T>, order: MutableList<K>?): MutableList<Pair<K, List<T>>> {
         val groupedItems = items.groupBy(::key).toList()

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="viewModel"
             type="hu.botagergo.todolist.view_model.TaskViewModel" />
@@ -27,10 +28,10 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginBottom="16dp"
-            android:text="@={viewModel.title}"
             android:hint="@string/title"
             android:importantForAutofill="no"
             android:inputType="none"
+            android:text="@={viewModel.title}"
             app:layout_constraintBottom_toTopOf="@+id/textView_comments"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,11 +52,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@={viewModel.comments}"
             android:hint="@string/comments"
             android:importantForAutofill="no"
             android:inputType="textMultiLine"
             android:minHeight="48dp"
+            android:text="@={viewModel.comments}"
             app:layout_constraintBottom_toTopOf="@+id/textView_status"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

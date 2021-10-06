@@ -1,5 +1,6 @@
 package hu.botagergo.todolist.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -10,7 +11,10 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import hu.botagergo.todolist.*
+import hu.botagergo.todolist.Configuration
+import hu.botagergo.todolist.R
+import hu.botagergo.todolist.ToDoListApplication
+import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.ActivityMainBinding
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.view_model.TaskListViewModel
@@ -18,13 +22,14 @@ import hu.botagergo.todolist.view_model.TaskListViewModel
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: TaskListViewModel by viewModels()
-    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val app by lazy { application as ToDoListApplication }
     private lateinit var navController: NavController
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         logd(this, "onCreate")
         super.onCreate(savedInstanceState)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
@@ -40,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        app.storeConfig()
+        config.store(this)
         super.onPause()
     }
 
@@ -63,6 +68,16 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_item_delete_all -> {
                 viewModel.deleteAll()
+                true
+            }
+            R.id.menu_item_reset_config -> {
+                config = Configuration.defaultConfig
+                recreate()
+                true
+            }
+            R.id.menu_item_task_views -> {
+                val intent = Intent(this, EditSelectedTaskViewsActivity::class.java)
+                startActivity(intent)
                 true
             }
             else -> {

@@ -10,33 +10,38 @@ import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.ItemTaskBinding
 import hu.botagergo.todolist.model.Task
 
-class TaskItem(private val adapter: Adapter, val task: Task)
-    : BindableItem<ItemTaskBinding>() {
+class TaskItem(private val adapter: Adapter, val task: Task) : BindableItem<ItemTaskBinding>() {
 
     var selected: Boolean = false
 
 
     val statusColor: Int
-        get() {return ResourcesCompat.getColor(
-            adapter.application.resources, when (task.status) {
-                Task.Status.NextAction -> R.color.status_next_action
-                Task.Status.Waiting -> R.color.status_waiting
-                Task.Status.Planning -> R.color.status_planning
-                Task.Status.OnHold -> R.color.status_on_hold
-                Task.Status.None -> R.color.status_none
-            }, null
-        )}
+        get() {
+            return ResourcesCompat.getColor(
+                adapter.application.resources, when (task.status) {
+                    Task.Status.NextAction -> R.color.status_next_action
+                    Task.Status.Waiting -> R.color.status_waiting
+                    Task.Status.Planning -> R.color.status_planning
+                    Task.Status.OnHold -> R.color.status_on_hold
+                    Task.Status.None -> R.color.status_none
+                }, null
+            )
+        }
 
     val background: Drawable
         get() {
             val id = if (task.done) R.color.task_done_background else R.color.task_background
-            return Color.valueOf(ResourcesCompat.getColor(adapter.application.resources, id, null)).toDrawable()
+            return Color.valueOf(ResourcesCompat.getColor(adapter.application.resources, id, null))
+                .toDrawable()
         }
 
     val doneIcon: Drawable?
         get() {
             return ResourcesCompat.getDrawable(
-                adapter.application.resources, if (task.done)  R.drawable.ic_undo else R.drawable.ic_done, null)
+                adapter.application.resources,
+                if (task.done) R.drawable.ic_undo else R.drawable.ic_done,
+                null
+            )
         }
 
     fun onItemClicked() {

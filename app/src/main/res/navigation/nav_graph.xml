@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@id/taskListFragment">
 
     <fragment
@@ -17,8 +18,7 @@
     <fragment
         android:id="@+id/add_task_fragment"
         android:name="hu.botagergo.todolist.view.AddTaskFragment"
-        android:label="Add task">
-    </fragment>
+        android:label="Add task" />
     <fragment
         android:id="@+id/editTaskFragment"
         android:name="hu.botagergo.todolist.view.EditTaskFragment"
@@ -29,4 +29,13 @@
             app:argType="hu.botagergo.todolist.model.Task"
             app:nullable="true" />
     </fragment>
+    <activity
+        android:id="@+id/editMainTaskListViewsActivity"
+        android:name="hu.botagergo.todolist.view.EditSelectedTaskViewsActivity"
+        android:label="Edit views"
+        tools:layout="@layout/activity_edit_selected_task_views" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="hu.botagergo.todolist.view.MainActivity"
+        android:label="MainActivity" />
 </navigation>

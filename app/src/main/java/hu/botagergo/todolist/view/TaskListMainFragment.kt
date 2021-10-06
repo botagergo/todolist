@@ -2,6 +2,8 @@ package hu.botagergo.todolist.view
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.os.bundleOf
+import androidx.databinding.ObservableList
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -9,7 +11,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.ToDoListApplication
+import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.FragmentTaskListMainBinding
+import hu.botagergo.todolist.log.logd
+import hu.botagergo.todolist.util.ObservableListChangedCallback
+import java.util.*
 
 
 class TaskListMainFragment : Fragment() {
@@ -35,18 +41,26 @@ class TaskListMainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        logd(this, "onViewCreated")
         initViewPager()
         initTabLayout()
+
+        config.selectedTaskViews.addOnListChangedCallback(
+            object : ObservableListChangedCallback<UUID>() {
+                override fun onChanged(sender: ObservableList<UUID>?) {
+                    binding.viewPager.adapter?.notifyDataSetChanged()
+                }
+            })
     }
 
     private fun initViewPager() {
-        binding.viewPager.adapter = ScreenSlidePagerAdapter(app, childFragmentManager)
-        binding.viewPager.currentItem = app.configuration.taskListViews.indexOfFirst {
-            it.name == app.configuration.state.selectedTaskListViewName
+        binding.viewPager.adapter = ScreenSlidePagerAdapter(childFragmentManager)
+        binding.viewPager.currentItem = config.selectedTaskViews.indexOfFirst {
+            it == config.state.selectedTaskViewUuid
         }
         binding.viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
-                app.configuration.state.selectedTaskListViewName = app.configuration.taskListViews[position].name
+                config.state.selectedTaskViewUuid = config.selectedTaskViews[position]
                 super.onPageSelected(position)
             }
         })
@@ -59,16 +73,20 @@ class TaskListMainFragment : Fragment() {
         binding.tabLayout.setOnLongClickListener { false }
     }
 
-    private inner class ScreenSlidePagerAdapter(val app: ToDoListApplication, fm: FragmentManager)
-        : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        override fun getCount(): Int = app.configuration.taskListViews.size
+    private inner class ScreenSlidePagerAdapter(fm: FragmentManager) :
+        FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        override fun getCount(): Int = config.selectedTaskViews.size
 
         override fun getItem(position: Int): Fragment {
-            return TaskListFragment(app.configuration.taskListViews[position])
+            return TaskListFragment().apply {
+                arguments = bundleOf("uuid" to config.selectedTaskViews[position])
+            }
         }
 
         override fun getPageTitle(position: Int): CharSequence {
-            return app.configuration.taskListViews[position].name
+            return config.taskViews.find {
+                it.uuid == config.selectedTaskViews[position]
+            }!!.name
         }
 
     }

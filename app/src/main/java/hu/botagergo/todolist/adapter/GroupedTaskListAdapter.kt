@@ -3,7 +3,7 @@ package hu.botagergo.todolist.adapter
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.*
-import hu.botagergo.todolist.Configuration
+import hu.botagergo.todolist.TaskView
 import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.log.loge
 import hu.botagergo.todolist.model.Task
@@ -13,8 +13,8 @@ import kotlin.collections.ArrayList
 
 class GroupedTaskListAdapter(
     application: ToDoListApplication,
-    tasks: ArrayList<Task>, taskListView: Configuration.TaskListView
-) : Adapter(application, tasks, taskListView) {
+    tasks: ArrayList<Task>, taskView: TaskView
+) : Adapter(application, tasks, taskView) {
 
     private lateinit var groupedTasks: MutableList<Pair<Any, List<Task>>>
     private var selectedItem: TaskItem? = null
@@ -47,7 +47,7 @@ class GroupedTaskListAdapter(
     }
 
     fun onGroupHeaderClicked(groupName: String, expanded: Boolean) {
-        taskListView.taskListViewState.groupExpanded[groupName] = expanded
+        taskView.state.groupExpanded[groupName] = expanded
     }
 
     override fun onItemSelected(taskItem: TaskItem) {
@@ -78,7 +78,7 @@ class GroupedTaskListAdapter(
                             this.add(TaskItem(adapter, task))
                         }
                     })
-                    this.isExpanded = taskListView.taskListViewState.groupExpanded[groupName] ?: true
+                    this.isExpanded = taskView.state.groupExpanded[groupName] ?: true
                 })
             }
         })
@@ -89,9 +89,9 @@ class GroupedTaskListAdapter(
             addAll(tasks)
         }
 
-        taskListView.filter.value?.apply(sortedTasks)
-        taskListView.sorter.value?.sort(sortedTasks)
-        groupedTasks = taskListView.grouper.value!!.group(sortedTasks, taskListView.taskListViewState.groupOrder)
+        taskView.filter?.apply(sortedTasks)
+        taskView.sorter?.sort(sortedTasks)
+        groupedTasks = taskView.grouper!!.group(sortedTasks, taskView.state.groupOrder)
 
         refreshItems()
     }
@@ -110,8 +110,11 @@ class GroupedTaskListAdapter(
         return null
     }
 
-    override fun getItemTouchHelper(): ItemTouchHelper {
-        return ItemTouchHelper(MyTouchCallback())
+    override fun getItemTouchHelper(): ItemTouchHelper? {
+        return if (taskView.sorter is TaskReorderableSorter)
+            ItemTouchHelper(MyTouchCallback())
+        else
+            null
     }
 
     inner class MyTouchCallback : TouchCallback() {
@@ -144,7 +147,7 @@ class GroupedTaskListAdapter(
                     items.add(toGroupIndex, fromGroup)
                     section.update(items)
 
-                    val groupOrder = taskListView.taskListViewState.groupOrder
+                    val groupOrder = taskView.state.groupOrder
                     val ind1 = groupOrder.indexOfFirst {
                         it.toString() == sourceItem.groupName
                     }
@@ -191,7 +194,7 @@ class GroupedTaskListAdapter(
                         items.add(targetIndex, sourceItem)
                         fromSection.update(items)
 
-                        val sorter = adapter.taskListView.sorter.value
+                        val sorter = adapter.taskView.sorter
                         if (sorter is TaskReorderableSorter) {
                             val toInd = sorter.taskUidList.indexOf(targetItem.task.uid)
                             sorter.taskUidList.remove(sourceItem.task.uid)

@@ -13,7 +13,7 @@ class TaskViewModel(application: Application, uid: Long) : ViewModel() {
     var comments: String = ""
     var status: Task.Status = Task.Status.None
     var context: Task.Context = Task.Context.None
-    var done: Boolean =  false
+    private var done: Boolean = false
     var uid: Long = 0
 
     private var taskDao: TaskDao

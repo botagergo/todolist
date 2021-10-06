@@ -4,7 +4,7 @@ import hu.botagergo.todolist.model.Task
 import java.util.*
 import kotlin.collections.ArrayList
 
-class TaskReorderableSorter(val removeIfNotExists: Boolean = false) : Sorter<Task> {
+class TaskReorderableSorter(private val removeIfNotExists: Boolean = false) : Sorter<Task> {
     var taskUidList: ArrayList<Long> = ArrayList()
 
     override fun sort(items: ArrayList<Task>) {

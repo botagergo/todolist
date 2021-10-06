@@ -4,16 +4,15 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.Section
 import com.xwray.groupie.TouchCallback
-import hu.botagergo.todolist.Configuration
+import hu.botagergo.todolist.TaskView
 import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.sorter.TaskReorderableSorter
-import kotlin.collections.ArrayList
 
 class SimpleTaskListAdapter(
     application: ToDoListApplication,
-    tasks: ArrayList<Task>, taskListView: Configuration.TaskListView
-) : Adapter(application, tasks, taskListView) {
+    tasks: ArrayList<Task>, taskView: TaskView
+) : Adapter(application, tasks, taskView) {
 
     private lateinit var displayedTasks: ArrayList<Task>
     private var selectedItem: TaskItem? = null
@@ -59,8 +58,8 @@ class SimpleTaskListAdapter(
         displayedTasks = ArrayList<Task>().apply {
             addAll(tasks)
         }
-        taskListView.filter.value?.apply(displayedTasks)
-        taskListView.sorter.value?.sort(displayedTasks)
+        taskView.filter?.apply(displayedTasks)
+        taskView.sorter?.sort(displayedTasks)
 
         section = Section()
 
@@ -83,13 +82,18 @@ class SimpleTaskListAdapter(
         return null
     }
 
-    override fun getItemTouchHelper(): ItemTouchHelper {
-        return ItemTouchHelper(MyTouchCallback())
+    override fun getItemTouchHelper(): ItemTouchHelper? {
+        return if (taskView.sorter is TaskReorderableSorter)
+            ItemTouchHelper(MyTouchCallback())
+        else
+            null
     }
 
     inner class MyTouchCallback : TouchCallback() {
-        override fun onMove(recyclerView: RecyclerView, source: RecyclerView.ViewHolder,
-                            target: RecyclerView.ViewHolder): Boolean {
+        override fun onMove(
+            recyclerView: RecyclerView, source: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
             val adapter = this@SimpleTaskListAdapter
 
             val item = adapter.getItem(source.bindingAdapterPosition) as TaskItem
@@ -103,7 +107,7 @@ class SimpleTaskListAdapter(
             items.add(targetIndex, item)
             section.update(items)
 
-            val sorter = adapter.taskListView.sorter.value
+            val sorter = adapter.taskView.sorter
             if (sorter is TaskReorderableSorter) {
                 val toInd = sorter.taskUidList.indexOf(targetItem.task.uid)
                 sorter.taskUidList.remove(item.task.uid)

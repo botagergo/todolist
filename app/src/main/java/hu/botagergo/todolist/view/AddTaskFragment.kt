@@ -2,14 +2,14 @@ package hu.botagergo.todolist.view
 
 import android.os.Bundle
 import android.view.*
-import androidx.fragment.app.Fragment
 import android.widget.ArrayAdapter
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import hu.botagergo.todolist.R
-import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.databinding.FragmentAddTaskBinding
+import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.view_model.TaskListViewModel
 import hu.botagergo.todolist.view_model.TaskViewModel
 import hu.botagergo.todolist.view_model.TaskViewModelFactory
@@ -41,9 +41,11 @@ class AddTaskFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.spinnerStatus.adapter = ArrayAdapter(
-            view.context, android.R.layout.simple_spinner_dropdown_item, Task.Status.values())
+            view.context, android.R.layout.simple_spinner_dropdown_item, Task.Status.values()
+        )
         binding.spinnerContext.adapter = ArrayAdapter(
-            view.context, android.R.layout.simple_spinner_dropdown_item, Task.Context.values())
+            view.context, android.R.layout.simple_spinner_dropdown_item, Task.Context.values()
+        )
 
         super.onViewCreated(view, savedInstanceState)
     }

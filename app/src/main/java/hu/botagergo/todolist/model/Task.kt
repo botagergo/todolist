@@ -7,13 +7,13 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Task (
+data class Task(
     @ColumnInfo(name = "title") val title: String = "",
     @ColumnInfo(name = "comments") val comments: String = "",
     @ColumnInfo(name = "status") val status: Status = Status.None,
     @ColumnInfo(name = "context") val context: Context = Context.None,
     @ColumnInfo(name = "done") val done: Boolean = false,
-    @PrimaryKey(autoGenerate  = true) val uid: Long = 0
+    @PrimaryKey(autoGenerate = true) val uid: Long = 0
 ) : Parcelable {
 
     enum class Status(val value: String) {

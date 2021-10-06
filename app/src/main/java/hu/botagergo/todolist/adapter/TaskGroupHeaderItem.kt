@@ -10,7 +10,8 @@ import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.ItemTaskGroupHeaderBinding
 
 
-class TaskGroupHeaderItem(private val adapter: GroupedTaskListAdapter, val groupName: String) : BindableItem<ItemTaskGroupHeaderBinding>(), ExpandableItem {
+class TaskGroupHeaderItem(private val adapter: GroupedTaskListAdapter, val groupName: String) :
+    BindableItem<ItemTaskGroupHeaderBinding>(), ExpandableItem {
 
     private lateinit var expandableGroup: ExpandableGroup
 
@@ -21,7 +22,7 @@ class TaskGroupHeaderItem(private val adapter: GroupedTaskListAdapter, val group
     override fun getDragDirs() = ItemTouchHelper.UP or ItemTouchHelper.DOWN
     override fun getLayout() = R.layout.item_task_group_header
 
-    private fun getIcon(isExpanded: Boolean) : Drawable? {
+    private fun getIcon(isExpanded: Boolean): Drawable? {
         val drawable = getDrawable(
             adapter.application,
             if (isExpanded)
@@ -37,7 +38,8 @@ class TaskGroupHeaderItem(private val adapter: GroupedTaskListAdapter, val group
         viewBinding.data = this
 
         viewBinding.buttonGroupName.setCompoundDrawables(
-            getIcon(expandableGroup.isExpanded), null, null, null)
+            getIcon(expandableGroup.isExpanded), null, null, null
+        )
 
         viewBinding.buttonGroupName.setOnClickListener {
             expandableGroup.onToggleExpanded()

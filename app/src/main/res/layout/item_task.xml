@@ -5,8 +5,11 @@
     <data>
 
         <import type="android.view.View" />
+
         <import type="hu.botagergo.todolist.model.Task" />
+
         <import type="hu.botagergo.todolist.R" />
+
         <variable
             name="data"
             type="hu.botagergo.todolist.adapter.TaskItem" />
@@ -27,11 +30,11 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="7dp"
             android:layout_marginBottom="5dp"
-            android:clickable="true"
-            android:onClick="@{() -> data.onItemClicked()}"
-            android:focusable="true"
             android:background="@{data.background}"
+            android:clickable="true"
+            android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
+            android:onClick="@{() -> data.onItemClicked()}"
             app:cardCornerRadius="0dp"
             app:cardElevation="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -69,9 +72,9 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:paddingTop="0dp"
+                    android:text="@{data.task.comments}"
                     android:textSize="11sp"
                     android:visibility="@{data.selected &amp;&amp; !data.task.comments.isEmpty() ? View.VISIBLE:View.GONE}"
-                    android:text="@{data.task.comments}"
                     app:layout_constraintBottom_toTopOf="@+id/textView_status"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -85,9 +88,9 @@
                     android:foregroundTintMode="add"
                     android:gravity="center_vertical"
                     android:paddingTop="4dp"
-                    android:textSize="14sp"
-                    android:textColor="@{data.statusColor}"
                     android:text="@{data.task.status.toString()}"
+                    android:textColor="@{data.statusColor}"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toTopOf="@id/constraintLayout_menu"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView_comments" />
@@ -101,8 +104,8 @@
                     android:foregroundTintMode="add"
                     android:gravity="center_vertical"
                     android:paddingTop="4dp"
-                    android:textSize="14sp"
                     android:text="@{data.task.context != Task.Context.None ? data.task.context.toString() : null}"
+                    android:textSize="14sp"
                     app:layout_constraintBottom_toTopOf="@id/constraintLayout_menu"
                     app:layout_constraintEnd_toEndOf="parent" />
 
@@ -127,22 +130,22 @@
                             android:id="@+id/imageButton_done"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:src="@{data.doneIcon}"
-                            android:onClick="@{() -> data.onDoneClicked()}"/>
+                            android:onClick="@{() -> data.onDoneClicked()}"
+                            android:src="@{data.doneIcon}" />
 
                         <ImageButton
                             android:id="@+id/imageButton_edit"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:src="@drawable/ic_edit"
-                            android:onClick="@{() -> data.onEditClicked()}"/>
+                            android:onClick="@{() -> data.onEditClicked()}"
+                            android:src="@drawable/ic_edit" />
 
                         <ImageButton
                             android:id="@+id/imageButton_delete"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:src="@drawable/ic_delete"
-                            android:onClick="@{() -> data.onDeleteClicked()}"/>
+                            android:onClick="@{() -> data.onDeleteClicked()}"
+                            android:src="@drawable/ic_delete" />
 
                     </LinearLayout>
 
