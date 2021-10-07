@@ -25,6 +25,8 @@ class Configuration : Serializable {
 
     var state: State = State()
 
+    var hideViewTabsWhenOneSelected: Boolean = false
+
     fun store(context: Context) {
         logd(this, "store")
         val output = ObjectOutputStream(

@@ -48,9 +48,21 @@ class TaskListMainFragment : Fragment() {
         config.selectedTaskViews.addOnListChangedCallback(
             object : ObservableListChangedCallback<UUID>() {
                 override fun onChanged(sender: ObservableList<UUID>?) {
+                    if (config.hideViewTabsWhenOneSelected) {
+                        if (sender?.size ?: 0 > 1) {
+                            binding.tabLayout.visibility = View.VISIBLE
+                        } else {
+                            binding.tabLayout.visibility = View.GONE
+                        }
+                    }
                     binding.viewPager.adapter?.notifyDataSetChanged()
                 }
             })
+
+
+        if (config.hideViewTabsWhenOneSelected && config.selectedTaskViews.size <= 1) {
+            binding.tabLayout.visibility = View.GONE
+        }
     }
 
     private fun initViewPager() {
