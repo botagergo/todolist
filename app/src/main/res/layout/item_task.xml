@@ -130,6 +130,7 @@
                             android:id="@+id/imageButton_done"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
+                            style="?android:attr/borderlessButtonStyle"
                             android:onClick="@{() -> data.onDoneClicked()}"
                             android:src="@{data.doneIcon}" />
 
@@ -137,6 +138,7 @@
                             android:id="@+id/imageButton_edit"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
+                            style="?android:attr/borderlessButtonStyle"
                             android:onClick="@{() -> data.onEditClicked()}"
                             android:src="@drawable/ic_edit" />
 
@@ -144,6 +146,7 @@
                             android:id="@+id/imageButton_delete"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
+                            style="?android:attr/borderlessButtonStyle"
                             android:onClick="@{() -> data.onDeleteClicked()}"
                             android:src="@drawable/ic_delete" />
 
