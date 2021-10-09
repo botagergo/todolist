@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -15,9 +17,7 @@
             type="hu.botagergo.todolist.adapter.TaskItem" />
     </data>
 
-    <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -30,12 +30,13 @@
             android:layout_marginTop="5dp"
             android:layout_marginEnd="7dp"
             android:layout_marginBottom="5dp"
+            app:contentPadding="8dp"
+            app:contentPaddingLeft="16dp"
             android:background="@{data.background}"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:onClick="@{() -> data.onItemClicked()}"
-            app:cardCornerRadius="0dp"
             app:cardElevation="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,21 +47,15 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="8dp"
                 tools:context="hu.botagergo.todolist.view.MainActivity">
 
                 <TextView
                     android:id="@+id/textView_title"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:ems="10"
-                    android:focusable="true"
-                    android:minHeight="32dp"
                     android:text="@{data.task.title}"
-                    android:textSize="22sp"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="20sp"
                     app:layout_constraintBottom_toTopOf="@+id/textView_comments"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -68,10 +63,11 @@
 
                 <TextView
                     android:id="@+id/textView_comments"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:gravity="center_vertical"
-                    android:paddingTop="0dp"
                     android:text="@{data.task.comments}"
                     android:textSize="11sp"
                     android:visibility="@{data.selected &amp;&amp; !data.task.comments.isEmpty() ? View.VISIBLE:View.GONE}"
@@ -82,32 +78,24 @@
 
                 <TextView
                     android:id="@+id/textView_status"
-                    android:layout_width="90dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:foregroundTintMode="add"
                     android:gravity="center_vertical"
-                    android:paddingTop="4dp"
                     android:text="@{data.task.status.toString()}"
                     android:textColor="@{data.statusColor}"
                     android:textSize="14sp"
-                    app:layout_constraintBottom_toTopOf="@id/constraintLayout_menu"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView_comments" />
+                    app:layout_constraintTop_toBottomOf="@id/textView_comments" />
 
                 <TextView
                     android:id="@+id/textView_context"
-                    android:layout_width="90dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:foregroundTintMode="add"
                     android:gravity="center_vertical"
-                    android:paddingTop="4dp"
                     android:text="@{data.task.context != Task.Context.None ? data.task.context.toString() : null}"
                     android:textSize="14sp"
-                    app:layout_constraintBottom_toTopOf="@id/constraintLayout_menu"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView_comments" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout_menu"
