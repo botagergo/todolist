@@ -7,6 +7,7 @@ package hu.botagergo.todolist
 
 import android.content.Context
 import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableBoolean
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.log.logi
 import java.io.ObjectInputStream

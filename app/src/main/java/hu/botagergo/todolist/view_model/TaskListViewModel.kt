@@ -9,6 +9,7 @@ import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.model.AppDatabase
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.model.TaskDao
+import java.time.LocalDate
 
 class TaskListViewModel(application: Application) : AndroidViewModel(application) {
     private var _tasksLiveData: MutableLiveData<ArrayList<Task>>
@@ -73,7 +74,8 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
                 "Go for a walk",
                 "If you enjoy (re)watching it once in a while, you might as well do it now, because it’s getting removed from Netflix. Why? Because all Nickelodeon content is being moved to Paramount+, a new streaming service.",
                 Task.Status.NextAction,
-                Task.Context.Work
+                Task.Context.Work,
+                null, null, LocalDate.now()
             )
         )
         addTask(
@@ -81,7 +83,8 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
                 "Take out trash",
                 "Did you know many of the earlier episodes were lost, simply because BBC cleaned their archives once in a while?",
                 Task.Status.Planning,
-                Task.Context.Work
+                Task.Context.Work,
+                null, null, LocalDate.now().plusDays(1)
             )
         )
         addTask(
@@ -89,7 +92,8 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
                 "Feed cat",
                 "Download your free ebook and learn how a headless approach can boost your business in a number of ways. ",
                 Task.Status.NextAction,
-                Task.Context.Work
+                Task.Context.Work,
+                null, null, LocalDate.now().plusDays(1)
             )
         )
         addTask(Task("Go shopping", "", Task.Status.Waiting))
@@ -97,7 +101,9 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "Watch TV",
                 "Why headless systems beat monolithic systems",
-                Task.Status.OnHold
+                Task.Status.OnHold,
+                Task.Context.None,
+                null, null, LocalDate.now().plusDays(4)
             )
         )
         addTask(
@@ -105,7 +111,8 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
                 "Eat spaghetti",
                 "Develop .NET, ASP.NET, .NET Core, Xamarin or Unity applications on Windows, Mac, or Linux.",
                 Task.Status.NextAction,
-                Task.Context.Home
+                Task.Context.Home,
+                null, null, LocalDate.now().plusDays(11)
             )
         )
         addTask(Task("Clean garage", "", Task.Status.Planning))

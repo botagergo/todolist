@@ -1,18 +1,25 @@
 package hu.botagergo.todolist.view_model
 
 import android.app.Application
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.room.Room
 import hu.botagergo.todolist.model.AppDatabase
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.model.TaskDao
+import java.time.LocalDate
+import java.time.LocalTime
 
-class TaskViewModel(application: Application, uid: Long) : ViewModel() {
+class TaskViewModel(val app: Application, uid: Long) : ViewModel() {
 
     var title: String = ""
     var comments: String = ""
     var status: Task.Status = Task.Status.None
     var context: Task.Context = Task.Context.None
+    var startDate: MutableLiveData<LocalDate?> = MutableLiveData()
+    var startTime: MutableLiveData<LocalTime?> = MutableLiveData()
+    var dueDate: MutableLiveData<LocalDate?> = MutableLiveData()
+    var dueTime: MutableLiveData<LocalTime?> = MutableLiveData()
     private var done: Boolean = false
     var uid: Long = 0
 
@@ -20,7 +27,7 @@ class TaskViewModel(application: Application, uid: Long) : ViewModel() {
 
     init {
         val db = Room.databaseBuilder(
-            application, AppDatabase::class.java, "task"
+            app, AppDatabase::class.java, "task"
         ).allowMainThreadQueries().build()
         taskDao = db.taskDao()
 
@@ -30,6 +37,10 @@ class TaskViewModel(application: Application, uid: Long) : ViewModel() {
             this.comments = task.comments
             this.status = task.status
             this.context = task.context
+            this.startDate.value = task.startDate
+            this.startTime.value = task.startTime
+            this.dueDate.value = task.dueDate
+            this.dueTime.value = task.dueTime
             this.done = task.done
             this.uid = task.uid
         }
@@ -53,6 +64,9 @@ class TaskViewModel(application: Application, uid: Long) : ViewModel() {
 
     val task: Task
         get() {
-            return Task(title, comments, status, context, done, uid)
+            return Task(title, comments, status, context,
+                startDate.value, startTime.value, dueDate.value, dueTime.value,
+                done, uid)
         }
+
 }

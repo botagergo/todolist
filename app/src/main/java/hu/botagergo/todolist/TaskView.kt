@@ -1,5 +1,6 @@
 package hu.botagergo.todolist
 
+import hu.botagergo.todolist.group.DueGrouper
 import hu.botagergo.todolist.group.Grouper
 import hu.botagergo.todolist.group.PropertyGrouper
 import hu.botagergo.todolist.model.Task
@@ -107,6 +108,9 @@ class TaskView private constructor(
                 .description("Show tasks with status 'Next Action'")
                 .filter(
                     StatusTaskFilter(setOf(Task.Status.NextAction))
+                )
+                .grouper(
+                    DueGrouper()
                 )
                 .sorter(
                     TaskReorderableSorter()

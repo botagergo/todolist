@@ -5,13 +5,21 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Entity
+@TypeConverters(LocalDateConverter::class, LocalTimeConverter::class)
 data class Task(
     @ColumnInfo(name = "title") val title: String = "",
     @ColumnInfo(name = "comments") val comments: String = "",
     @ColumnInfo(name = "status") val status: Status = Status.None,
     @ColumnInfo(name = "context") val context: Context = Context.None,
+    @ColumnInfo(name = "startDate") val startDate: LocalDate? = null,
+    @ColumnInfo(name = "startTime") val startTime: LocalTime? = null,
+    @ColumnInfo(name = "dueDate") val dueDate: LocalDate? = null,
+    @ColumnInfo(name = "dueTime") val dueTime: LocalTime? = null,
     @ColumnInfo(name = "done") val done: Boolean = false,
     @PrimaryKey(autoGenerate = true) val uid: Long = 0
 ) : Parcelable {
@@ -44,6 +52,10 @@ data class Task(
         parcel.readString() ?: "",
         Status.valueOf(parcel.readString() ?: "None"),
         Context.valueOf(parcel.readString() ?: "None"),
+        parcel.readSerializable() as LocalDate,
+        parcel.readSerializable() as LocalTime,
+        parcel.readSerializable() as LocalDate,
+        parcel.readSerializable() as LocalTime,
         parcel.readBoolean(),
         parcel.readLong()
     )
@@ -58,6 +70,10 @@ data class Task(
             it.writeString(comments)
             it.writeString(status.value)
             it.writeString(context.value)
+            it.writeSerializable(startDate)
+            it.writeSerializable(startTime)
+            it.writeSerializable(dueDate)
+            it.writeSerializable(dueTime)
             it.writeBoolean(done)
             it.writeLong(uid)
         }

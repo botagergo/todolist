@@ -9,6 +9,7 @@ import com.xwray.groupie.databinding.BindableItem
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.ItemTaskBinding
 import hu.botagergo.todolist.model.Task
+import java.time.LocalDate
 
 class TaskItem(private val adapter: Adapter, val task: Task) : BindableItem<ItemTaskBinding>() {
 
@@ -65,6 +66,28 @@ class TaskItem(private val adapter: Adapter, val task: Task) : BindableItem<Item
 
     override fun bind(viewBinding: ItemTaskBinding, position: Int) {
         viewBinding.data = this
+    }
+
+
+    fun getDueMessage(dueDate: LocalDate?): String {
+        val today = LocalDate.now()
+        return when {
+            dueDate == null -> {
+                ""
+            }
+            dueDate.dayOfYear < today.dayOfYear -> {
+                "Overdue"
+            }
+            dueDate.dayOfYear == today.dayOfYear -> {
+                "Due today"
+            }
+            dueDate.dayOfYear == today.dayOfYear+1 -> {
+                "Due tomorrow"
+            }
+            else -> {
+                "Due in ${(dueDate.dayOfYear - today.dayOfYear)} days"
+            }
+        }
     }
 
 }
