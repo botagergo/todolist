@@ -64,10 +64,12 @@ class MainActivity : AppCompatActivity() {
         return when (menuItem.itemId) {
             R.id.menu_item_add_sample_data -> {
                 viewModel.addSampleData()
+                binding.drawerLayout.close()
                 true
             }
             R.id.menu_item_delete_all -> {
                 viewModel.deleteAll()
+                binding.drawerLayout.close()
                 true
             }
             R.id.menu_item_reset_config -> {
@@ -77,6 +79,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_item_task_views -> {
                 val intent = Intent(this, EditSelectedTaskViewsActivity::class.java)
+                binding.drawerLayout.close()
                 startActivity(intent)
                 true
             }
