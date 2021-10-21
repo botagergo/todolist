@@ -12,11 +12,15 @@ import hu.botagergo.todolist.databinding.ActivityEditSelectedTaskViewsBinding
 import hu.botagergo.todolist.log.logd
 
 class EditSelectedTaskViewsActivity
-    : AppCompatActivity(), TaskViewListAdapter.Listener {
+    : AppCompatActivity() {
 
     lateinit var binding: ActivityEditSelectedTaskViewsBinding
-    private lateinit var adapterSelected: TaskViewListAdapter
-    private lateinit var adapterAvailable: TaskViewListAdapter
+    private lateinit var adapter: TaskViewListAdapter
+
+    var selectedViews: ArrayList<TaskView> = ArrayList(config.taskViews.filter {
+        config.selectedTaskViews.contains(it.uuid)
+    })
+    var availableViews: ArrayList<TaskView> = ArrayList(config.taskViews)
 
     val app: ToDoListApplication by lazy {
         application as ToDoListApplication
@@ -30,33 +34,10 @@ class EditSelectedTaskViewsActivity
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val selectedViews = config.taskViews.filter {
-            config.selectedTaskViews.contains(it.uuid)
-        }
-
-        val availableViews = config.taskViews.filter {
-            !selectedViews.contains(it)
-        }
-
-        adapterSelected = TaskViewListAdapter(app, selectedViews, true)
-        adapterSelected.listener = this
-        binding.recyclerViewSelected.adapter = adapterSelected
-        binding.recyclerViewSelected.layoutManager = LinearLayoutManager(this)
-
-        adapterAvailable = TaskViewListAdapter(app, availableViews, false)
-        adapterAvailable.listener = this
-        binding.recyclerViewAvailable.adapter = adapterAvailable
-        binding.recyclerViewAvailable.layoutManager = LinearLayoutManager(this)
-    }
-
-    override fun onItemClick(view: TaskView, selected: Boolean) {
-        if (selected) {
-            config.selectedTaskViews.remove(view.uuid)
-            adapterAvailable.addView(view)
-        } else {
-            config.selectedTaskViews.add(view.uuid)
-            adapterSelected.addView(view)
-        }
+        adapter = TaskViewListAdapter(app, selectedViews, availableViews)
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter.getItemTouchHelper().attachToRecyclerView(binding.recyclerView)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

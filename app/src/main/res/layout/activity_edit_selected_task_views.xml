@@ -22,49 +22,11 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <LinearLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_height="match_parent" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="30dp"
-                android:paddingTop="12dp"
-                android:paddingEnd="30dp"
-                android:paddingBottom="12dp"
-                android:text="@string/selected_views"
-                android:textSize="20sp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_selected"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingStart="30dp"
-                android:paddingTop="12dp"
-                android:paddingEnd="30dp"
-                android:paddingBottom="12dp"
-                android:text="@string/available_views"
-                android:textSize="20sp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView_available"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </LinearLayout>
     </LinearLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

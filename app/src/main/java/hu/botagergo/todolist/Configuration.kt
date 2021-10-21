@@ -7,7 +7,6 @@ package hu.botagergo.todolist
 
 import android.content.Context
 import androidx.databinding.ObservableArrayList
-import androidx.databinding.ObservableBoolean
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.log.logi
 import java.io.ObjectInputStream
@@ -59,10 +58,10 @@ class Configuration : Serializable {
                     this.taskViews = ObservableArrayList<TaskView>().apply {
                         addAll(
                             listOf(
-                                TaskView.Predefined.all,
                                 TaskView.Predefined.nextAction,
                                 TaskView.Predefined.allGroupedByStatus,
-                                TaskView.Predefined.done
+                                TaskView.Predefined.done,
+                                TaskView.Predefined.hotlist
                             )
                         )
                     }
@@ -71,7 +70,8 @@ class Configuration : Serializable {
                         addAll(
                             listOf(
                                 TaskView.Predefined.allGroupedByStatus.uuid,
-                                TaskView.Predefined.nextAction.uuid
+                                TaskView.Predefined.hotlist.uuid,
+                                TaskView.Predefined.done.uuid
                             )
                         )
                     }

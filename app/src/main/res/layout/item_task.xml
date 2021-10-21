@@ -27,86 +27,114 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="7dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="7dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="4dp"
             app:contentPadding="8dp"
             app:contentPaddingLeft="16dp"
-            android:background="@{data.background}"
+            app:cardBackgroundColor="@{data.task.done ? @color/task_done_background : @color/task_background}"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:onClick="@{() -> data.onItemClicked()}"
-            app:cardElevation="4dp"
+            app:cardCornerRadius="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:strokeWidth="0dp">
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 tools:context="hu.botagergo.todolist.view.MainActivity">
 
-                <TextView
-                    android:id="@+id/textView_title"
+                <LinearLayout
+                    android:id="@+id/linearLayout_taskTitleBar"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{data.task.title}"
-                    android:layout_marginBottom="8dp"
-                    android:textSize="20sp"
-                    app:layout_constraintBottom_toTopOf="@+id/textView_comments"
+                    app:layout_constraintBottom_toTopOf="@id/textView_comments"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/textView_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="@{data.task.title}"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/textView_due"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@{data.getDueMessage(data.task.dueDate)}"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/textView_comments"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="0dp"
                     android:gravity="center_vertical"
                     android:text="@{data.task.comments}"
                     android:textSize="11sp"
                     android:visibility="@{data.selected &amp;&amp; !data.task.comments.isEmpty() ? View.VISIBLE:View.GONE}"
-                    app:layout_constraintBottom_toTopOf="@+id/textView_status"
+                    app:layout_constraintBottom_toTopOf="@id/linearLayout_taskTags"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView_title" />
+                    app:layout_constraintTop_toBottomOf="@id/linearLayout_taskTitleBar" />
 
-                <TextView
-                    android:id="@+id/textView_status"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/linearLayout_taskTags"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:text="@{data.task.status.toString()}"
-                    android:textColor="@{data.statusColor}"
-                    android:textSize="14sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textView_comments" />
-
-                <TextView
-                    android:id="@+id/textView_context"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:layout_marginStart="16dp"
-                    android:text="@{data.task.context != Task.Context.None ? data.task.context.toString() : null}"
-                    android:textSize="14sp"
-                    app:layout_constraintStart_toEndOf="@id/textView_status"
-                    app:layout_constraintTop_toBottomOf="@id/textView_comments" />
-
-                <TextView
-                    android:id="@+id/textView_due"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:text="@{data.getDueMessage(data.task.dueDate)}"
-                    android:textSize="14sp"
+                    android:orientation="horizontal"
+                    android:visibility="@{data.task.status != Task.Status.None || data.task.context != Task.Context.None ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toTopOf="@id/constraintLayout_menu"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textView_comments" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textView_comments">
+
+                    <TextView
+                        android:id="@+id/textView_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/task_property_background"
+                        android:gravity="center_vertical"
+                        android:paddingStart="6dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="6dp"
+                        android:paddingBottom="2dp"
+                        android:text="@{data.task.status.toString()}"
+                        android:textColor="@{data.statusColor}"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/textView_context"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@{data.task.context != Task.Context.None ? @drawable/task_property_background : null}"
+                        android:gravity="center_vertical"
+                        android:paddingStart="6dp"
+                        android:paddingTop="2dp"
+                        android:paddingEnd="6dp"
+                        android:paddingBottom="2dp"
+                        android:text='@{data.task.context != Task.Context.None ? "@" + data.task.context.toString() : null}'
+                        android:textSize="10sp" />
+
+                </LinearLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout_menu"
@@ -115,7 +143,8 @@
                     android:visibility="@{data.selected ? View.VISIBLE : View.GONE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textView_context">
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/linearLayout_taskTags">
 
                     <LinearLayout
                         android:id="@+id/linearLayout"
@@ -127,27 +156,27 @@
 
                         <ImageButton
                             android:id="@+id/imageButton_done"
+                            style="?android:attr/borderlessButtonStyle"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            style="?android:attr/borderlessButtonStyle"
                             android:onClick="@{() -> data.onDoneClicked()}"
                             android:src="@{data.doneIcon}"
                             tools:ignore="ContentDescription" />
 
                         <ImageButton
                             android:id="@+id/imageButton_edit"
+                            style="?android:attr/borderlessButtonStyle"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            style="?android:attr/borderlessButtonStyle"
                             android:onClick="@{() -> data.onEditClicked()}"
                             android:src="@drawable/ic_edit"
                             tools:ignore="ContentDescription" />
 
                         <ImageButton
                             android:id="@+id/imageButton_delete"
+                            style="?android:attr/borderlessButtonStyle"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            style="?android:attr/borderlessButtonStyle"
                             android:onClick="@{() -> data.onDeleteClicked()}"
                             android:src="@drawable/ic_delete"
                             tools:ignore="ContentDescription" />

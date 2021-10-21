@@ -3,7 +3,6 @@ package hu.botagergo.todolist.adapter
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.toDrawable
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.xwray.groupie.databinding.BindableItem
 import hu.botagergo.todolist.R
@@ -29,11 +28,10 @@ class TaskItem(private val adapter: Adapter, val task: Task) : BindableItem<Item
             )
         }
 
-    val background: Drawable
+    val background: Color
         get() {
             val id = if (task.done) R.color.task_done_background else R.color.task_background
             return Color.valueOf(ResourcesCompat.getColor(adapter.application.resources, id, null))
-                .toDrawable()
         }
 
     val doneIcon: Drawable?

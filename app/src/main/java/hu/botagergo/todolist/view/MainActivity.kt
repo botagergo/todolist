@@ -13,7 +13,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import hu.botagergo.todolist.Configuration
 import hu.botagergo.todolist.R
-import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.ActivityMainBinding
 import hu.botagergo.todolist.log.logd

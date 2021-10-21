@@ -18,4 +18,6 @@
     <string name="reset_config">Reset config</string>
     <string name="start_date">Start Date</string>
     <string name="due_date">Due Date</string>
+    <string name="task_view_selected">Selected</string>
+    <string name="task_view_available">Available</string>
 </resources>

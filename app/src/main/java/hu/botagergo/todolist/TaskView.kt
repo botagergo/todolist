@@ -1,16 +1,14 @@
 package hu.botagergo.todolist
 
+import hu.botagergo.todolist.filter.*
 import hu.botagergo.todolist.group.DueGrouper
 import hu.botagergo.todolist.group.Grouper
 import hu.botagergo.todolist.group.PropertyGrouper
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.sorter.Sorter
 import hu.botagergo.todolist.sorter.TaskReorderableSorter
-import hu.botagergo.todolist.task_filter.ConjugateTaskFilter
-import hu.botagergo.todolist.task_filter.DoneTaskFilter
-import hu.botagergo.todolist.task_filter.StatusTaskFilter
-import hu.botagergo.todolist.task_filter.TaskFilter
 import java.io.Serializable
+import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
@@ -18,16 +16,16 @@ import kotlin.collections.LinkedHashMap
 class TaskView private constructor(
     val name: String,
     val description: String?,
-    val filter: TaskFilter?,
-    val grouper: Grouper<Any, Task>?,
+    val filter: Filter<Task>?,
+    val grouper: Grouper<Task, Any>?,
     val sorter: Sorter<Task>?
 ) : Serializable {
 
     class Builder(val name: String) {
 
         private var _description: String? = null
-        private var _filter: TaskFilter? = null
-        private var _grouper: Grouper<Any, Task>? = null
+        private var _filter: Filter<Task>? = null
+        private var _grouper: Grouper<Task, Any>? = null
         private var _sorter: Sorter<Task>? = null
 
         fun description(description: String?): Builder {
@@ -35,12 +33,12 @@ class TaskView private constructor(
             return this
         }
 
-        fun filter(filter: TaskFilter): Builder {
+        fun filter(filter: Filter<Task>): Builder {
             _filter = filter
             return this
         }
 
-        fun grouper(grouper: Grouper<Any, Task>): Builder {
+        fun grouper(grouper: Grouper<Task, Any>): Builder {
             _grouper = grouper
             return this
         }
@@ -79,15 +77,13 @@ class TaskView private constructor(
 
     companion object Predefined {
 
-        val all by lazy {
-            Builder("All Tasks")
-                .description("Show all tasks ungrouped")
+        val hotlist by lazy {
+            Builder("Hotlist")
                 .filter(
-                    ConjugateTaskFilter()
-                )
-                .sorter(
-                    TaskReorderableSorter()
-                )
+                    ConjugateFilter(
+                        PropertyEqualsFilter(Task::done, false),
+                        PropertyLessEqualFilter(Task::dueDate, { LocalDate.now().plusDays(3) } as (()->LocalDate))
+                    ))
                 .build()
         }
 
@@ -107,7 +103,10 @@ class TaskView private constructor(
             Builder("Next Action")
                 .description("Show tasks with status 'Next Action'")
                 .filter(
-                    StatusTaskFilter(setOf(Task.Status.NextAction))
+                    ConjugateFilter(
+                        PropertyInFilter(Task::status, setOf(Task.Status.NextAction)),
+                        PropertyEqualsFilter(Task::done, false)
+                    )
                 )
                 .grouper(
                     DueGrouper()
@@ -122,7 +121,7 @@ class TaskView private constructor(
             Builder("Done")
                 .description("Show completed tasks")
                 .filter(
-                    DoneTaskFilter(showDone = true, showNotDone = false)
+                    PropertyEqualsFilter(Task::done, false)
                 )
                 .sorter(
                     TaskReorderableSorter()

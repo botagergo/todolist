@@ -18,10 +18,6 @@ class TaskViewItem(val adapter: TaskViewListAdapter, val view: TaskView, private
     override fun getLayout() = R.layout.item_task_view
     override fun getDragDirs() = ItemTouchHelper.UP or ItemTouchHelper.DOWN
 
-    fun onClick() {
-        adapter.onItemClick(this)
-    }
-
     fun getIcon(): Drawable? {
         return AppCompatResources.getDrawable(
             adapter.app,

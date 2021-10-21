@@ -6,6 +6,7 @@ import com.xwray.groupie.Section
 import com.xwray.groupie.TouchCallback
 import hu.botagergo.todolist.TaskView
 import hu.botagergo.todolist.ToDoListApplication
+import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.sorter.TaskReorderableSorter
 

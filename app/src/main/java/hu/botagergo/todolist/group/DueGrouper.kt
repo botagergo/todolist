@@ -3,7 +3,7 @@ package hu.botagergo.todolist.group
 import hu.botagergo.todolist.model.Task
 import java.time.LocalDate
 
-class DueGrouper : GrouperBase<Any, Task>() {
+class DueGrouper : GrouperBase<Task, Any>() {
     override fun key(item: Task): Any {
         if (item.dueDate != null) {
             val today = LocalDate.now().dayOfYear

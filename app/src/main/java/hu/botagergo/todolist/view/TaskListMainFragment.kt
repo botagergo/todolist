@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import hu.botagergo.todolist.R
-import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.FragmentTaskListMainBinding
 import hu.botagergo.todolist.log.logd
@@ -21,10 +20,6 @@ import java.util.*
 class TaskListMainFragment : Fragment() {
 
     private lateinit var binding: FragmentTaskListMainBinding
-
-    private val app: ToDoListApplication by lazy {
-        requireActivity().application as ToDoListApplication
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
@@ -42,8 +37,6 @@ class TaskListMainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         logd(this, "onViewCreated")
-        initViewPager()
-        initTabLayout()
 
         config.selectedTaskViews.addOnListChangedCallback(
             object : ObservableListChangedCallback<UUID>() {
@@ -83,6 +76,13 @@ class TaskListMainFragment : Fragment() {
         binding.tabLayout.tabRippleColor = null
         binding.tabLayout.isLongClickable = false
         binding.tabLayout.setOnLongClickListener { false }
+    }
+
+    override fun onStart() {
+        logd(this, "onStart")
+        initViewPager()
+        initTabLayout()
+        super.onStart()
     }
 
     private inner class ScreenSlidePagerAdapter(fm: FragmentManager) :
