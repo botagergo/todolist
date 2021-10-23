@@ -46,22 +46,6 @@ class TaskViewModel(val app: Application, uid: Long) : ViewModel() {
         }
     }
 
-    var statusIndex: Int
-        get() {
-            return status.value?.ordinal ?: -1
-        }
-        set(value) {
-            status.value = Task.Status.values()[value]
-        }
-
-    var contextIndex: Int
-        get() {
-            return context.value?.ordinal ?: -1
-        }
-        set(value) {
-            context.value = Task.Context.values()[value]
-        }
-
     val task: Task
         get() {
             return Task(

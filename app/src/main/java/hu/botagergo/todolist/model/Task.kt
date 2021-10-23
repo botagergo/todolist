@@ -2,16 +2,17 @@ package hu.botagergo.todolist.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
+import androidx.room.*
+import hu.botagergo.todolist.util.EnumValueProvider
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalTime
 
 @Entity
-@TypeConverters(LocalDateConverter::class, LocalTimeConverter::class)
+@TypeConverters(
+    LocalDateConverter::class, LocalTimeConverter::class,
+    Task.Status.TaskStatusConverter::class, Task.Context.TaskContextConverter::class
+)
 data class Task(
     @ColumnInfo(name = "title") val title: String = "",
     @ColumnInfo(name = "comments") val comments: String = "",
@@ -25,25 +26,80 @@ data class Task(
     @PrimaryKey(autoGenerate = true) val uid: Long = 0
 ) : Parcelable {
 
-    enum class Status(val value: String) : Serializable {
-        NextAction("Next Action"),
-        Waiting("Waiting"),
-        Planning("Planning"),
-        OnHold("On Hold");
+    class Status(val value: String) : Serializable {
+
+        companion object {
+            lateinit var provider: EnumValueProvider
+            fun values(): Array<Status> = provider.getValues().map { Status(it) }.toTypedArray()
+        }
 
         override fun toString(): String {
             return value
         }
+
+        object TaskStatusConverter {
+            @TypeConverter
+            fun toTaskStatus(status: String?): Status? {
+                return if (status == null) {
+                    null
+                } else {
+                    provider.addValue(status)
+                    Status(status)
+                }
+            }
+
+            @TypeConverter
+            fun toStatusString(status: Status?): String? {
+                return status?.value
+            }
+        }
+
+        override fun equals(other: Any?): Boolean {
+            return value == (other as? Status)?.value
+        }
+
+        override fun hashCode(): Int {
+            return value.hashCode()
+        }
+
     }
 
-    enum class Context(val value: String) : Serializable {
-        Home("Home"),
-        Work("Work"),
-        Errands("Errands");
+    class Context(val value: String) : Serializable {
+
+        companion object {
+            lateinit var provider: EnumValueProvider
+            fun values(): Array<Context> = provider.getValues().map { Context(it) }.toTypedArray()
+        }
 
         override fun toString(): String {
             return value
         }
+
+        object TaskContextConverter {
+            @TypeConverter
+            fun toTaskContext(context: String?): Context? {
+                return if (context == null) {
+                    null
+                } else {
+                    provider.addValue(context)
+                    Context(context)
+                }
+            }
+
+            @TypeConverter
+            fun toContextString(context: Context?): String? {
+                return context?.value
+            }
+        }
+
+        override fun equals(other: Any?): Boolean {
+            return value == (other as? Context)?.value
+        }
+
+        override fun hashCode(): Int {
+            return value.hashCode()
+        }
+
     }
 
     constructor(parcel: Parcel) : this(

@@ -104,7 +104,7 @@ class TaskView private constructor(
                 .description("Show tasks with status 'Next Action'")
                 .filter(
                     ConjugateFilter(
-                        PropertyInFilter(Task::status, setOf(Task.Status.NextAction)),
+                        PropertyInFilter(Task::status, setOf(Task.Status("Next Action"))),
                         PropertyEqualsFilter(Task::done, false)
                     )
                 )

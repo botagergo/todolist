@@ -11,7 +11,9 @@ class ToDoListApplication : Application() {
     val taskDataSetChangedEvent: Event<Unit> = Event()
 
     override fun onCreate() {
-        config = Configuration.load(this)
+        Configuration.load(this)
+        Task.Status.provider = config.statusValueProvider
+        Task.Context.provider = config.contextValueProvider
         super.onCreate()
     }
 

@@ -63,7 +63,6 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
 
         _tasksLiveData.value = _tasks
 
-        //app.taskChangedEvent.signal(task)
         app.taskDataSetChangedEvent.signal(unit())
     }
 
@@ -72,7 +71,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "NLP beadandót befejezni",
                 "https://canvas.elte.hu/courses/20919/assignments/150825",
-                Task.Status.NextAction,
+                Task.Status("Next Action"),
                 null, null, null, LocalDate.now().plusDays(1)
             )
         )
@@ -80,8 +79,8 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "Lordestint venni",
                 "",
-                Task.Status.Waiting,
-                Task.Context.Errands,
+                Task.Status("Waiting"),
+                Task.Context("Errands"),
                 null, null, null
             )
         )
@@ -89,20 +88,23 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "Rezsit átutalni",
                 "",
-                Task.Status.NextAction,
+                Task.Status("Next Action"),
                 null, null, null, null
             )
         )
-        addTask(Task(
-            "Hűtőszekrényt kiválasztani",
-            "https://www.mediamarkt.hu/hu/product/_aeg-rke532f2dw-h%C5%B1t%C5%91szekr%C3%A9ny-155-cm-1319500.html\nhttps://www.mediamarkt.hu/hu/product/_zanussi-zran32fw-h%C5%B1t%C5%91szekr%C3%A9ny-155-cm-1326379.html\nhttps://www.mediamarkt.hu/hu/product/_zanussi-ztan28fw0-kombin%C3%A1lt-h%C5%B1t%C5%91szekr%C3%A9ny-160-cm-1333580.html\nhttps://www.mediamarkt.hu/hu/product/_lg-gtb382pzczd-fel%C3%BClfagyaszt%C3%B3s-kombin%C3%A1lt-h%C5%B1t%C5%91szekr%C3%A9ny-1336483.html#specifik_C3_A1ci_C3_B3",
-            Task.Status.NextAction))
+        addTask(
+            Task(
+                "Hűtőszekrényt kiválasztani",
+                "https://www.mediamarkt.hu/hu/product/_aeg-rke532f2dw-h%C5%B1t%C5%91szekr%C3%A9ny-155-cm-1319500.html\nhttps://www.mediamarkt.hu/hu/product/_zanussi-zran32fw-h%C5%B1t%C5%91szekr%C3%A9ny-155-cm-1326379.html\nhttps://www.mediamarkt.hu/hu/product/_zanussi-ztan28fw0-kombin%C3%A1lt-h%C5%B1t%C5%91szekr%C3%A9ny-160-cm-1333580.html\nhttps://www.mediamarkt.hu/hu/product/_lg-gtb382pzczd-fel%C3%BClfagyaszt%C3%B3s-kombin%C3%A1lt-h%C5%B1t%C5%91szekr%C3%A9ny-1336483.html#specifik_C3_A1ci_C3_B3",
+                Task.Status("Next Action")
+            )
+        )
         addTask(
             Task(
                 "Iskolalátogatási igazolás",
                 "",
-                Task.Status.NextAction,
-                Task.Context.Errands,
+                Task.Status("Next Action"),
+                Task.Context("Errands"),
                 null, null, LocalDate.now().plusDays(4)
             )
         )
@@ -110,7 +112,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "Szakdolgozat témát keresni",
                 "",
-                Task.Status.Planning,
+                Task.Status("Planning"),
                 null, null, null, null
             )
         )
@@ -118,7 +120,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "Kérdezni szakmai gyakorlatról",
                 "",
-                Task.Status.NextAction,
+                Task.Status("Next Action"),
                 null, null, null, LocalDate.now().plusDays(7)
             )
         )
@@ -126,8 +128,8 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "Árvaellátási kérelem",
                 "",
-                Task.Status.NextAction,
-                Task.Context.Errands,
+                Task.Status("Next Action"),
+                Task.Context("Errands"),
                 null, null, null
             )
         )
