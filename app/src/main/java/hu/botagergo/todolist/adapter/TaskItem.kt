@@ -23,7 +23,7 @@ class TaskItem(private val adapter: Adapter, val task: Task) : BindableItem<Item
                     Task.Status.Waiting -> R.color.status_waiting
                     Task.Status.Planning -> R.color.status_planning
                     Task.Status.OnHold -> R.color.status_on_hold
-                    Task.Status.None -> R.color.status_none
+                    null -> R.color.status_none
                 }, null
             )
         }

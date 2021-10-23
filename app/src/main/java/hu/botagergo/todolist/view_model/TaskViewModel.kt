@@ -14,8 +14,8 @@ class TaskViewModel(val app: Application, uid: Long) : ViewModel() {
 
     var title: String = ""
     var comments: String = ""
-    var status: Task.Status = Task.Status.None
-    var context: Task.Context = Task.Context.None
+    var status: MutableLiveData<Task.Status?> = MutableLiveData(null)
+    var context: MutableLiveData<Task.Context?> = MutableLiveData(null)
     var startDate: MutableLiveData<LocalDate?> = MutableLiveData()
     var startTime: MutableLiveData<LocalTime?> = MutableLiveData()
     var dueDate: MutableLiveData<LocalDate?> = MutableLiveData()
@@ -35,8 +35,8 @@ class TaskViewModel(val app: Application, uid: Long) : ViewModel() {
             val task = taskDao.get(uid)
             this.title = task.title
             this.comments = task.comments
-            this.status = task.status
-            this.context = task.context
+            this.status.value = task.status
+            this.context.value = task.context
             this.startDate.value = task.startDate
             this.startTime.value = task.startTime
             this.dueDate.value = task.dueDate
@@ -48,25 +48,27 @@ class TaskViewModel(val app: Application, uid: Long) : ViewModel() {
 
     var statusIndex: Int
         get() {
-            return status.ordinal
+            return status.value?.ordinal ?: -1
         }
         set(value) {
-            status = Task.Status.values()[value]
+            status.value = Task.Status.values()[value]
         }
 
     var contextIndex: Int
         get() {
-            return context.ordinal
+            return context.value?.ordinal ?: -1
         }
         set(value) {
-            context = Task.Context.values()[value]
+            context.value = Task.Context.values()[value]
         }
 
     val task: Task
         get() {
-            return Task(title, comments, status, context,
+            return Task(
+                title, comments, status.value, context.value,
                 startDate.value, startTime.value, dueDate.value, dueTime.value,
-                done, uid)
+                done, uid
+            )
         }
 
 }

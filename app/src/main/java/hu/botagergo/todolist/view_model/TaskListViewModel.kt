@@ -73,8 +73,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
                 "NLP beadandót befejezni",
                 "https://canvas.elte.hu/courses/20919/assignments/150825",
                 Task.Status.NextAction,
-                Task.Context.None,
-                null, null, LocalDate.now().plusDays(1)
+                null, null, null, LocalDate.now().plusDays(1)
             )
         )
         addTask(
@@ -91,8 +90,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
                 "Rezsit átutalni",
                 "",
                 Task.Status.NextAction,
-                Task.Context.None,
-                null, null, null
+                null, null, null, null
             )
         )
         addTask(Task(
@@ -113,8 +111,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
                 "Szakdolgozat témát keresni",
                 "",
                 Task.Status.Planning,
-                Task.Context.None,
-                null, null, null
+                null, null, null, null
             )
         )
         addTask(
@@ -122,8 +119,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
                 "Kérdezni szakmai gyakorlatról",
                 "",
                 Task.Status.NextAction,
-                Task.Context.None,
-                null, null, LocalDate.now().plusDays(7)
+                null, null, null, LocalDate.now().plusDays(7)
             )
         )
         addTask(

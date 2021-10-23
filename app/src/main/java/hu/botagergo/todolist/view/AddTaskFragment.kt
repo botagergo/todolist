@@ -4,14 +4,12 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.*
-import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.FragmentAddTaskBinding
-import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.view_model.TaskListViewModel
 import hu.botagergo.todolist.view_model.TaskViewModel
 import hu.botagergo.todolist.view_model.TaskViewModelFactory
@@ -44,17 +42,6 @@ class AddTaskFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.spinnerStatus.adapter = ArrayAdapter(
-            view.context, android.R.layout.simple_spinner_dropdown_item, Task.Status.values()
-        )
-        binding.spinnerContext.adapter = ArrayAdapter(
-            view.context, android.R.layout.simple_spinner_dropdown_item, Task.Context.values()
-        )
-        binding.lifecycleOwner = this
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_add_task_fragment, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -68,6 +55,34 @@ class AddTaskFragment : Fragment() {
             findNavController().popBackStack()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun onStatusClicked(view: View) {
+        val dialog = SelectStatusDialog(requireContext())
+        dialog.setOnDismissListener {
+            if (dialog.selectedStatus != null) {
+                viewModel.status.value = dialog.selectedStatus
+            }
+        }
+        dialog.show()
+    }
+
+    fun onCancelStatusClicked(view: View) {
+        viewModel.status.value = null
+    }
+
+    fun onContextClicked(view: View) {
+        val dialog = SelectContextDialog(requireContext())
+        dialog.setOnDismissListener {
+            if (dialog.selectedContext != null) {
+                viewModel.context.value = dialog.selectedContext
+            }
+        }
+        dialog.show()
+    }
+
+    fun onCancelContextClicked(view: View) {
+        viewModel.context.value = null
     }
 
     fun onStartDateClicked(view: View) {

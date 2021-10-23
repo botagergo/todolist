@@ -97,7 +97,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:visibility="@{data.task.status != Task.Status.None || data.task.context != Task.Context.None ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{data.task.status != null || data.task.context != null ? View.VISIBLE : View.GONE}"
                     app:layout_constraintBottom_toTopOf="@id/constraintLayout_menu"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -108,8 +108,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="4dp"
-                        android:background="@drawable/task_property_background"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="@{data.task.status != null ? View.VISIBLE : View.GONE}"
+                        android:background="@{@drawable/task_property_background}"
                         android:gravity="center_vertical"
                         android:paddingStart="6dp"
                         android:paddingTop="2dp"
@@ -123,15 +124,15 @@
                         android:id="@+id/textView_context"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
                         android:layout_marginTop="8dp"
-                        android:background="@{data.task.context != Task.Context.None ? @drawable/task_property_background : null}"
+                        android:visibility="@{data.task.context != null ? View.VISIBLE : View.GONE}"
+                        android:background="@{@drawable/task_property_background}"
                         android:gravity="center_vertical"
                         android:paddingStart="6dp"
                         android:paddingTop="2dp"
                         android:paddingEnd="6dp"
                         android:paddingBottom="2dp"
-                        android:text='@{data.task.context != Task.Context.None ? "@" + data.task.context.toString() : null}'
+                        android:text='@{data.task.context != null ? "@" + data.task.context.toString() : null}'
                         android:textSize="10sp" />
 
                 </LinearLayout>

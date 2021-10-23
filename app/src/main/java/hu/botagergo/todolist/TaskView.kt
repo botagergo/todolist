@@ -17,7 +17,7 @@ class TaskView private constructor(
     val name: String,
     val description: String?,
     val filter: Filter<Task>?,
-    val grouper: Grouper<Task, Any>?,
+    val grouper: Grouper<Task, Any?>?,
     val sorter: Sorter<Task>?
 ) : Serializable {
 
@@ -25,7 +25,7 @@ class TaskView private constructor(
 
         private var _description: String? = null
         private var _filter: Filter<Task>? = null
-        private var _grouper: Grouper<Task, Any>? = null
+        private var _grouper: Grouper<Task, Any?>? = null
         private var _sorter: Sorter<Task>? = null
 
         fun description(description: String?): Builder {
@@ -38,7 +38,7 @@ class TaskView private constructor(
             return this
         }
 
-        fun grouper(grouper: Grouper<Task, Any>): Builder {
+        fun grouper(grouper: Grouper<Task, Any?>): Builder {
             _grouper = grouper
             return this
         }
@@ -61,7 +61,7 @@ class TaskView private constructor(
 
     class TaskViewState : Serializable {
         var groupExpanded: MutableMap<String, Boolean> = LinkedHashMap()
-        var groupOrder: MutableList<Any> = ArrayList()
+        var groupOrder: MutableList<Any?> = ArrayList()
         var taskOrder: List<Long> = ArrayList()
     }
 
@@ -91,7 +91,7 @@ class TaskView private constructor(
             Builder("All Tasks")
                 .description("Show all tasks grouped by status")
                 .grouper(
-                    PropertyGrouper(Task::status)
+                    PropertyGrouper(Task::status, "None")
                 )
                 .sorter(
                     TaskReorderableSorter()

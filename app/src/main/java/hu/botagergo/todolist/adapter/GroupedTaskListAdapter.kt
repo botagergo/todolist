@@ -16,7 +16,7 @@ class GroupedTaskListAdapter(
     tasks: ArrayList<Task>, taskView: TaskView
 ) : Adapter(application, tasks, taskView) {
 
-    private lateinit var groupedTasks: MutableList<Pair<Any, List<Task>>>
+    private lateinit var groupedTasks: MutableList<Pair<Any?, List<Task>>>
     private var selectedItem: TaskItem? = null
 
     init {

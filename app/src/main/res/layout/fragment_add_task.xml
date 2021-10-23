@@ -13,6 +13,8 @@
 
         <import type="android.view.View" />
 
+        <import type="hu.botagergo.todolist.model.Task" />
+
         <variable
             name="viewModel"
             type="hu.botagergo.todolist.view_model.TaskViewModel" />
@@ -89,21 +91,49 @@
                 android:layout_height="wrap_content"
                 android:text="@string/status"
                 android:textColor="@color/black"
-                app:layout_constraintBottom_toTopOf="@id/spinner_status"
+                app:layout_constraintBottom_toTopOf="@id/linearLayout_status"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/editText_comments"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/editText_comments" />
 
-            <Spinner
-                android:id="@+id/spinner_status"
+            <LinearLayout
+                android:id="@+id/linearLayout_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:selectedItemPosition="@={viewModel.statusIndex}"
                 app:layout_constraintBottom_toTopOf="@id/textView_context"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textView_status" />
+                app:layout_constraintTop_toBottomOf="@id/textView_status">
+
+                <EditText
+                    android:id="@+id/button_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:longClickable="false"
+                    android:onClick="@{handlers::onStatusClicked}"
+                    android:text='@{viewModel.status!=null?viewModel.status.value:"Status"}'
+                    android:textColor="@{viewModel.status!=null?@color/black:@android:color/darker_gray}" />
+
+                <ImageButton
+                    android:id="@+id/imageButton_cancelStatus"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="0dp"
+                    android:onClick="@{handlers::onCancelStatusClicked}"
+                    android:src="@drawable/ic_cancel_selection"
+                    android:visibility="@{viewModel.status == null?View.GONE:View.VISIBLE}"
+                    tools:ignore="ContentDescription" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textView_context"
@@ -111,21 +141,49 @@
                 android:layout_height="wrap_content"
                 android:text="@string/context"
                 android:textColor="@color/black"
-                app:layout_constraintBottom_toTopOf="@id/spinner_context"
+                app:layout_constraintBottom_toTopOf="@id/linearLayout_context"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spinner_status" />
+                app:layout_constraintTop_toBottomOf="@id/linearLayout_status" />
 
-            <Spinner
-                android:id="@+id/spinner_context"
+            <LinearLayout
+                android:id="@+id/linearLayout_context"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:selectedItemPosition="@={viewModel.contextIndex}"
                 app:layout_constraintBottom_toTopOf="@id/textView_startDate"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textView_context" />
+                app:layout_constraintTop_toBottomOf="@id/textView_context">
+
+                <EditText
+                    android:id="@+id/button_context"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:longClickable="false"
+                    android:onClick="@{handlers::onContextClicked}"
+                    android:text='@{viewModel.context!=null?viewModel.context.value:"Context"}'
+                    android:textColor="@{viewModel.context!=null?@color/black:@android:color/darker_gray}" />
+
+                <ImageButton
+                    android:id="@+id/imageButton_cancelContext"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="0dp"
+                    android:onClick="@{handlers::onCancelContextClicked}"
+                    android:src="@drawable/ic_cancel_selection"
+                    android:visibility="@{viewModel.context == null?View.GONE:View.VISIBLE}"
+                    tools:ignore="ContentDescription" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textView_startDate"
@@ -136,7 +194,7 @@
                 app:layout_constraintBottom_toTopOf="@id/linearLayout_startDate"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/spinner_context" />
+                app:layout_constraintTop_toBottomOf="@id/linearLayout_context" />
 
             <LinearLayout
                 android:id="@+id/linearLayout_startDate"
@@ -170,7 +228,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:onClick="@{handlers::onCancelDateClicked}"
-                    android:src="@drawable/ic_cancel_date"
+                    android:src="@drawable/ic_cancel_selection"
                     android:visibility="@{viewModel.startDate == null?View.GONE:View.VISIBLE}"
                     tools:ignore="ContentDescription" />
 
@@ -209,7 +267,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:onClick="@{handlers::onCancelDateClicked}"
-                    android:src="@drawable/ic_cancel_date"
+                    android:src="@drawable/ic_cancel_selection"
                     android:visibility="@{viewModel.startTime == null?View.GONE:View.VISIBLE}"
                     tools:ignore="ContentDescription" />
 
@@ -259,7 +317,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:onClick="@{handlers::onCancelDateClicked}"
-                    android:src="@drawable/ic_cancel_date"
+                    android:src="@drawable/ic_cancel_selection"
                     android:visibility="@{viewModel.dueDate == null?View.GONE:View.VISIBLE}"
                     tools:ignore="ContentDescription" />
 
@@ -298,7 +356,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:onClick="@{handlers::onCancelDateClicked}"
-                    android:src="@drawable/ic_cancel_date"
+                    android:src="@drawable/ic_cancel_selection"
                     android:visibility="@{viewModel.dueTime == null?View.GONE:View.VISIBLE}"
                     tools:ignore="ContentDescription" />
 

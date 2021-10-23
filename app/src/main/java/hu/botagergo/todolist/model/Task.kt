@@ -6,6 +6,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -14,8 +15,8 @@ import java.time.LocalTime
 data class Task(
     @ColumnInfo(name = "title") val title: String = "",
     @ColumnInfo(name = "comments") val comments: String = "",
-    @ColumnInfo(name = "status") val status: Status = Status.None,
-    @ColumnInfo(name = "context") val context: Context = Context.None,
+    @ColumnInfo(name = "status") val status: Status? = null,
+    @ColumnInfo(name = "context") val context: Context? = null,
     @ColumnInfo(name = "startDate") val startDate: LocalDate? = null,
     @ColumnInfo(name = "startTime") val startTime: LocalTime? = null,
     @ColumnInfo(name = "dueDate") val dueDate: LocalDate? = null,
@@ -24,8 +25,7 @@ data class Task(
     @PrimaryKey(autoGenerate = true) val uid: Long = 0
 ) : Parcelable {
 
-    enum class Status(val value: String) {
-        None("None"),
+    enum class Status(val value: String) : Serializable {
         NextAction("Next Action"),
         Waiting("Waiting"),
         Planning("Planning"),
@@ -36,8 +36,7 @@ data class Task(
         }
     }
 
-    enum class Context(val value: String) {
-        None("None"),
+    enum class Context(val value: String) : Serializable {
         Home("Home"),
         Work("Work"),
         Errands("Errands");
@@ -50,8 +49,8 @@ data class Task(
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        Status.valueOf(parcel.readString() ?: "None"),
-        Context.valueOf(parcel.readString() ?: "None"),
+        parcel.readSerializable() as Status,
+        parcel.readSerializable() as Context,
         parcel.readSerializable() as LocalDate,
         parcel.readSerializable() as LocalTime,
         parcel.readSerializable() as LocalDate,
@@ -68,8 +67,8 @@ data class Task(
         p0?.let {
             it.writeString(title)
             it.writeString(comments)
-            it.writeString(status.value)
-            it.writeString(context.value)
+            it.writeSerializable(status)
+            it.writeSerializable(context)
             it.writeSerializable(startDate)
             it.writeSerializable(startTime)
             it.writeSerializable(dueDate)
