@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoList">
         <activity
+            android:name=".view.EditTaskViewActivity"
+            android:exported="true"
+            android:label="Edit Task View"
+            android:parentActivityName=".view.EditSelectedTaskViewsActivity" />
+        <activity
+            android:label="Edit Selected Task Views"
             android:name=".view.EditSelectedTaskViewsActivity"
             android:exported="true"
             android:parentActivityName=".view.MainActivity" />

@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.FragmentAddTaskBinding
+import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.view_model.TaskListViewModel
 import hu.botagergo.todolist.view_model.TaskViewModel
 import hu.botagergo.todolist.view_model.TaskViewModelFactory
@@ -57,31 +58,41 @@ class AddTaskFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun onStatusClicked(view: View) {
-        val dialog = SelectStatusDialog(requireContext())
+    fun onStatusClicked(@Suppress("UNUSED_PARAMETER") view: View) {
+        val dialog = SimpleSelectItemDialog(
+            getString(R.string.status),
+            Task.Status.values(),
+            requireContext()
+        )
         dialog.setOnDismissListener {
-            if (dialog.selectedStatus != null) {
-                viewModel.status.value = dialog.selectedStatus
+            val item = dialog.selectedItem
+            if (item != null) {
+                viewModel.status.value = item
             }
         }
         dialog.show()
     }
 
-    fun onCancelStatusClicked(view: View) {
+    fun onCancelStatusClicked(@Suppress("UNUSED_PARAMETER") view: View) {
         viewModel.status.value = null
     }
 
-    fun onContextClicked(view: View) {
-        val dialog = SelectContextDialog(requireContext())
+    fun onContextClicked(@Suppress("UNUSED_PARAMETER") view: View) {
+        val dialog = SimpleSelectItemDialog(
+            getString(R.string.context),
+            Task.Context.values(),
+            requireContext()
+        )
         dialog.setOnDismissListener {
-            if (dialog.selectedContext != null) {
-                viewModel.context.value = dialog.selectedContext
+            val item = dialog.selectedItem
+            if (item != null) {
+                viewModel.context.value = item
             }
         }
         dialog.show()
     }
 
-    fun onCancelContextClicked(view: View) {
+    fun onCancelContextClicked(@Suppress("UNUSED_PARAMETER") view: View) {
         viewModel.context.value = null
     }
 
@@ -106,11 +117,15 @@ class AddTaskFragment : Fragment() {
         val dialog = DatePickerDialog(
             view.context, R.style.DateTimePickerDialogTheme,
             { _, p1, p2, p3 ->
-                val selectedDate = LocalDate.of(p1, p2, p3)
+                val selectedDate = LocalDate.of(
+                    p1,
+                    p2 + 1,
+                    p3
+                ) // In the dialog month numbering starts from 0 but 1 in LocalDate
                 if (start) {
-                    viewModel.startDate.value = selectedDate.plusMonths(1)
+                    viewModel.startDate.value = selectedDate
                 } else {
-                    viewModel.dueDate.value = selectedDate.plusMonths(1)
+                    viewModel.dueDate.value = selectedDate
                 }
             },
             dateNow.year, dateNow.monthValue-1, dateNow.dayOfMonth)

@@ -8,4 +8,8 @@ class PropertyInFilter<T, K>(property: KProperty1<T, K>, private val values: Set
         return values.contains(getPropertyValue(t))
     }
 
+    override fun clone(): Filter<T> {
+        return PropertyInFilter(property, values.toSet())
+    }
+
 }

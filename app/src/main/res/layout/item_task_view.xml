@@ -7,23 +7,13 @@
 
         <variable
             name="data"
-            type="hu.botagergo.todolist.adapter.TaskViewItem" />
+            type="hu.botagergo.todolist.adapter.task_view_list.TaskViewItem" />
 
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="4dp"
-        app:cardBackgroundColor="@color/task_view_background"
-        app:cardCornerRadius="12dp"
-        app:contentPadding="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
+        android:id="@+id/cardView"
+        style="@style/ClickableCardView"
         app:contentPaddingLeft="16dp">
 
         <LinearLayout

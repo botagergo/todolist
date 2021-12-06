@@ -1,20 +1,23 @@
-package hu.botagergo.todolist.adapter
+@file:Suppress("ConvertTwoComparisonsToRangeCheck")
+
+package hu.botagergo.todolist.adapter.task_view_list
 
 import android.app.Application
+import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.*
 import hu.botagergo.todolist.R
-import hu.botagergo.todolist.TaskView
 import hu.botagergo.todolist.config
-import hu.botagergo.todolist.log.logd
+import hu.botagergo.todolist.model.TaskView
 import java.util.*
 
 class TaskViewListAdapter(
     val app: Application,
+    val context: Context,
     var selectedViews: ArrayList<TaskView>,
-    var availableViews: ArrayList<TaskView>
+    private var availableViews: ArrayList<TaskView>
 ) :
     GroupieAdapter() {
 
@@ -31,12 +34,12 @@ class TaskViewListAdapter(
         section = Section().apply {
             this.add(TaskViewHeaderItem(app.resources.getString(R.string.task_view_selected)))
             for (view in selectedViews) {
-                this.add(TaskViewItem(adapter, view, true))
+                this.add(TaskViewItem(adapter, view, context))
             }
 
             this.add(TaskViewHeaderItem(app.resources.getString(R.string.task_view_available)))
             for (view in availableViews) {
-                this.add(TaskViewItem(adapter, view, false))
+                this.add(TaskViewItem(adapter, view, context))
             }
         }
 
@@ -74,9 +77,9 @@ class TaskViewListAdapter(
             val items = adapter.section.groups
 
             if (sourceIndex > selectedViews.size+1 && targetIndex <= selectedViews.size+1 && sourceItem.view !in selectedViews) {
-                items.add(targetIndex, TaskViewItem(adapter, sourceItem.view, false))
-                selectedViews.add(targetIndex-1, sourceItem.view)
-                config.selectedTaskViews.add(targetIndex-1, sourceItem.view.uuid)
+                items.add(targetIndex, TaskViewItem(adapter, sourceItem.view, context))
+                selectedViews.add(targetIndex - 1, sourceItem.view)
+                config.selectedTaskViews.add(targetIndex - 1, sourceItem.view.uuid)
             } else if (sourceIndex < selectedViews.size+1 && targetIndex > selectedViews.size+1) {
                 items.remove(sourceItem)
                 source.itemView.visibility = View.GONE

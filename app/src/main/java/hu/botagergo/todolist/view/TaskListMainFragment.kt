@@ -23,6 +23,14 @@ class TaskListMainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
+
+        config.selectedTaskViews.addOnListChangedCallback(
+            object : ObservableListChangedCallback<UUID>() {
+                override fun onChanged(sender: ObservableList<UUID>?) {
+                    onSelectedTaskViewsChanged(sender)
+                }
+            })
+
         super.onCreate(savedInstanceState)
     }
 
@@ -37,21 +45,6 @@ class TaskListMainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         logd(this, "onViewCreated")
-
-        config.selectedTaskViews.addOnListChangedCallback(
-            object : ObservableListChangedCallback<UUID>() {
-                override fun onChanged(sender: ObservableList<UUID>?) {
-                    if (config.hideViewTabsWhenOneSelected) {
-                        if (sender?.size ?: 0 > 1) {
-                            binding.tabLayout.visibility = View.VISIBLE
-                        } else {
-                            binding.tabLayout.visibility = View.GONE
-                        }
-                    }
-                    binding.viewPager.adapter?.notifyDataSetChanged()
-                }
-            })
-
 
         if (config.hideViewTabsWhenOneSelected && config.selectedTaskViews.size <= 1) {
             binding.tabLayout.visibility = View.GONE
@@ -96,9 +89,7 @@ class TaskListMainFragment : Fragment() {
         }
 
         override fun getPageTitle(position: Int): CharSequence {
-            return config.taskViews.find {
-                it.uuid == config.selectedTaskViews[position]
-            }!!.name
+            return config.taskViews[config.selectedTaskViews[position]]!!.name
         }
 
     }
@@ -119,6 +110,17 @@ class TaskListMainFragment : Fragment() {
     override fun onDestroy() {
         binding.viewPager.clearOnPageChangeListeners()
         super.onDestroy()
+    }
+
+    private fun onSelectedTaskViewsChanged(sender: ObservableList<UUID>?) {
+        if (config.hideViewTabsWhenOneSelected) {
+            if (sender?.size ?: 0 > 1) {
+                binding.tabLayout.visibility = View.VISIBLE
+            } else {
+                binding.tabLayout.visibility = View.GONE
+            }
+        }
+        binding.viewPager.adapter?.notifyDataSetChanged()
     }
 
 }

@@ -1,12 +1,12 @@
-package hu.botagergo.todolist.adapter
+package hu.botagergo.todolist.adapter.task_list
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.Section
 import com.xwray.groupie.TouchCallback
-import hu.botagergo.todolist.TaskView
 import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.model.Task
+import hu.botagergo.todolist.model.TaskView
 import hu.botagergo.todolist.sorter.TaskReorderableSorter
 
 class SimpleTaskListAdapter(

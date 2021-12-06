@@ -8,4 +8,8 @@ class PropertyEqualsFilter<T, K>(property: KProperty1<T, K>, private val value: 
         return getPropertyValue(t) == value
     }
 
+    override fun clone(): Filter<T> {
+        return PropertyEqualsFilter(property, value)
+    }
+
 }

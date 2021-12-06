@@ -10,13 +10,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import hu.botagergo.todolist.R
-import hu.botagergo.todolist.TaskView
 import hu.botagergo.todolist.ToDoListApplication
-import hu.botagergo.todolist.adapter.Adapter
-import hu.botagergo.todolist.adapter.createAdapter
+import hu.botagergo.todolist.adapter.task_list.Adapter
+import hu.botagergo.todolist.adapter.task_list.createAdapter
 import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.FragmentTaskListBinding
 import hu.botagergo.todolist.log.logd
+import hu.botagergo.todolist.model.TaskView
 import hu.botagergo.todolist.view_model.TaskListViewModel
 import java.util.*
 
@@ -29,9 +29,7 @@ class TaskListFragment
     private lateinit var viewUuid: UUID
 
     private val taskListView: TaskView by lazy {
-        config.taskViews.find {
-            it.uuid == viewUuid
-        }!!
+        config.taskViews[viewUuid]!!
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

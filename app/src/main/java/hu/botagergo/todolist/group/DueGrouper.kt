@@ -1,5 +1,6 @@
 package hu.botagergo.todolist.group
 
+import hu.botagergo.todolist.R
 import hu.botagergo.todolist.model.Task
 import java.time.LocalDate
 
@@ -22,4 +23,10 @@ class DueGrouper : GrouperBase<Task, Any?>() {
         }
         return "Due later"
     }
+
+    override fun clone(): Grouper<Task, Any?> {
+        return DueGrouper()
+    }
+
+    override fun getName(): Int = R.string.due_date
 }

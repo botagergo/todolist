@@ -9,6 +9,8 @@ import android.content.Context
 import androidx.databinding.ObservableArrayList
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.log.logi
+import hu.botagergo.todolist.model.TaskView
+import hu.botagergo.todolist.util.UUIDObservableMap
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
@@ -17,7 +19,7 @@ import kotlin.collections.HashSet
 
 class Configuration : Serializable {
 
-    var taskViews: ObservableArrayList<TaskView> = ObservableArrayList()
+    var taskViews: UUIDObservableMap<TaskView> = UUIDObservableMap()
     var selectedTaskViews: ObservableArrayList<UUID> = ObservableArrayList()
 
     class State : Serializable {
@@ -86,13 +88,13 @@ class Configuration : Serializable {
                         addValue("Errands")
                     }
 
-                    this.taskViews = ObservableArrayList<TaskView>().apply {
-                        addAll(
+                    this.taskViews = UUIDObservableMap<TaskView>().apply {
+                        putAll(
                             listOf(
-                                TaskView.Predefined.nextAction,
-                                TaskView.Predefined.allGroupedByStatus,
-                                TaskView.Predefined.done,
-                                TaskView.Predefined.hotlist
+                                Predefined.TaskView.nextAction,
+                                Predefined.TaskView.allGroupedByStatus,
+                                Predefined.TaskView.done,
+                                Predefined.TaskView.hotlist
                             )
                         )
                     }
@@ -100,9 +102,9 @@ class Configuration : Serializable {
                     this.selectedTaskViews = ObservableArrayList<UUID>().apply {
                         addAll(
                             listOf(
-                                TaskView.Predefined.allGroupedByStatus.uuid,
-                                TaskView.Predefined.hotlist.uuid,
-                                TaskView.Predefined.done.uuid
+                                Predefined.TaskView.allGroupedByStatus.uuid,
+                                Predefined.TaskView.hotlist.uuid,
+                                Predefined.TaskView.done.uuid
                             )
                         )
                     }

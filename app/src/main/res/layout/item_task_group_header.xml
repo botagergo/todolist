@@ -1,28 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
 
         <variable
             name="data"
-            type="hu.botagergo.todolist.adapter.TaskGroupHeaderItem" />
+            type="hu.botagergo.todolist.adapter.task_list.TaskGroupHeaderItem" />
+
     </data>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardView"
+        style="@style/ClickableCardView">
 
-        <Button
-            android:id="@+id/button_groupName"
-            style="?android:attr/borderlessButtonStyle"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="30dp"
-            android:text="@{data.groupName}"
-            android:textAlignment="textStart"
-            android:textColor="@color/black" />
+            android:layout_height="wrap_content">
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:text="@{data.groupName}"
+                android:textSize="22sp" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </com.google.android.material.card.MaterialCardView>
+
 </layout>

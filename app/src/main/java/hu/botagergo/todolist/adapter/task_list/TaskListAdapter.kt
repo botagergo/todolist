@@ -1,11 +1,11 @@
-package hu.botagergo.todolist.adapter
+package hu.botagergo.todolist.adapter.task_list
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
-import hu.botagergo.todolist.TaskView
 import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.model.Task
+import hu.botagergo.todolist.model.TaskView
 
 abstract class Adapter(
     val application: ToDoListApplication,

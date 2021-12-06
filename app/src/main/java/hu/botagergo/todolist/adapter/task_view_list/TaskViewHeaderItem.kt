@@ -1,4 +1,4 @@
-package hu.botagergo.todolist.adapter
+package hu.botagergo.todolist.adapter.task_view_list
 
 import com.xwray.groupie.databinding.BindableItem
 import hu.botagergo.todolist.R

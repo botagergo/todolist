@@ -11,14 +11,19 @@
     <string name="context">Context</string>
     <string name="add_sample_data">Add Sample Data</string>
     <string name="views">Views</string>
-    <string name="selected_views">Selected Views</string>
-    <string name="available_views">Available Views</string>
     <string name="reset_config">Reset config</string>
     <string name="start_date">Start Date</string>
     <string name="due_date">Due Date</string>
     <string name="task_view_selected">Selected</string>
     <string name="task_view_available">Available</string>
     <string name="status">Status</string>
-    <string name="select_context">Select context</string>
-    <string name="select_status">Select status</string>
+    <string name="sort_by">Sort By</string>
+    <string name="sort_order">Sort Order</string>
+    <string name="group_by">Group By</string>
+    <string name="manual_order">Manual Order</string>
+    <string name="add_criterion">Add Criterion</string>
+    <string name="edit_task_view">Edit Task View</string>
+    <string name="selected_task_views">Selected views</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
 </resources>

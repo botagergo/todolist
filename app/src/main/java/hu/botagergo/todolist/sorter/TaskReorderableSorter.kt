@@ -38,4 +38,8 @@ class TaskReorderableSorter(private val removeIfNotExists: Boolean = false) : So
             taskUidList.removeAt(ind)
         }
     }
+
+    override fun clone(): Sorter<Task> {
+        return TaskReorderableSorter(removeIfNotExists)
+    }
 }

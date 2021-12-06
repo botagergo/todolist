@@ -1,26 +1,33 @@
 package hu.botagergo.todolist.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import hu.botagergo.todolist.TaskView
+import hu.botagergo.todolist.R
 import hu.botagergo.todolist.ToDoListApplication
-import hu.botagergo.todolist.adapter.TaskViewListAdapter
+import hu.botagergo.todolist.adapter.task_view_list.TaskViewItem
+import hu.botagergo.todolist.adapter.task_view_list.TaskViewListAdapter
 import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.ActivityEditSelectedTaskViewsBinding
 import hu.botagergo.todolist.log.logd
+import hu.botagergo.todolist.model.TaskView
 
 class EditSelectedTaskViewsActivity
     : AppCompatActivity() {
 
-    lateinit var binding: ActivityEditSelectedTaskViewsBinding
+    val binding: ActivityEditSelectedTaskViewsBinding by lazy {
+        ActivityEditSelectedTaskViewsBinding.inflate(layoutInflater)
+    }
+
     private lateinit var adapter: TaskViewListAdapter
 
-    var selectedViews: ArrayList<TaskView> = ArrayList(config.taskViews.filter {
-        config.selectedTaskViews.contains(it.uuid)
+    private var selectedViews: ArrayList<TaskView> = ArrayList(config.selectedTaskViews.map {
+        config.taskViews[it]!!
     })
-    var availableViews: ArrayList<TaskView> = ArrayList(config.taskViews)
+
+    private var availableViews: ArrayList<TaskView> = ArrayList(config.taskViews.values)
 
     val app: ToDoListApplication by lazy {
         application as ToDoListApplication
@@ -28,16 +35,25 @@ class EditSelectedTaskViewsActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityEditSelectedTaskViewsBinding.inflate(layoutInflater)
+
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.toolbar.setTitle(R.string.selected_task_views)
+        binding.toolbar.setNavigationIcon(R.drawable.ic_back)
+        binding.toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        adapter = TaskViewListAdapter(app, selectedViews, availableViews)
+        adapter = TaskViewListAdapter(app, this, selectedViews, availableViews)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         adapter.getItemTouchHelper().attachToRecyclerView(binding.recyclerView)
+        adapter.setOnItemClickListener { item, view ->
+            if (item is TaskViewItem) {
+                val intent = Intent(applicationContext, EditTaskViewActivity::class.java).also {
+                    it.putExtra("uuid", item.view.uuid)
+                }
+                startActivity(intent)
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

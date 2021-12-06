@@ -2,7 +2,7 @@ package hu.botagergo.todolist.filter
 
 import java.io.Serializable
 
-abstract class Filter<T> : Serializable {
+abstract class Filter<T> : Serializable, Cloneable {
     abstract fun include(t: T): Boolean
 
     fun apply(tasks: ArrayList<T>) {
@@ -10,5 +10,7 @@ abstract class Filter<T> : Serializable {
             !include(it)
         }
     }
+
+    public abstract override fun clone(): Filter<T>
 
 }

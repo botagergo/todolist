@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
-        <import type="java.time.format.DateTimeFormatter" />
+        <import type="android.view.View" />
+
+        <import type="hu.botagergo.todolist.model.Task" />
+
+        <import type="java.time.LocalDate" />
+
+        <import type="java.time.LocalTime" />
 
         <import type="java.time.ZoneId" />
 
-        <import type="java.time.format.FormatStyle" />
+        <import type="java.time.format.DateTimeFormatter" />
 
-        <import type="android.view.View" />
+        <import type="java.time.format.FormatStyle" />
 
         <variable
             name="viewModel"
@@ -25,22 +30,19 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:padding="@dimen/screen_padding">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textView_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/title"
-                app:layout_constraintBottom_toTopOf="@+id/editText_title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                style="@style/PropertyTextView"
+                android:text="@string/title" />
 
             <EditText
                 android:id="@+id/editText_title"
@@ -50,21 +52,12 @@
                 android:hint="@string/title"
                 android:importantForAutofill="no"
                 android:inputType="none"
-                android:text="@={viewModel.title}"
-                app:layout_constraintBottom_toTopOf="@+id/textView_comments"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_title" />
+                android:text="@={viewModel.title}" />
 
             <TextView
                 android:id="@+id/textView_comments"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/comments"
-                app:layout_constraintBottom_toTopOf="@+id/editText_comments"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editText_title" />
+                style="@style/PropertyTextView"
+                android:text="@string/comments" />
 
             <EditText
                 android:id="@+id/editText_comments"
@@ -75,31 +68,17 @@
                 android:importantForAutofill="no"
                 android:inputType="textMultiLine"
                 android:minHeight="48dp"
-                android:text="@={viewModel.comments}"
-                app:layout_constraintBottom_toTopOf="@id/textView_status"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textView_comments" />
+                android:text="@={viewModel.comments}" />
 
             <TextView
                 android:id="@+id/textView_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/status"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toTopOf="@id/linearLayout_status"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/editText_comments" />
+                style="@style/PropertyTextView"
+                android:text="@string/status" />
 
             <LinearLayout
                 android:id="@+id/linearLayout_status"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/textView_context"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textView_status">
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/button_status"
@@ -115,9 +94,8 @@
                     android:inputType="text"
                     android:longClickable="false"
                     android:onClick="@{handlers::onStatusClicked}"
-                    android:text='@{viewModel.status!=null?viewModel.status.value:"Status"}'
-                    android:textColor="@{viewModel.status!=null?@color/black:@android:color/darker_gray}" />
-
+                    android:hint="@string/status"
+                    android:text="@{viewModel.status.value}" />
                 <ImageButton
                     android:id="@+id/imageButton_cancelStatus"
                     style="?android:attr/borderlessButtonStyle"
@@ -125,7 +103,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:onClick="@{handlers::onCancelStatusClicked}"
-                    android:src="@drawable/ic_cancel_selection"
+                    android:src="@drawable/ic_remove"
                     android:visibility="@{viewModel.status == null?View.GONE:View.VISIBLE}"
                     tools:ignore="ContentDescription" />
 
@@ -133,23 +111,13 @@
 
             <TextView
                 android:id="@+id/textView_context"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/context"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toTopOf="@id/linearLayout_context"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearLayout_status" />
+                style="@style/PropertyTextView"
+                android:text="@string/context" />
 
             <LinearLayout
                 android:id="@+id/linearLayout_context"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/textView_startDate"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textView_context">
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/button_context"
@@ -165,8 +133,8 @@
                     android:inputType="text"
                     android:longClickable="false"
                     android:onClick="@{handlers::onContextClicked}"
-                    android:text='@{viewModel.context!=null?viewModel.context.value:"Context"}'
-                    android:textColor="@{viewModel.context!=null?@color/black:@android:color/darker_gray}" />
+                    android:hint="@string/context"
+                    android:text="@{viewModel.context.value}" />
 
                 <ImageButton
                     android:id="@+id/imageButton_cancelContext"
@@ -175,7 +143,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:onClick="@{handlers::onCancelContextClicked}"
-                    android:src="@drawable/ic_cancel_selection"
+                    android:src="@drawable/ic_remove"
                     android:visibility="@{viewModel.context == null?View.GONE:View.VISIBLE}"
                     tools:ignore="ContentDescription" />
 
@@ -183,23 +151,13 @@
 
             <TextView
                 android:id="@+id/textView_startDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/start_date"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toTopOf="@id/linearLayout_startDate"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearLayout_context" />
+                style="@style/PropertyTextView"
+                android:text="@string/start_date" />
 
             <LinearLayout
                 android:id="@+id/linearLayout_startDate"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/linearLayout_startTime"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textView_startDate">
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/button_startDate"
@@ -214,8 +172,8 @@
                     android:inputType="date"
                     android:longClickable="false"
                     android:onClick="@{handlers::onStartDateClicked}"
-                    android:text='@{viewModel.startDate != null?DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(viewModel.startDate):"Date"}'
-                    android:textColor="@{viewModel.startDate == null?@android:color/darker_gray:@color/black}" />
+                    android:hint="@string/date"
+                    android:text="@{viewModel.startDate!=null?DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(viewModel.startDate):null}" />
 
                 <ImageButton
                     android:id="@+id/imageButton_cancelStartDate"
@@ -224,7 +182,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:onClick="@{handlers::onCancelDateClicked}"
-                    android:src="@drawable/ic_cancel_selection"
+                    android:src="@drawable/ic_remove"
                     android:visibility="@{viewModel.startDate == null?View.GONE:View.VISIBLE}"
                     tools:ignore="ContentDescription" />
 
@@ -232,12 +190,9 @@
 
             <LinearLayout
                 android:id="@+id/linearLayout_startTime"
+                style="@style/PropertyTextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/textView_endDate"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearLayout_startDate">
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/button_startTime"
@@ -253,8 +208,8 @@
                     android:inputType="time"
                     android:longClickable="false"
                     android:onClick="@{handlers::onStartTimeClicked}"
-                    android:text='@{viewModel.startTime != null?DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL).withZone(ZoneId.systemDefault()).format(viewModel.startTime):"Time"}'
-                    android:textColor="@{viewModel.startTime == null?@android:color/darker_gray:@color/black}" />
+                    android:hint="@string/time"
+                    android:text="@{viewModel.startTime!=null?DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL).withZone(ZoneId.systemDefault()).format(viewModel.startTime):null}" />
 
                 <ImageButton
                     android:id="@+id/imageButton_cancelStartTime"
@@ -263,7 +218,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:onClick="@{handlers::onCancelDateClicked}"
-                    android:src="@drawable/ic_cancel_selection"
+                    android:src="@drawable/ic_remove"
                     android:visibility="@{viewModel.startTime == null?View.GONE:View.VISIBLE}"
                     tools:ignore="ContentDescription" />
 
@@ -271,23 +226,13 @@
 
             <TextView
                 android:id="@+id/textView_endDate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/due_date"
-                android:textColor="@color/black"
-                app:layout_constraintBottom_toTopOf="@id/linearLayout_dueDate"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearLayout_startTime" />
+                style="@style/PropertyTextView"
+                android:text="@string/due_date" />
 
             <LinearLayout
                 android:id="@+id/linearLayout_dueDate"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toTopOf="@id/linearLayout_dueTime"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_endDate">
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/button_dueDate"
@@ -302,9 +247,8 @@
                     android:inputType="date"
                     android:longClickable="false"
                     android:onClick="@{handlers::onDueDateClicked}"
-                    android:text='@{viewModel.dueDate != null?DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(viewModel.dueDate):"Date"}'
-                    android:textAllCaps="false"
-                    android:textColor="@{viewModel.dueDate == null?@android:color/darker_gray:@color/black}" />
+                    android:hint="@string/date"
+                    android:text="@{viewModel.dueDate!=null?DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(viewModel.dueDate):null}" />
 
                 <ImageButton
                     android:id="@+id/imageButton_cancelDueDate"
@@ -313,7 +257,7 @@
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:onClick="@{handlers::onCancelDateClicked}"
-                    android:src="@drawable/ic_cancel_selection"
+                    android:src="@drawable/ic_remove"
                     android:visibility="@{viewModel.dueDate == null?View.GONE:View.VISIBLE}"
                     tools:ignore="ContentDescription" />
 
@@ -321,11 +265,9 @@
 
             <LinearLayout
                 android:id="@+id/linearLayout_dueTime"
+                style="@style/PropertyTextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout_dueDate">
+                android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/button_dueTime"
@@ -341,9 +283,8 @@
                     android:inputType="time"
                     android:longClickable="false"
                     android:onClick="@{handlers::onDueTimeClicked}"
-                    android:text='@{viewModel.dueTime != null?DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL).withZone(ZoneId.systemDefault()).format(viewModel.dueTime):"Time"}'
-                    android:textAllCaps="false"
-                    android:textColor="@{viewModel.dueTime == null?@android:color/darker_gray:@color/black}" />
+                    android:hint="@string/time"
+                    android:text="@{viewModel.dueTime!=null?DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL).withZone(ZoneId.systemDefault()).format(viewModel.dueTime):null}" />
 
                 <ImageButton
                     android:id="@+id/imageButton_cancelDueTime"
@@ -352,13 +293,13 @@
                     android:layout_height="wrap_content"
                     android:minWidth="0dp"
                     android:onClick="@{handlers::onCancelDateClicked}"
-                    android:src="@drawable/ic_cancel_selection"
+                    android:src="@drawable/ic_remove"
                     android:visibility="@{viewModel.dueTime == null?View.GONE:View.VISIBLE}"
                     tools:ignore="ContentDescription" />
 
             </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </ScrollView>
 

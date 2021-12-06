@@ -6,23 +6,28 @@ import android.os.Bundle
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import hu.botagergo.todolist.adapter.ContextListAdapter
-import hu.botagergo.todolist.databinding.DialogSelectContextBinding
-import hu.botagergo.todolist.model.Task
+import hu.botagergo.todolist.adapter.SimpleItemListAdapter
+import hu.botagergo.todolist.databinding.DialogSimpleSelectItemBinding
 
 
-class SelectContextDialog(context: Context) : Dialog(context), ContextListAdapter.Listener {
+class SimpleSelectItemDialog<T>(val title: String, val values: Array<T>, context: Context) :
+    Dialog(context), SimpleItemListAdapter.Listener<T?> {
 
-    var selectedContext: Task.Context? = null
+    var selectedItem: T? = null
 
-    val binding: DialogSelectContextBinding by lazy {
-        DialogSelectContextBinding.inflate(layoutInflater, null, false)
+    val binding: DialogSimpleSelectItemBinding by lazy {
+        DialogSimpleSelectItemBinding.inflate(layoutInflater, null, false)
     }
+
+    constructor(title: Int, values: Array<T>, context: Context)
+            : this(context.getString(title), values, context)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(binding.root)
 
-        val adapter = ContextListAdapter(context)
+        binding.textViewTitle.text = title
+
+        val adapter = SimpleItemListAdapter(values, context)
         adapter.listener = this
         binding.recyclerViewContextList.adapter = adapter
         binding.recyclerViewContextList.layoutManager = LinearLayoutManager(context)
@@ -34,8 +39,8 @@ class SelectContextDialog(context: Context) : Dialog(context), ContextListAdapte
         super.onCreate(savedInstanceState)
     }
 
-    override fun onContextClicked(context: Task.Context) {
-        selectedContext = context
+    override fun onItemClicked(item: T?) {
+        selectedItem = item
         dismiss()
     }
 

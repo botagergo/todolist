@@ -1,4 +1,4 @@
-package hu.botagergo.todolist.adapter
+package hu.botagergo.todolist.adapter.task_list
 
 import android.graphics.drawable.Drawable
 import androidx.core.content.res.ResourcesCompat

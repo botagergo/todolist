@@ -1,7 +1,5 @@
-package hu.botagergo.todolist.adapter
+package hu.botagergo.todolist.adapter.task_list
 
-import android.graphics.drawable.Drawable
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.ExpandableItem
@@ -22,29 +20,24 @@ class TaskGroupHeaderItem(private val adapter: GroupedTaskListAdapter, val group
     override fun getDragDirs() = ItemTouchHelper.UP or ItemTouchHelper.DOWN
     override fun getLayout() = R.layout.item_task_group_header
 
-    private fun getIcon(isExpanded: Boolean): Drawable? {
-        val drawable = getDrawable(
-            adapter.application,
-            if (isExpanded)
-                R.drawable.ic_expanded
-            else
-                R.drawable.ic_collapsed
-        )
-        drawable?.setBounds(0, 0, 60, 60)
-        return drawable
+    private fun getIcon(isExpanded: Boolean): Int {
+        return if (isExpanded)
+            R.drawable.ic_expanded
+        else
+            R.drawable.ic_collapsed
     }
 
     override fun bind(viewBinding: ItemTaskGroupHeaderBinding, position: Int) {
         viewBinding.data = this
 
-        viewBinding.buttonGroupName.setCompoundDrawables(
-            getIcon(expandableGroup.isExpanded), null, null, null
+        viewBinding.imageView.setImageResource(
+            getIcon(expandableGroup.isExpanded)
         )
 
-        viewBinding.buttonGroupName.setOnClickListener {
+        viewBinding.cardView.setOnClickListener {
             expandableGroup.onToggleExpanded()
-            viewBinding.buttonGroupName.setCompoundDrawables(
-                getIcon(expandableGroup.isExpanded), null, null, null
+            viewBinding.imageView.setImageResource(
+                getIcon(expandableGroup.isExpanded)
             )
             adapter.onGroupHeaderClicked(groupName, expandableGroup.isExpanded)
         }
