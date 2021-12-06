@@ -31,9 +31,9 @@
     </fragment>
     <activity
         android:id="@+id/editMainTaskListViewsActivity"
-        android:name="hu.botagergo.todolist.view.EditSelectedTaskViewsActivity"
+        android:name="hu.botagergo.todolist.view.TaskViewListActivity"
         android:label="Edit views"
-        tools:layout="@layout/activity_edit_selected_task_views" />
+        tools:layout="@layout/activity_task_view_list" />
     <activity
         android:id="@+id/mainActivity"
         android:name="hu.botagergo.todolist.view.MainActivity"

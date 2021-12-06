@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.xwray.groupie.databinding.BindableItem
+import hu.botagergo.todolist.EXTRA_UUID
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.ItemTaskViewBinding
 import hu.botagergo.todolist.model.TaskView
@@ -20,7 +21,7 @@ class TaskViewItem(
         viewBinding.data = this
         viewBinding.cardView.setOnClickListener {
             val intent = Intent(context, EditTaskViewActivity::class.java)
-            intent.putExtra("uuid", view.uuid)
+            intent.putExtra(EXTRA_UUID, view.uuid)
             context.startActivity(intent)
         }
     }

@@ -7,18 +7,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.ToDoListApplication
-import hu.botagergo.todolist.adapter.task_view_list.TaskViewItem
 import hu.botagergo.todolist.adapter.task_view_list.TaskViewListAdapter
 import hu.botagergo.todolist.config
-import hu.botagergo.todolist.databinding.ActivityEditSelectedTaskViewsBinding
+import hu.botagergo.todolist.databinding.ActivityTaskViewListBinding
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.model.TaskView
 
-class EditSelectedTaskViewsActivity
+class TaskViewListActivity
     : AppCompatActivity() {
 
-    val binding: ActivityEditSelectedTaskViewsBinding by lazy {
-        ActivityEditSelectedTaskViewsBinding.inflate(layoutInflater)
+    val binding: ActivityTaskViewListBinding by lazy {
+        ActivityTaskViewListBinding.inflate(layoutInflater)
     }
 
     private lateinit var adapter: TaskViewListAdapter
@@ -38,22 +37,21 @@ class EditSelectedTaskViewsActivity
 
         setContentView(binding.root)
 
-        binding.toolbar.setTitle(R.string.selected_task_views)
+        binding.toolbar.setTitle(R.string.task_views)
         binding.toolbar.setNavigationIcon(R.drawable.ic_back)
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+        binding.toolbar.inflateMenu(R.menu.menu_task_view_list)
+        binding.toolbar.setOnMenuItemClickListener { onOptionsItemSelected(it) }
 
-        adapter = TaskViewListAdapter(app, this, selectedViews, availableViews)
+        adapter = TaskViewListAdapter(app, this)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         adapter.getItemTouchHelper().attachToRecyclerView(binding.recyclerView)
-        adapter.setOnItemClickListener { item, view ->
-            if (item is TaskViewItem) {
-                val intent = Intent(applicationContext, EditTaskViewActivity::class.java).also {
-                    it.putExtra("uuid", item.view.uuid)
-                }
-                startActivity(intent)
-            }
-        }
+    }
+
+    override fun onStart() {
+        adapter.refresh()
+        super.onStart()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -61,6 +59,10 @@ class EditSelectedTaskViewsActivity
 
         if (item.itemId == android.R.id.home) {
             onBackPressed()
+            return true
+        } else if (item.itemId == R.id.menu_item_add) {
+            val intent = Intent(applicationContext, EditTaskViewActivity::class.java)
+            startActivity(intent)
             return true
         }
 

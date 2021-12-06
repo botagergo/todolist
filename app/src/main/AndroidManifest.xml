@@ -14,11 +14,11 @@
         <activity
             android:name=".view.EditTaskViewActivity"
             android:exported="true"
-            android:label="Edit Task View"
-            android:parentActivityName=".view.EditSelectedTaskViewsActivity" />
+            android:label="@string/task_view"
+            android:parentActivityName=".view.TaskViewListActivity" />
         <activity
-            android:label="Edit Selected Task Views"
-            android:name=".view.EditSelectedTaskViewsActivity"
+            android:name=".view.TaskViewListActivity"
+            android:label="@string/task_views"
             android:exported="true"
             android:parentActivityName=".view.MainActivity" />
         <activity

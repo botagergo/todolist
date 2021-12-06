@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import hu.botagergo.todolist.EXTRA_UUID
 import hu.botagergo.todolist.Predefined
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.adapter.sort_criterion_list.SortCriterionListAdapter
@@ -28,7 +29,7 @@ class EditTaskViewActivity : AppCompatActivity() {
     }
 
     val viewModel: TaskViewViewModel by viewModels {
-        TaskViewViewModelFactory(application, intent.extras!!.getSerializable("uuid") as UUID)
+        TaskViewViewModelFactory(application, intent.extras?.getSerializable(EXTRA_UUID) as? UUID)
     }
 
     lateinit var adapter: SortCriterionListAdapter
@@ -43,7 +44,7 @@ class EditTaskViewActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        binding.toolbar.setTitle(R.string.edit_task_view)
+        binding.toolbar.setTitle(R.string.task_view)
         binding.toolbar.setNavigationIcon(R.drawable.ic_back)
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
         binding.toolbar.inflateMenu(R.menu.menu_edit_task_view_activity)

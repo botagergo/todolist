@@ -15,21 +15,27 @@ import java.util.*
 
 class TaskViewListAdapter(
     val app: Application,
-    val context: Context,
-    var selectedViews: ArrayList<TaskView>,
-    private var availableViews: ArrayList<TaskView>
-) :
-    GroupieAdapter() {
+    val context: Context
+) : GroupieAdapter() {
 
     private lateinit var section: Section
+
+    lateinit var selectedViews: ArrayList<TaskView>
+    lateinit var availableViews: ArrayList<TaskView>
 
     init {
         refresh()
     }
 
-    private fun refresh() {
+    fun refresh() {
         val adapter = this
         this.clear()
+
+        selectedViews = ArrayList(config.selectedTaskViews.map {
+            config.taskViews[it]!!
+        })
+
+        availableViews = ArrayList(config.taskViews.values)
 
         section = Section().apply {
             this.add(TaskViewHeaderItem(app.resources.getString(R.string.task_view_selected)))

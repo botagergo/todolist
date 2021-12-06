@@ -18,6 +18,14 @@ class TaskView(
     uuid: UUID
 ) : UUIDOwner(uuid), Serializable, Cloneable {
 
+    constructor(
+        name: String,
+        description: String?,
+        filter: Filter<Task>?,
+        grouper: Grouper<Task, Any?>?,
+        sorter: Sorter<Task>?
+    ) : this(name, description, filter, grouper, sorter, UUID.randomUUID())
+
     class Builder(val name: String) {
 
         private var _description: String? = null
@@ -46,7 +54,7 @@ class TaskView(
         }
 
         fun build(): TaskView {
-            return TaskView(name, _description, _filter, _grouper, _sorter, UUID.randomUUID())
+            return TaskView(name, _description, _filter, _grouper, _sorter)
         }
 
     }

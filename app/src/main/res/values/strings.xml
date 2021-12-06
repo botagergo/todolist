@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ToDo List</string>
+    <string name="app_name">Todo List</string>
     <string name="comments">Comments</string>
     <string name="title">Title</string>
     <!-- Preference Titles -->
@@ -27,4 +27,6 @@
     <string name="date">Date</string>
     <string name="time">Time</string>
     <string name="task_view_name">View Name</string>
+    <string name="task_view">Task View</string>
+    <string name="task_views">Task Views</string>
 </resources>

@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.menu_item_task_views -> {
-                val intent = Intent(this, EditSelectedTaskViewsActivity::class.java)
+                val intent = Intent(this, TaskViewListActivity::class.java)
                 binding.drawerLayout.close()
                 startActivity(intent)
                 true
