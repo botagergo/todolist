@@ -1,8 +1,10 @@
 package hu.botagergo.todolist.view
 
+import android.content.Context
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,6 +49,8 @@ class EditTaskViewActivity : AppCompatActivity() {
         binding.toolbar.inflateMenu(R.menu.menu_edit_task_view_activity)
         binding.toolbar.setOnMenuItemClickListener { onOptionsItemSelected(it) }
 
+        binding.imageButtonSelectName.setOnClickListener { onButtonSelectNameClicked() }
+
         val sorter = viewModel.sorter.value
         adapter = if (sorter is SimpleSorter<*>) {
             binding.checkBoxManualOrder.isChecked = false
@@ -83,6 +87,15 @@ class EditTaskViewActivity : AppCompatActivity() {
         binding.buttonGroup.setText(viewModel.grouper.value?.toString(this))
         binding.buttonGroup.setOnClickListener { onButtonGrouperClicked(it) }
         binding.imageButtonCancelGroup.setOnClickListener { onButtonCancelGrouperClicked() }
+    }
+
+    private fun onButtonSelectNameClicked() {
+        binding.editTextName.requestFocus()
+        binding.editTextName.selectAll()
+
+        val imm: InputMethodManager =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(binding.editTextName, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun onCheckBoxManualOrderChanged(checked: Boolean) {
