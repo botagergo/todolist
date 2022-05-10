@@ -22,12 +22,6 @@ class TaskViewListActivity
 
     private lateinit var adapter: TaskViewListAdapter
 
-    private var selectedViews: ArrayList<TaskView> = ArrayList(config.selectedTaskViews.map {
-        config.taskViews[it]!!
-    })
-
-    private var availableViews: ArrayList<TaskView> = ArrayList(config.taskViews.values)
-
     val app: ToDoListApplication by lazy {
         application as ToDoListApplication
     }

@@ -10,8 +10,9 @@ import hu.botagergo.todolist.adapter.SimpleItemListAdapter
 import hu.botagergo.todolist.databinding.DialogSimpleSelectItemBinding
 
 
-class SimpleSelectItemDialog<T>(val title: String, val values: Array<T>, context: Context) :
-    Dialog(context), SimpleItemListAdapter.Listener<T?> {
+class SimpleSelectItemDialog<T>(val title: String, val values: Array<T>, context: Context,
+                                private val onItemSelected: ((T) -> Unit)?=null) :
+    Dialog(context), SimpleItemListAdapter.Listener<T> {
 
     var selectedItem: T? = null
 
@@ -19,8 +20,8 @@ class SimpleSelectItemDialog<T>(val title: String, val values: Array<T>, context
         DialogSimpleSelectItemBinding.inflate(layoutInflater, null, false)
     }
 
-    constructor(title: Int, values: Array<T>, context: Context)
-            : this(context.getString(title), values, context)
+    constructor(title: Int, values: Array<T>, context: Context, onItemSelected: ((T) -> Unit)?=null)
+            : this(context.getString(title), values, context, onItemSelected)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(binding.root)
@@ -39,8 +40,9 @@ class SimpleSelectItemDialog<T>(val title: String, val values: Array<T>, context
         super.onCreate(savedInstanceState)
     }
 
-    override fun onItemClicked(item: T?) {
+    override fun onItemClicked(item: T) {
         selectedItem = item
+        onItemSelected?.invoke(item)
         dismiss()
     }
 

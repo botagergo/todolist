@@ -91,7 +91,7 @@ class GroupedTaskListAdapter(
 
         taskView.filter?.apply(sortedTasks)
         taskView.sorter?.sort(sortedTasks)
-        groupedTasks = taskView.grouper!!.group(sortedTasks, taskView.state.groupOrder)
+        groupedTasks = taskView.grouper!!.group(sortedTasks, application, taskView.state.groupOrder)
 
         refreshItems()
     }

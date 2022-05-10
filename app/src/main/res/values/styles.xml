@@ -17,4 +17,14 @@
         <item name="android:layout_marginBottom">1dp</item>
     </style>
 
+    <style name="ClickableEditText" parent="android:Widget.EditText">
+        <item name="android:clickable">true</item>
+        <item name="android:cursorVisible">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:importantForAutofill">no</item>
+        <item name="android:longClickable">false</item>
+        <item name="android:autofillHints" />
+    </style>
+
 </resources>

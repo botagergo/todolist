@@ -23,11 +23,7 @@
         android:id="@+id/editTaskFragment"
         android:name="hu.botagergo.todolist.view.EditTaskFragment"
         android:label="Edit task">
-        <argument
-            android:name="task"
-            android:defaultValue="@null"
-            app:argType="hu.botagergo.todolist.model.Task"
-            app:nullable="true" />
+
     </fragment>
     <activity
         android:id="@+id/editMainTaskListViewsActivity"

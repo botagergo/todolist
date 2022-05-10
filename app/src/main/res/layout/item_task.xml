@@ -105,7 +105,7 @@
                         android:paddingTop="2dp"
                         android:paddingEnd="6dp"
                         android:paddingBottom="2dp"
-                        android:text="@{data.task.status.toString()}"
+                        android:text="@{data.statusString}"
                         android:textColor="@{data.statusColor}"
                         android:textSize="11sp" />
 
@@ -121,7 +121,7 @@
                         android:paddingTop="2dp"
                         android:paddingEnd="6dp"
                         android:paddingBottom="2dp"
-                        android:text='@{data.task.context != null ? "@" + data.task.context.toString() : null}'
+                        android:text='@{data.contextString}'
                         android:textSize="11sp" />
 
                 </LinearLayout>

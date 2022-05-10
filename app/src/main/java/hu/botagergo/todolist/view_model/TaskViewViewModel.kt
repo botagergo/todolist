@@ -16,7 +16,7 @@ class TaskViewViewModel(val app: Application, val uuid: UUID?) : ViewModel() {
     val name: MutableLiveData<String?>
     private val description: MutableLiveData<String?>
     val filter: MutableLiveData<Filter<Task>?>
-    val grouper: MutableLiveData<Grouper<Task, Any?>?>
+    val grouper: MutableLiveData<Grouper<Task>?>
     val sorter: MutableLiveData<Sorter<Task>?>
 
     init {
@@ -24,7 +24,7 @@ class TaskViewViewModel(val app: Application, val uuid: UUID?) : ViewModel() {
 
         name = MutableLiveData(taskView?.name)
         description = MutableLiveData(taskView?.description)
-        filter = MutableLiveData(taskView?.filter?.clone())
+        filter = MutableLiveData(taskView?.filter)
         grouper = MutableLiveData(taskView?.grouper?.clone())
         sorter = MutableLiveData(taskView?.sorter?.clone())
     }

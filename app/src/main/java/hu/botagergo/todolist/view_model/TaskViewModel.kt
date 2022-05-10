@@ -7,6 +7,7 @@ import androidx.room.Room
 import hu.botagergo.todolist.model.AppDatabase
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.model.TaskDao
+import hu.botagergo.todolist.util.EnumValue
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -14,8 +15,8 @@ class TaskViewModel(val app: Application, uid: Long) : ViewModel() {
 
     var title: String = ""
     var comments: String = ""
-    var status: MutableLiveData<Task.Status?> = MutableLiveData(null)
-    var context: MutableLiveData<Task.Context?> = MutableLiveData(null)
+    var status: MutableLiveData<EnumValue?> = MutableLiveData(null)
+    var context: MutableLiveData<EnumValue?> = MutableLiveData(null)
     var startDate: MutableLiveData<LocalDate?> = MutableLiveData()
     var startTime: MutableLiveData<LocalTime?> = MutableLiveData()
     var dueDate: MutableLiveData<LocalDate?> = MutableLiveData()

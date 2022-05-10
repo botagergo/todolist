@@ -17,6 +17,11 @@
             android:label="@string/task_view"
             android:parentActivityName=".view.TaskViewListActivity" />
         <activity
+            android:name=".view.EditFilterCriterionActivity"
+            android:exported="true"
+            android:label="@string/edit_filter"
+            android:parentActivityName=".view.EditTaskViewActivity" />
+        <activity
             android:name=".view.TaskViewListActivity"
             android:label="@string/task_views"
             android:exported="true"

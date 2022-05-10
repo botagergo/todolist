@@ -1,6 +1,6 @@
 package hu.botagergo.todolist.filter
 
-class ConjugateFilter<T>(private vararg val filters: Filter<T>) : Filter<T>() {
+class ConjugateFilter<T>(vararg filters: Filter<T>) : CompositeFilter<T>(*filters) {
 
     override fun include(t: T): Boolean {
         return filters.all {

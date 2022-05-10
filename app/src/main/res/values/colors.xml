@@ -7,7 +7,7 @@
     <color name="light_gray_2">#999999</color>
     <color name="green_1">#86D689</color>
     <color name="green_2">#C5FADA</color>
-    <color name="blue">#3774DD</color>
+    <color name="blue">#03a9fc</color>
 
     <color name="card_view_background">@color/white</color>
 
@@ -21,7 +21,7 @@
     <color name="status_none">@color/white</color>
 
     <!-- Primary brand color. -->
-    <color name="colorPrimary">@color/green_1</color>
+    <color name="colorPrimary">@color/blue</color>
     <color name="colorPrimaryVariant">@color/white</color>
     <color name="colorOnPrimary">@color/black</color>
 

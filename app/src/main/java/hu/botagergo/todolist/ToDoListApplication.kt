@@ -12,8 +12,6 @@ class ToDoListApplication : Application() {
 
     override fun onCreate() {
         Configuration.load(this)
-        Task.Status.provider = config.statusValueProvider
-        Task.Context.provider = config.contextValueProvider
         super.onCreate()
     }
 

@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.xwray.groupie.databinding.BindableItem
+import hu.botagergo.todolist.Predefined
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.ItemTaskBinding
 import hu.botagergo.todolist.model.Task
@@ -17,14 +18,20 @@ class TaskItem(private val adapter: Adapter, val task: Task) : BindableItem<Item
         get() {
             return ResourcesCompat.getColor(
                 adapter.application.resources, when (task.status) {
-                    Task.Status("Next Action") -> R.color.status_next_action
-                    Task.Status("Waiting") -> R.color.status_waiting
-                    Task.Status("Planning") -> R.color.status_planning
-                    Task.Status("On Hold") -> R.color.status_on_hold
+                    Predefined.TaskStatusValues.nextAction -> R.color.status_next_action
+                    Predefined.TaskStatusValues.waiting -> R.color.status_waiting
+                    Predefined.TaskStatusValues.planning -> R.color.status_planning
+                    Predefined.TaskStatusValues.onHold -> R.color.status_on_hold
                     else -> R.color.status_none
                 }, null
             )
         }
+
+    val statusString: String
+        get() = if (task.status == null) "" else "@" + adapter.application.getString(task.status.value)
+
+    val contextString: String
+        get() = if (task.context == null) "" else "@" + adapter.application.getString(task.context.value)
 
     val doneIcon: Drawable?
         get() {

@@ -13,7 +13,7 @@ class TaskView(
     val name: String,
     val description: String?,
     val filter: Filter<Task>?,
-    val grouper: Grouper<Task, Any?>?,
+    val grouper: Grouper<Task>?,
     val sorter: Sorter<Task>?,
     uuid: UUID
 ) : UUIDOwner(uuid), Serializable, Cloneable {
@@ -22,7 +22,7 @@ class TaskView(
         name: String,
         description: String?,
         filter: Filter<Task>?,
-        grouper: Grouper<Task, Any?>?,
+        grouper: Grouper<Task>?,
         sorter: Sorter<Task>?
     ) : this(name, description, filter, grouper, sorter, UUID.randomUUID())
 
@@ -30,7 +30,7 @@ class TaskView(
 
         private var _description: String? = null
         private var _filter: Filter<Task>? = null
-        private var _grouper: Grouper<Task, Any?>? = null
+        private var _grouper: Grouper<Task>? = null
         private var _sorter: Sorter<Task>? = null
 
         fun description(description: String?): Builder {
@@ -43,7 +43,7 @@ class TaskView(
             return this
         }
 
-        fun grouper(grouper: Grouper<Task, Any?>): Builder {
+        fun grouper(grouper: Grouper<Task>): Builder {
             _grouper = grouper
             return this
         }

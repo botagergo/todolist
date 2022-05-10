@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="hu.botagergo.todolist.view_model.SimpleFilterCriterionViewModel" />
+
+        <import type="hu.botagergo.todolist.R" />
+
+        <variable
+            name="viewModel"
+            type="SimpleFilterCriterionViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:padding="@dimen/screen_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/PropertyTextView"
+                    android:text="@string/task_property" />
+
+                <EditText
+                    android:id="@+id/editText_property"
+                    style="@style/ClickableEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="@string/task_property"
+                    android:onClick="onPropertyClick"
+                    android:text="@{viewModel.property!=null?viewModel.property.name:R.string.empty}" />
+
+                <TextView
+                    style="@style/PropertyTextView"
+                    android:text="@string/operator" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp">
+
+                    <EditText
+                        android:id="@+id/editText_operator"
+                        style="@style/ClickableEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:hint="@string/operator"
+                        android:onClick="onOperatorClick"
+                        android:text="@{viewModel.predicate.kind.value}" />
+
+                    <CheckBox
+                        android:id="@+id/checkBox_negate"
+                        android:text="@string/negate"
+                        android:checked="@{viewModel.negate}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <TextView
+                    style="@style/PropertyTextView"
+                    android:id="@+id/textView_operand"
+                    android:text="@string/operand" />
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragment_container_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</layout>

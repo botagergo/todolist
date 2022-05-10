@@ -17,7 +17,7 @@ class SimpleItemListAdapter<T>(val values: Array<T>, val context: Context) :
         fun onItemClicked(item: T)
     }
 
-    var listener: Listener<T?>? = null
+    var listener: Listener<T>? = null
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val cardView: CardView = view.findViewById(R.id.cardView)

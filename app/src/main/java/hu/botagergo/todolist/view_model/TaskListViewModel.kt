@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
+import hu.botagergo.todolist.Predefined
 import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.model.AppDatabase
 import hu.botagergo.todolist.model.Task
@@ -71,7 +72,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "NLP beadandót befejezni",
                 "https://canvas.elte.hu/courses/20919/assignments/150825",
-                Task.Status("Next Action"),
+                Predefined.TaskStatusValues.nextAction,
                 null, null, null, LocalDate.now().plusDays(1)
             )
         )
@@ -79,8 +80,8 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "Lordestint venni",
                 "",
-                Task.Status("Waiting"),
-                Task.Context("Errands"),
+                Predefined.TaskStatusValues.waiting,
+                Predefined.TaskContextValues.errands,
                 null, null, null
             )
         )
@@ -88,7 +89,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "Rezsit átutalni",
                 "",
-                Task.Status("Next Action"),
+                Predefined.TaskStatusValues.nextAction,
                 null, null, null, null
             )
         )
@@ -96,15 +97,15 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "Hűtőszekrényt kiválasztani",
                 "https://www.mediamarkt.hu/hu/product/_aeg-rke532f2dw-h%C5%B1t%C5%91szekr%C3%A9ny-155-cm-1319500.html\nhttps://www.mediamarkt.hu/hu/product/_zanussi-zran32fw-h%C5%B1t%C5%91szekr%C3%A9ny-155-cm-1326379.html\nhttps://www.mediamarkt.hu/hu/product/_zanussi-ztan28fw0-kombin%C3%A1lt-h%C5%B1t%C5%91szekr%C3%A9ny-160-cm-1333580.html\nhttps://www.mediamarkt.hu/hu/product/_lg-gtb382pzczd-fel%C3%BClfagyaszt%C3%B3s-kombin%C3%A1lt-h%C5%B1t%C5%91szekr%C3%A9ny-1336483.html#specifik_C3_A1ci_C3_B3",
-                Task.Status("Next Action")
+                Predefined.TaskStatusValues.nextAction,
             )
         )
         addTask(
             Task(
                 "Iskolalátogatási igazolás",
                 "",
-                Task.Status("Next Action"),
-                Task.Context("Errands"),
+                Predefined.TaskStatusValues.nextAction,
+                Predefined.TaskContextValues.errands,
                 null, null, LocalDate.now().plusDays(4)
             )
         )
@@ -112,7 +113,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "Szakdolgozat témát keresni",
                 "",
-                Task.Status("Planning"),
+                Predefined.TaskStatusValues.planning,
                 null, null, null, null
             )
         )
@@ -120,7 +121,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "Kérdezni szakmai gyakorlatról",
                 "",
-                Task.Status("Next Action"),
+                Predefined.TaskStatusValues.nextAction,
                 null, null, null, LocalDate.now().plusDays(7)
             )
         )
@@ -128,8 +129,8 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             Task(
                 "Árvaellátási kérelem",
                 "",
-                Task.Status("Next Action"),
-                Task.Context("Errands"),
+                Predefined.TaskStatusValues.nextAction,
+                Predefined.TaskContextValues.errands,
                 null, null, null
             )
         )

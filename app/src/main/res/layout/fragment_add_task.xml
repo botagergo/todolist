@@ -5,18 +5,13 @@
     <data>
 
         <import type="android.view.View" />
-
         <import type="hu.botagergo.todolist.model.Task" />
-
         <import type="java.time.LocalDate" />
-
         <import type="java.time.LocalTime" />
-
         <import type="java.time.ZoneId" />
-
         <import type="java.time.format.DateTimeFormatter" />
-
         <import type="java.time.format.FormatStyle" />
+        <import type="hu.botagergo.todolist.R" />
 
         <variable
             name="viewModel"
@@ -40,7 +35,6 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView_title"
                 style="@style/PropertyTextView"
                 android:text="@string/title" />
 
@@ -55,7 +49,6 @@
                 android:text="@={viewModel.title}" />
 
             <TextView
-                android:id="@+id/textView_comments"
                 style="@style/PropertyTextView"
                 android:text="@string/comments" />
 
@@ -71,31 +64,26 @@
                 android:text="@={viewModel.comments}" />
 
             <TextView
-                android:id="@+id/textView_status"
                 style="@style/PropertyTextView"
                 android:text="@string/status" />
 
             <LinearLayout
-                android:id="@+id/linearLayout_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/button_status"
+                    style="@style/ClickableEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_weight="1"
-                    android:clickable="true"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:importantForAutofill="no"
                     android:inputType="text"
-                    android:longClickable="false"
                     android:onClick="@{handlers::onStatusClicked}"
                     android:hint="@string/status"
-                    android:text="@{viewModel.status.value}" />
+                    android:text="@{viewModel.status!=null?viewModel.status.value:R.string.empty}"
+                    tools:ignore="Autofill" />
+
                 <ImageButton
                     android:id="@+id/imageButton_cancelStatus"
                     style="?android:attr/borderlessButtonStyle"
@@ -110,31 +98,25 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView_context"
                 style="@style/PropertyTextView"
                 android:text="@string/context" />
 
             <LinearLayout
-                android:id="@+id/linearLayout_context"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/button_context"
+                    style="@style/ClickableEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_weight="1"
-                    android:clickable="true"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:importantForAutofill="no"
                     android:inputType="text"
-                    android:longClickable="false"
                     android:onClick="@{handlers::onContextClicked}"
                     android:hint="@string/context"
-                    android:text="@{viewModel.context.value}" />
+                    android:text="@{viewModel.context!=null?viewModel.context.value:R.string.empty}"
+                    tools:ignore="Autofill" />
 
                 <ImageButton
                     android:id="@+id/imageButton_cancelContext"
@@ -150,30 +132,24 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView_startDate"
                 style="@style/PropertyTextView"
                 android:text="@string/start_date" />
 
             <LinearLayout
-                android:id="@+id/linearLayout_startDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/button_startDate"
+                    style="@style/ClickableEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:clickable="true"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:importantForAutofill="no"
                     android:inputType="date"
-                    android:longClickable="false"
                     android:onClick="@{handlers::onStartDateClicked}"
                     android:hint="@string/date"
-                    android:text="@{viewModel.startDate!=null?DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(viewModel.startDate):null}" />
+                    android:text="@{viewModel.startDate!=null?DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(viewModel.startDate):null}"
+                    tools:ignore="Autofill" />
 
                 <ImageButton
                     android:id="@+id/imageButton_cancelStartDate"
@@ -189,27 +165,22 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout_startTime"
                 style="@style/PropertyTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/button_startTime"
+                    style="@style/ClickableEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_weight="1"
-                    android:clickable="true"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:importantForAutofill="no"
                     android:inputType="time"
-                    android:longClickable="false"
                     android:onClick="@{handlers::onStartTimeClicked}"
                     android:hint="@string/time"
-                    android:text="@{viewModel.startTime!=null?DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL).withZone(ZoneId.systemDefault()).format(viewModel.startTime):null}" />
+                    android:text="@{viewModel.startTime!=null?DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL).withZone(ZoneId.systemDefault()).format(viewModel.startTime):null}"
+                    tools:ignore="Autofill" />
 
                 <ImageButton
                     android:id="@+id/imageButton_cancelStartTime"
@@ -225,30 +196,24 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textView_endDate"
                 style="@style/PropertyTextView"
                 android:text="@string/due_date" />
 
             <LinearLayout
-                android:id="@+id/linearLayout_dueDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/button_dueDate"
+                    style="@style/ClickableEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:clickable="true"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:importantForAutofill="no"
                     android:inputType="date"
-                    android:longClickable="false"
                     android:onClick="@{handlers::onDueDateClicked}"
                     android:hint="@string/date"
-                    android:text="@{viewModel.dueDate!=null?DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(viewModel.dueDate):null}" />
+                    android:text="@{viewModel.dueDate!=null?DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL).format(viewModel.dueDate):null}"
+                    tools:ignore="Autofill" />
 
                 <ImageButton
                     android:id="@+id/imageButton_cancelDueDate"
@@ -264,27 +229,22 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout_dueTime"
                 style="@style/PropertyTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/button_dueTime"
+                    style="@style/ClickableEditText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:layout_weight="1"
-                    android:clickable="true"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:importantForAutofill="no"
                     android:inputType="time"
-                    android:longClickable="false"
                     android:onClick="@{handlers::onDueTimeClicked}"
                     android:hint="@string/time"
-                    android:text="@{viewModel.dueTime!=null?DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL).withZone(ZoneId.systemDefault()).format(viewModel.dueTime):null}" />
+                    android:text="@{viewModel.dueTime!=null?DateTimeFormatter.ofLocalizedTime(FormatStyle.FULL).withZone(ZoneId.systemDefault()).format(viewModel.dueTime):null}"
+                    android:importantForAutofill="no" />
 
                 <ImageButton
                     android:id="@+id/imageButton_cancelDueTime"

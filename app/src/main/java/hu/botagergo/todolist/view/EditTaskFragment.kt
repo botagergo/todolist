@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import hu.botagergo.todolist.Predefined
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.FragmentEditTaskBinding
 import hu.botagergo.todolist.model.Task
@@ -61,7 +62,7 @@ class EditTaskFragment : Fragment() {
     fun onStatusClicked(@Suppress("UNUSED_PARAMETER") view: View) {
         val dialog = SimpleSelectItemDialog(
             getString(R.string.status),
-            Task.Status.values(),
+            Predefined.TaskProperty.status.values(),
             requireContext()
         )
         dialog.setOnDismissListener {
@@ -80,7 +81,7 @@ class EditTaskFragment : Fragment() {
     fun onContextClicked(@Suppress("UNUSED_PARAMETER") view: View) {
         val dialog = SimpleSelectItemDialog(
             getString(R.string.context),
-            Task.Context.values(),
+            Predefined.TaskProperty.context.values(),
             requireContext()
         )
         dialog.setOnDismissListener {
