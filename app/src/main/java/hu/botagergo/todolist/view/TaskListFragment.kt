@@ -57,7 +57,7 @@ class TaskListFragment
 
         adapter = createAdapter(
             this.requireActivity().application as ToDoListApplication,
-            viewModel.tasks.value!!,
+            viewModel.tasks,
             taskListView
         )
 

@@ -25,7 +25,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        logd(this, "onCreate")
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -49,7 +48,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d("TM-", "onOptionsItemSelected")
         return if (item.itemId == android.R.id.home) {
             binding.drawerLayout.openDrawer(GravityCompat.START)
             true
@@ -59,7 +57,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-        logd(this, "onNavigationItemSelected")
         return when (menuItem.itemId) {
             R.id.menu_item_add_sample_data -> {
                 viewModel.addSampleData()

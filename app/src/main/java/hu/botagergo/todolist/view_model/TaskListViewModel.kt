@@ -2,69 +2,52 @@ package hu.botagergo.todolist.view_model
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import hu.botagergo.todolist.Predefined
 import hu.botagergo.todolist.ToDoListApplication
-import hu.botagergo.todolist.model.AppDatabase
+import hu.botagergo.todolist.exception.TaskNotFoundException
+import hu.botagergo.todolist.model.TaskDatabase
 import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.model.TaskDao
 import java.time.LocalDate
 
-class TaskListViewModel(application: Application) : AndroidViewModel(application) {
-    private var _tasksLiveData: MutableLiveData<ArrayList<Task>>
-    private var _tasks: ArrayList<Task>
-    private var _taskDao: TaskDao
-    private var app: ToDoListApplication = application as ToDoListApplication
-    private val unit: () -> Unit = {}
+class TaskListViewModel(app: Application) : AndroidViewModel(app) {
 
-    init {
-        val db = Room.databaseBuilder(
-            application, AppDatabase::class.java, "task"
-        ).allowMainThreadQueries().build()
+    private val app = app as ToDoListApplication
+    private val db = Room.databaseBuilder(
+        app, TaskDatabase::class.java, "task"
+    ).allowMainThreadQueries().build()
+    private val taskDao = db.taskDao()
 
-        _taskDao = db.taskDao()
-        _tasks = ArrayList(_taskDao.getAll())
-        _tasksLiveData = MutableLiveData(_tasks)
-    }
-
-    val tasks: LiveData<ArrayList<Task>>
-        get() {
-            return _tasksLiveData
-        }
+    val tasks: ArrayList<Task> = ArrayList(taskDao.getAll())
 
     fun addTask(task: Task) {
-        val uid = _taskDao.insert(task.copy())
-        _tasks.add(task.copy(uid = uid))
-        _tasksLiveData.value = _tasks
+        val uid = taskDao.insert(task)
+        tasks.add(task.copy(uid = uid))
         app.taskAddedEvent.signal(task)
     }
 
     fun deleteTask(task: Task) {
-        _taskDao.delete(task)
-        _tasks.remove(task)
-        _tasksLiveData.value = _tasks
+        taskDao.delete(task)
+        tasks.remove(task)
         app.taskRemovedEvent.signal(task)
     }
 
     fun deleteAll() {
-        _taskDao.deleteAll()
-        _tasks.clear()
-        _tasksLiveData.value = _tasks
-
-        app.taskDataSetChangedEvent.signal(unit())
+        taskDao.deleteAll()
+        tasks.clear()
+        app.taskDataSetChangedEvent.signal(Unit)
     }
 
     fun updateTask(task: Task) {
-        _taskDao.update(task)
+        val index = tasks.indexOfFirst { it.uid == task.uid }
+        if (index == -1) {
+            throw TaskNotFoundException(task.uid)
+        }
 
-        val index = _tasks.indexOfFirst { it.uid == task.uid }
-        _tasks[index] = task
+        tasks[index] = task
+        taskDao.update(task)
 
-        _tasksLiveData.value = _tasks
-
-        app.taskDataSetChangedEvent.signal(unit())
+        app.taskDataSetChangedEvent.signal(Unit)
     }
 
     fun addSampleData() {
@@ -135,7 +118,7 @@ class TaskListViewModel(application: Application) : AndroidViewModel(application
             )
         )
 
-        app.taskDataSetChangedEvent.signal(unit())
+        app.taskDataSetChangedEvent.signal(Unit)
 
     }
 }

@@ -5,16 +5,16 @@ import java.time.LocalTime
 
 object LocalTimeConverter {
     @TypeConverter
-    fun toDate(dateString: String?): LocalTime? {
-        return if (dateString == null) {
+    fun toTime(timeString: String?): LocalTime? {
+        return if (timeString == null) {
             null
         } else {
-            LocalTime.parse(dateString)
+            LocalTime.parse(timeString)
         }
     }
 
     @TypeConverter
-    fun toDateString(date: LocalTime?): String? {
-        return date?.toString()
+    fun toTimeString(time: LocalTime?): String? {
+        return time?.toString()
     }
 }

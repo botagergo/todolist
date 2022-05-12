@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.room.Room
-import hu.botagergo.todolist.model.AppDatabase
+import hu.botagergo.todolist.model.TaskDatabase
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.model.TaskDao
 import hu.botagergo.todolist.util.EnumValue
@@ -28,7 +28,7 @@ class TaskViewModel(val app: Application, uid: Long) : ViewModel() {
 
     init {
         val db = Room.databaseBuilder(
-            app, AppDatabase::class.java, "task"
+            app, TaskDatabase::class.java, "task"
         ).allowMainThreadQueries().build()
         taskDao = db.taskDao()
 
