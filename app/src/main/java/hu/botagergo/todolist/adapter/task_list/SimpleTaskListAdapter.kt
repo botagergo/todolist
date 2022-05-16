@@ -1,42 +1,31 @@
 package hu.botagergo.todolist.adapter.task_list
 
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
+import android.content.Context
+import com.xwray.groupie.Group
 import com.xwray.groupie.Section
-import com.xwray.groupie.TouchCallback
-import hu.botagergo.todolist.ToDoListApplication
+import hu.botagergo.todolist.group.Grouper
 import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.model.TaskView
-import hu.botagergo.todolist.sorter.TaskReorderableSorter
+import java.util.*
 
 class SimpleTaskListAdapter(
-    application: ToDoListApplication,
-    tasks: ArrayList<Task>, taskView: TaskView
-) : Adapter(application, tasks, taskView) {
+    context: Context
+) : TaskListAdapter(context) {
 
-    private lateinit var displayedTasks: ArrayList<Task>
     private var selectedItem: TaskItem? = null
 
-    init {
-        application.taskAddedEvent.subscribe {
-            refresh()
+    override var tasks: MutableList<Grouper.Group<Task>>?
+        get() = tasksData
+        set(value) {
+            if (value == null || value.size == 0) {
+                tasksData.clear()
+                refresh()
+            } else if (tasksData.size == 0) {
+                tasksData.addAll(value)
+                refresh()
+            } else {
+                updateTasks(rootSection, tasksData[0].tasks, value[0].tasks)
+            }
         }
-
-        application.taskRemovedEvent.subscribe {
-            val item = getItemFromTask(it)
-            item?.first?.remove(item.second)
-        }
-
-        application.taskChangedEvent.subscribe {
-            refresh()
-        }
-
-        application.taskDataSetChangedEvent.subscribe {
-            refresh()
-        }
-
-        refresh()
-    }
 
     override fun onItemSelected(taskItem: TaskItem) {
         taskItem.selected = !taskItem.selected
@@ -51,24 +40,12 @@ class SimpleTaskListAdapter(
     }
 
     override fun refresh() {
-        val adapter = this
-
-        this.clear()
-
-        displayedTasks = ArrayList<Task>().apply {
-            addAll(tasks)
-        }
-        taskView.filter?.apply(displayedTasks)
-        taskView.sorter?.sort(displayedTasks)
-
-        section = Section()
-
-        this.add(section.apply {
-            for (task in displayedTasks) {
-                this.add(TaskItem(adapter, task))
+        rootSection.clear()
+        if (tasksData.size > 0) {
+            for (task in tasksData[0].tasks) {
+                rootSection.add(TaskItem(this, task))
             }
-        })
-
+        }
     }
 
     private fun getItemFromTask(task: Task): Pair<Section, TaskItem>? {
@@ -82,44 +59,17 @@ class SimpleTaskListAdapter(
         return null
     }
 
-    override fun getItemTouchHelper(): ItemTouchHelper? {
-        return if (taskView.sorter is TaskReorderableSorter)
-            ItemTouchHelper(MyTouchCallback())
-        else
-            null
-    }
+    override fun moveItem(fromInd: Int, toInd: Int) {
+        val item = getItem(fromInd) as? TaskItem ?: return
+        val targetItem = getItem(toInd) as? TaskItem ?: return
 
-    inner class MyTouchCallback : TouchCallback() {
-        override fun onMove(
-            recyclerView: RecyclerView, source: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
-        ): Boolean {
-            val adapter = this@SimpleTaskListAdapter
+        val items = rootSection.groups
+        val targetIndex = items.indexOf(targetItem)
+        items.remove(item)
+        items.add(targetIndex, item)
+        rootSection.update(items)
 
-            val item = adapter.getItem(source.bindingAdapterPosition) as TaskItem
-            val targetItem = adapter.getItem(target.bindingAdapterPosition) as TaskItem
-
-            val section = adapter.section
-
-            val items = section.groups
-            val targetIndex = items.indexOf(targetItem)
-            items.remove(item)
-            items.add(targetIndex, item)
-            section.update(items)
-
-            val sorter = adapter.taskView.sorter
-            if (sorter is TaskReorderableSorter) {
-                val toInd = sorter.taskUidList.indexOf(targetItem.task.uid)
-                sorter.taskUidList.remove(item.task.uid)
-                sorter.taskUidList.add(toInd, item.task.uid)
-            }
-
-            return true
-        }
-
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            throw NotImplementedError()
-        }
+        Collections.swap(tasksData[0].tasks, fromInd, toInd)
     }
 
 }

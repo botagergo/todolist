@@ -53,6 +53,7 @@ class TaskListMainFragment : Fragment() {
 
     private fun initViewPager() {
         binding.viewPager.adapter = ScreenSlidePagerAdapter(childFragmentManager)
+        binding.viewPager.offscreenPageLimit = config.selectedTaskViews.size
         binding.viewPager.currentItem = config.selectedTaskViews.indexOfFirst {
             it == config.state.selectedTaskViewUuid
         }
@@ -114,7 +115,7 @@ class TaskListMainFragment : Fragment() {
 
     private fun onSelectedTaskViewsChanged(sender: ObservableList<UUID>?) {
         if (config.hideViewTabsWhenOneSelected) {
-            if (sender?.size ?: 0 > 1) {
+            if ((sender?.size ?: 0) > 1) {
                 binding.tabLayout.visibility = View.VISIBLE
             } else {
                 binding.tabLayout.visibility = View.GONE

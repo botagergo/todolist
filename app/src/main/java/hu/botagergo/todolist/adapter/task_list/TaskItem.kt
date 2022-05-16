@@ -10,14 +10,14 @@ import hu.botagergo.todolist.databinding.ItemTaskBinding
 import hu.botagergo.todolist.model.Task
 import java.time.LocalDate
 
-class TaskItem(private val adapter: Adapter, val task: Task) : BindableItem<ItemTaskBinding>() {
+class TaskItem(private val adapter: TaskListAdapter, var task: Task) : BindableItem<ItemTaskBinding>() {
 
     var selected: Boolean = false
 
     val statusColor: Int
         get() {
             return ResourcesCompat.getColor(
-                adapter.application.resources, when (task.status) {
+                adapter.context.resources, when (task.status) {
                     Predefined.TaskStatusValues.nextAction -> R.color.status_next_action
                     Predefined.TaskStatusValues.waiting -> R.color.status_waiting
                     Predefined.TaskStatusValues.planning -> R.color.status_planning
@@ -28,15 +28,15 @@ class TaskItem(private val adapter: Adapter, val task: Task) : BindableItem<Item
         }
 
     val statusString: String
-        get() = if (task.status == null) "" else "@" + adapter.application.getString(task.status.value)
+        get() = if (task.status == null) "" else "@" + adapter.context.getString(task.status!!.value)
 
     val contextString: String
-        get() = if (task.context == null) "" else "@" + adapter.application.getString(task.context.value)
+        get() = if (task.context == null) "" else "@" + adapter.context.getString(task.context!!.value)
 
     val doneIcon: Drawable?
         get() {
             return ResourcesCompat.getDrawable(
-                adapter.application.resources,
+                adapter.context.resources,
                 if (task.done) R.drawable.ic_undo else R.drawable.ic_done,
                 null
             )
@@ -64,7 +64,6 @@ class TaskItem(private val adapter: Adapter, val task: Task) : BindableItem<Item
     override fun bind(viewBinding: ItemTaskBinding, position: Int) {
         viewBinding.data = this
     }
-
 
     fun getDueMessage(dueDate: LocalDate?): String {
         val today = LocalDate.now()

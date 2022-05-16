@@ -10,7 +10,7 @@ import hu.botagergo.todolist.group.PropertyGrouper
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.sorter.PropertySortSubject
 import hu.botagergo.todolist.sorter.SortSubject
-import hu.botagergo.todolist.sorter.TaskReorderableSorter
+import hu.botagergo.todolist.sorter.ManualTaskSorter
 import hu.botagergo.todolist.util.*
 import java.time.LocalDate
 
@@ -116,7 +116,7 @@ class Predefined {
                     GroupBy.status
                 )
                 .sorter(
-                    TaskReorderableSorter()
+                    ManualTaskSorter()
                 )
                 .build()
         }
@@ -131,14 +131,14 @@ class Predefined {
                             In(),
                             setOf(TaskStatusValues.nextAction)
                         ),
-                        PropertyFilter(TaskProperty.done, Equals(), false)
+                        PropertyFilter(TaskProperty.done, Equals(), true)
                     )
                 )
                 .grouper(
                     GroupBy.dueDate
                 )
                 .sorter(
-                    TaskReorderableSorter()
+                    ManualTaskSorter()
                 )
                 .build()
         }
@@ -147,10 +147,10 @@ class Predefined {
             hu.botagergo.todolist.model.TaskView.Builder("Done")
                 .description("Show completed tasks")
                 .filter(
-                    PropertyFilter(TaskProperty.done, Equals(), true)
+                    PropertyFilter(TaskProperty.done, Equals(), false)
                 )
                 .sorter(
-                    TaskReorderableSorter()
+                    ManualTaskSorter()
                 )
                 .build()
         }

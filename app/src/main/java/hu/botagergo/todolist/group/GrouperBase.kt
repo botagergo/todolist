@@ -1,26 +1,26 @@
 package hu.botagergo.todolist.group
 
-import android.content.Context
-
 abstract class GrouperBase<T> : Grouper<T> {
 
-    override fun group(items: List<T>, context: Context, order: MutableList<Any?>?): MutableList<Pair<Any?, List<T>>> {
-        val groupedItems = items.groupBy {t -> key(t, context)}.toList()
+    override fun group(items: MutableList<T>, order: MutableList<Any?>?): List<Grouper.Group<T>> {
+        val groups = items.groupBy { t -> key(t) }.map { entry ->
+            Grouper.Group(entry.key, entry.value.toMutableList())
+        }.sortedBy { group -> group.name as Comparable<Any> }
+
         return if (order != null) {
             var pos = order.size
-            groupedItems.sortedBy {
-                var ind = order.indexOf(it.first)
+            groups.sortedBy { group ->
+                var ind = order.indexOf(group.name)
                 if (ind == -1) {
                     ind = pos++
-                    order.add(it.first)
+                    order.add(group.name)
                 }
                 ind
             }.toMutableList()
         } else {
-            groupedItems.toMutableList()
+            groups
         }
-    }
 
-    abstract fun key(item: T, context: Context): Any
+    }
 
 }

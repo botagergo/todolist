@@ -1,12 +1,11 @@
 package hu.botagergo.todolist.group
 
-import android.content.Context
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.model.Task
 import java.time.LocalDate
 
 class DueGrouper : GrouperBase<Task>() {
-    override fun key(item: Task, context: Context): Any {
+    override fun key(item: Task): Any {
         if (item.dueDate != null) {
             val today = LocalDate.now().dayOfYear
             val due = item.dueDate.dayOfYear

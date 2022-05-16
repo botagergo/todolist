@@ -8,6 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.model.TaskDao
 import hu.botagergo.todolist.model.TaskDatabase
+import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.Assert.*
 import org.junit.runner.RunWith
@@ -34,14 +35,14 @@ class TaskDatabaseTest {
     }
 
     @Test
-    fun testGet() {
+    fun testGet() = runBlocking {
         val task1 = insert(exampleTask)
         val task2 = get(task1.uid)
         assertEquals(task1, task2)
     }
 
     @Test
-    fun testInsert() {
+    fun testInsert() = runBlocking {
         insert("test1")
         insert("test2")
         assertEquals(2, taskDao.getAll().size)
@@ -50,13 +51,13 @@ class TaskDatabaseTest {
     }
 
     @Test
-    fun testInsertWithSpecificUid() {
+    fun testInsertWithSpecificUid(): Unit = runBlocking {
         insert("test1", 123)
-        val task = get(123)
+        get(123)
     }
 
     @Test
-    fun testInsertExisting() {
+    fun testInsertExisting() = runBlocking {
         val task1 = insert("test1")
         try {
             insert("test2", task1.uid)
@@ -67,7 +68,7 @@ class TaskDatabaseTest {
     }
 
     @Test
-    fun testDelete() {
+    fun testDelete() = runBlocking {
         val task1 = insert("test1")
         val task2 = insert("test2")
 
@@ -79,13 +80,13 @@ class TaskDatabaseTest {
     }
 
     @Test
-    fun testDeleteNonexisting() {
+    fun testDeleteNonexisting() = runBlocking {
         val task = createTask("task1", 123)
         delete(task)
     }
 
     @Test
-    fun testUpdate() {
+    fun testUpdate() = runBlocking {
         var task = insert("test1")
         task = task.copy(
             title="test1_updated", comments="some comment",
@@ -104,8 +105,8 @@ class TaskDatabaseTest {
     }
 
     @Test
-    fun testUpdateNonexisting() {
-        update(exampleTask.copy(uid=123))
+    fun testUpdateNonexisting() = runBlocking {
+        update(exampleTask.copy(uid = 123))
         assertEquals(getAll().size, 0)
     }
 
@@ -116,29 +117,29 @@ class TaskDatabaseTest {
             false, uid)
     }
 
-    private fun insert(title: String, uid: Long=0): Task {
+    private suspend fun insert(title: String, uid: Long=0): Task {
         val task = createTask(title, uid)
         return insert(task)
     }
 
-    private fun insert(task: Task): Task {
+    private suspend fun insert(task: Task): Task {
         val newUid = taskDao.insert(task)
         return task.copy(uid=newUid)
     }
 
-    private fun update(task: Task) {
+    private suspend fun update(task: Task) {
         taskDao.update(task)
     }
 
-    private fun get(uid: Long): Task {
+    private suspend fun get(uid: Long): Task {
         return taskDao.get(uid)
     }
 
-    private fun getAll(): List<Task> {
+    private suspend fun getAll(): List<Task> {
         return taskDao.getAll()
     }
 
-    private fun delete(task: Task) {
+    private suspend fun delete(task: Task) {
         taskDao.delete(task)
     }
 

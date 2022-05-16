@@ -26,6 +26,17 @@ class TaskView(
         sorter: Sorter<Task>?
     ) : this(name, description, filter, grouper, sorter, UUID.randomUUID())
 
+    fun apply(tasks: List<Task>): List<Grouper.Group<Task>> {
+        val sortedTasks = ArrayList<Task>().apply {
+            addAll(tasks)
+        }
+
+        filter?.apply(sortedTasks)
+        sorter?.sort(sortedTasks)
+
+        return grouper?.group(sortedTasks) ?: listOf(Grouper.Group("", sortedTasks))
+    }
+
     class Builder(val name: String) {
 
         private var _description: String? = null

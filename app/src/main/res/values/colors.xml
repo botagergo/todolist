@@ -33,4 +33,6 @@
     <color name="colorControlNormal">@color/black</color>
     <color name="colorAccent">@color/black</color>
 
+    <color name="colorText">@color/black</color>
+
 </resources>

@@ -1,10 +1,15 @@
 package hu.botagergo.todolist.group
 
-import android.content.Context
 import hu.botagergo.todolist.util.NamedByResource
 import java.io.Serializable
 
 interface Grouper<T> : NamedByResource, Serializable, Cloneable {
-    fun group(items: List<T>, context: Context, order: MutableList<Any?>? = null): MutableList<Pair<Any?, List<T>>>
+
+    class Group<T>(val name: Any, val tasks: MutableList<T>)
+
+    fun group(items: MutableList<T>, order: MutableList<Any?>? = null): List<Group<T>>
+    fun key(item: T): Any
+
     public override fun clone(): Grouper<T>
+
 }

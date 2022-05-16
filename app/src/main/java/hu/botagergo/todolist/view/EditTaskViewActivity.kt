@@ -2,7 +2,6 @@ package hu.botagergo.todolist.view
 
 import android.content.Context
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
@@ -15,13 +14,11 @@ import hu.botagergo.todolist.adapter.filter_criterion_list.FilterCriterionListAd
 import hu.botagergo.todolist.adapter.sort_criterion_list.SortCriterionListAdapter
 import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.ActivityEditTaskViewBinding
-import hu.botagergo.todolist.filter.ConjugateFilter
-import hu.botagergo.todolist.filter.PropertyFilter
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.sorter.SimpleSorter
 import hu.botagergo.todolist.sorter.SortCriterion
 import hu.botagergo.todolist.sorter.SortSubject
-import hu.botagergo.todolist.sorter.TaskReorderableSorter
+import hu.botagergo.todolist.sorter.ManualTaskSorter
 import hu.botagergo.todolist.view_model.TaskViewViewModel
 import hu.botagergo.todolist.view_model.TaskViewViewModelFactory
 import java.util.*
@@ -141,7 +138,7 @@ class EditTaskViewActivity : AppCompatActivity() {
     override fun onBackPressed() {
         viewModel.sorter.value =
             if (binding.checkBoxManualOrder.isChecked)
-                TaskReorderableSorter()
+                ManualTaskSorter()
             else
                 SimpleSorter(sortAdapter.sortCriteria)
 

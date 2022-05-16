@@ -21,7 +21,7 @@ class TaskTest {
         assertNotEquals(exampleTask.copy(dueDate=LocalDate.of(2001, 5, 10)), exampleTask)
         assertNotEquals(exampleTask.copy(dueTime=LocalTime.of(6, 36)), exampleTask)
         assertNotEquals(exampleTask.copy(done=false), exampleTask)
-  }
+    }
 
     private val exampleTask = Task(
         title="example task", comments="some comment",

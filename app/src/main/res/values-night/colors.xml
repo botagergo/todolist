@@ -16,4 +16,7 @@
     <color name="colorControlNormal">@color/light_gray_1</color>
     <color name="colorAccent">@color/light_gray_2</color>
 
+    <color name="colorText">@color/light_gray_1</color>
+
+
 </resources>

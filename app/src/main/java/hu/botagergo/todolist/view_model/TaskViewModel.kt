@@ -3,56 +3,56 @@ package hu.botagergo.todolist.view_model
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.room.Room
-import hu.botagergo.todolist.model.TaskDatabase
+import androidx.lifecycle.viewModelScope
+import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.model.TaskDao
 import hu.botagergo.todolist.util.EnumValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 
-class TaskViewModel(val app: Application, uid: Long) : ViewModel() {
+class TaskViewModel(val app: Application, taskUid: Long) : ViewModel() {
 
-    var title: String = ""
-    var comments: String = ""
-    var status: MutableLiveData<EnumValue?> = MutableLiveData(null)
-    var context: MutableLiveData<EnumValue?> = MutableLiveData(null)
-    var startDate: MutableLiveData<LocalDate?> = MutableLiveData()
-    var startTime: MutableLiveData<LocalTime?> = MutableLiveData()
-    var dueDate: MutableLiveData<LocalDate?> = MutableLiveData()
-    var dueTime: MutableLiveData<LocalTime?> = MutableLiveData()
-    private var done: Boolean = false
-    var uid: Long = 0
+    val title: MutableLiveData<String> = MutableLiveData("")
+    val comments: MutableLiveData<String> = MutableLiveData("")
+    val status: MutableLiveData<EnumValue?> = MutableLiveData(null)
+    val context: MutableLiveData<EnumValue?> = MutableLiveData(null)
+    val startDate: MutableLiveData<LocalDate?> = MutableLiveData()
+    val startTime: MutableLiveData<LocalTime?> = MutableLiveData()
+    val dueDate: MutableLiveData<LocalDate?> = MutableLiveData()
+    val dueTime: MutableLiveData<LocalTime?> = MutableLiveData()
+    val done: MutableLiveData<Boolean> = MutableLiveData(false)
+    val uid: MutableLiveData<Long> = MutableLiveData()
 
-    private var taskDao: TaskDao
+    private val taskDao = (app as ToDoListApplication).taskDao
 
     init {
-        val db = Room.databaseBuilder(
-            app, TaskDatabase::class.java, "task"
-        ).allowMainThreadQueries().build()
-        taskDao = db.taskDao()
-
-        if (uid != 0L) {
-            val task = taskDao.get(uid)
-            this.title = task.title
-            this.comments = task.comments
-            this.status.value = task.status
-            this.context.value = task.context
-            this.startDate.value = task.startDate
-            this.startTime.value = task.startTime
-            this.dueDate.value = task.dueDate
-            this.dueTime.value = task.dueTime
-            this.done = task.done
-            this.uid = task.uid
+        if (taskUid != 0L) {
+            viewModelScope.launch(Dispatchers.Main) {
+                val task = taskDao.get(taskUid)
+                title.value = task.title
+                comments.value = task.comments
+                status.value = task.status
+                context.value = task.context
+                startDate.value = task.startDate
+                startTime.value = task.startTime
+                dueDate.value = task.dueDate
+                dueTime.value = task.dueTime
+                done.value = task.done
+                uid.value = task.uid
+            }
+        } else {
+            uid.value = 0L
         }
     }
 
     val task: Task
         get() {
             return Task(
-                title, comments, status.value, context.value,
+                title.value?:"", comments.value?:"", status.value, context.value,
                 startDate.value, startTime.value, dueDate.value, dueTime.value,
-                done, uid
+                done.value?:false, uid.value!!
             )
         }
 

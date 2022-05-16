@@ -25,6 +25,7 @@ class Configuration : Serializable {
 
     class State : Serializable {
         var selectedTaskViewUuid: UUID? = null
+        var taskGroupExpanded: MutableMap<UUID, MutableMap<Any, Boolean>> = hashMapOf()
     }
 
     var state: State = State()
@@ -44,8 +45,7 @@ class Configuration : Serializable {
 
         fun load(context: Context) {
             logd(this, "load")
-            config = defaultConfig
-            /*config = try {
+            config = try {
                 val input = ObjectInputStream(
                     context.openFileInput(configFileName)
                 )
@@ -53,7 +53,7 @@ class Configuration : Serializable {
             } catch (e: Exception) {
                 logi(this, "Setting default config")
                 defaultConfig
-            }*/
+            }
         }
 
         val defaultConfig: Configuration

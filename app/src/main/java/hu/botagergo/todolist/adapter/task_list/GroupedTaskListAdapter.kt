@@ -1,53 +1,118 @@
 package hu.botagergo.todolist.adapter.task_list
 
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
-import com.xwray.groupie.*
-import hu.botagergo.todolist.ToDoListApplication
-import hu.botagergo.todolist.log.loge
+import android.content.Context
+import com.xwray.groupie.ExpandableGroup
+import com.xwray.groupie.Group
+import com.xwray.groupie.Section
+import hu.botagergo.todolist.group.Grouper
 import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.model.TaskView
-import hu.botagergo.todolist.sorter.TaskReorderableSorter
 import java.util.*
-import kotlin.collections.ArrayList
 
 class GroupedTaskListAdapter(
-    application: ToDoListApplication,
-    tasks: ArrayList<Task>, taskView: TaskView
-) : Adapter(application, tasks, taskView) {
+    context: Context,
+    private val groupExpanded: MutableMap<Any, Boolean>
+) : TaskListAdapter(context) {
 
-    private lateinit var groupedTasks: MutableList<Pair<Any?, List<Task>>>
     private var selectedItem: TaskItem? = null
 
-    init {
-        application.taskAddedEvent.subscribe {
-            refresh()
+    override var tasks: MutableList<Grouper.Group<Task>>?
+        get() = tasksData
+        set(value) {
+            if (value == null || value.size == 0) {
+                tasksData.clear()
+                refresh()
+            } else if (tasksData.size == 0) {
+                tasksData.addAll(value)
+                refresh()
+            } else {
+                updateTaskGroups(rootSection, tasksData, value)
+            }
         }
 
-        application.taskRemovedEvent.subscribe {
-            val item = getItemFromTask(it)
-            if (item != null) {
-                item.second.remove(item.third)
+    private fun updateTaskGroups(
+        section: Section,
+        taskGroups: MutableList<Grouper.Group<Task>>,
+        newTaskGroups: MutableList<Grouper.Group<Task>>
+    ) {
+        var taskGroupInd = 0
+        var newTaskGroupInd = 0
 
-                if (item.second.groupCount == 0) {
-                    section.remove(item.first)
+        while (taskGroupInd < taskGroups.size && newTaskGroupInd < newTaskGroups.size) {
+            if (taskGroups[taskGroupInd].name == newTaskGroups[newTaskGroupInd].name) {
+                updateTasks(
+                    (section.getGroup(taskGroupInd) as ExpandableGroup).getGroup(1) as Section,
+                    taskGroups[taskGroupInd].tasks, newTaskGroups[newTaskGroupInd].tasks
+                )
+                taskGroupInd++; newTaskGroupInd++
+            } else {
+                val groups = section.groups
+
+                if (newTaskGroups.find { it.name == taskGroups[taskGroupInd].name } == null) {
+                    taskGroups.removeAt(taskGroupInd)
+                    groups.removeAt(taskGroupInd)
+                    section.update(groups)
+                } else {
+                    val ind = taskGroups.indexOfLast {
+                        it.name == newTaskGroups[newTaskGroupInd].name
+                    }
+                    if (ind != -1) {
+                        if (ind <= taskGroupInd) {
+                            throw RuntimeException()
+                        }
+                        taskGroups.removeAt(ind)
+                        groups.removeAt(ind)
+                    }
+                    taskGroups.add(taskGroupInd, newTaskGroups[newTaskGroupInd])
+                    groups.add(
+                        taskGroupInd,
+                        ExpandableGroup(
+                            TaskGroupHeaderItem(
+                                this,
+                                newTaskGroups[newTaskGroupInd].name
+                            )
+                        ).apply {
+                            add(Section().apply {
+                                for (task in newTaskGroups[newTaskGroupInd].tasks) {
+                                    add(TaskItem(this@GroupedTaskListAdapter, task))
+                                }
+                            })
+                            isExpanded = groupExpanded[newTaskGroups[newTaskGroupInd].name] ?: true
+                        })
+                    section.update(groups)
+
+                    taskGroupInd++; newTaskGroupInd++
                 }
             }
         }
 
-        application.taskChangedEvent.subscribe {
-            refresh()
+        while (taskGroupInd < taskGroups.size) {
+            val groups = section.groups
+            taskGroups.removeAt(taskGroupInd)
+            groups.removeAt(taskGroupInd)
+            section.update(groups)
         }
 
-        application.taskDataSetChangedEvent.subscribe {
-            refresh()
+        while (newTaskGroupInd < newTaskGroups.size) {
+            taskGroups.add(taskGroupInd, newTaskGroups[newTaskGroupInd])
+            val groups = section.groups
+            groups.add(
+                taskGroupInd,
+                ExpandableGroup(
+                    TaskGroupHeaderItem(
+                        this,
+                        newTaskGroups[newTaskGroupInd].name
+                    )
+                ).apply {
+                    add(Section().apply {
+                        for (task in newTaskGroups[newTaskGroupInd].tasks) {
+                            add(TaskItem(this@GroupedTaskListAdapter, task))
+                        }
+                    })
+                    isExpanded = groupExpanded[newTaskGroups[newTaskGroupInd].name] ?: true
+                })
+            section.update(groups)
+            taskGroupInd++; newTaskGroupInd++
         }
-
-        refresh()
-    }
-
-    fun onGroupHeaderClicked(groupName: String, expanded: Boolean) {
-        taskView.state.groupExpanded[groupName] = expanded
     }
 
     override fun onItemSelected(taskItem: TaskItem) {
@@ -63,155 +128,99 @@ class GroupedTaskListAdapter(
         taskItem.notifyChanged()
     }
 
-    private fun refreshItems() {
-        val adapter = this
-        this.clear()
-
-        section = Section()
-
-        this.add(section.apply {
-            for (taskGroup in groupedTasks) {
-                val groupName = taskGroup.first.toString()
-                this.add(ExpandableGroup(TaskGroupHeaderItem(adapter, groupName)).apply {
-                    this.add(Section().apply {
-                        for (task in taskGroup.second) {
-                            this.add(TaskItem(adapter, task))
+    override fun refresh() {
+        rootSection.clear()
+        for (taskGroup in tasksData) {
+            rootSection.add(
+                ExpandableGroup(
+                    TaskGroupHeaderItem(
+                        this@GroupedTaskListAdapter,
+                        taskGroup.name
+                    )
+                ).apply {
+                    add(Section().apply {
+                        for (task in taskGroup.tasks) {
+                            add(TaskItem(this@GroupedTaskListAdapter, task))
                         }
                     })
-                    this.isExpanded = taskView.state.groupExpanded[groupName] ?: true
+                    isExpanded = groupExpanded[taskGroup.name] ?: true
                 })
-            }
-        })
-    }
-
-    override fun refresh() {
-        val sortedTasks = ArrayList<Task>().apply {
-            addAll(tasks)
         }
-
-        taskView.filter?.apply(sortedTasks)
-        taskView.sorter?.sort(sortedTasks)
-        groupedTasks = taskView.grouper!!.group(sortedTasks, application, taskView.state.groupOrder)
-
-        refreshItems()
     }
 
-    private fun getItemFromTask(task: Task): Triple<Group, Section, TaskItem>? {
-        for (i in 0 until section.groupCount) {
-            val group = section.getGroup(i) as? ExpandableGroup ?: return null
-            val groupSection = group.getGroup(1) as? Section ?: return null
-            for (j in 0 until groupSection.itemCount) {
-                val item = groupSection.getItem(j) as? TaskItem ?: return null
-                if (item.task.uid == task.uid) {
-                    return Triple(group, groupSection, item)
-                }
-            }
-        }
-        return null
-    }
+    override fun moveItem(fromInd: Int, toInd: Int) {
+        val sourceItem = getItem(fromInd)
+        val targetItem = getItem(toInd)
 
-    override fun getItemTouchHelper(): ItemTouchHelper? {
-        return if (taskView.sorter is TaskReorderableSorter)
-            ItemTouchHelper(MyTouchCallback())
-        else
-            null
-    }
+        if (sourceItem is TaskGroupHeaderItem && targetItem is TaskGroupHeaderItem) {
+            var fromGroupIndex: Int = -1
+            var toGroupIndex: Int = -1
+            var fromGroup: Group? = null
 
-    inner class MyTouchCallback : TouchCallback() {
-        override fun onMove(
-            recyclerView: RecyclerView,
-            source: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
-        ): Boolean {
-            val adapter = this@GroupedTaskListAdapter
-            val sourceItem = adapter.getItem(source.bindingAdapterPosition)
-            val targetItem = adapter.getItem(target.bindingAdapterPosition)
-
-            if (sourceItem is TaskGroupHeaderItem && targetItem is TaskGroupHeaderItem) {
-                var toGroupIndex: Int = -1
-                var fromGroup: Group? = null
-
-                for ((i, group) in section.groups.withIndex()) {
-                    if (group is ExpandableGroup) {
-                        if (group.getItem(0) == sourceItem) {
-                            fromGroup = group
-                        } else if (group.getItem(0) == targetItem) {
-                            toGroupIndex = i
-                        }
-                    }
-                }
-
-                if (toGroupIndex != -1 && fromGroup != null) {
-                    val items = section.groups
-                    items.remove(fromGroup)
-                    items.add(toGroupIndex, fromGroup)
-                    section.update(items)
-
-                    val groupOrder = taskView.state.groupOrder
-                    val ind1 = groupOrder.indexOfFirst {
-                        it.toString() == sourceItem.groupName
-                    }
-                    val ind2 = groupOrder.indexOfFirst {
-                        it.toString() == targetItem.groupName
-                    }
-                    if (ind1 != -1 && ind2 != -1) {
-                        Collections.swap(groupOrder, ind1, ind2)
-                    } else {
-                        loge(this, "Group not found in group order list")
-                    }
-
-                    return true
-                }
-            } else if (sourceItem is TaskItem && targetItem is TaskItem) {
-                var fromSection: Section? = null
-                var toSection: Section? = null
-
-                var targetIndex = -1
-
-                for (group in adapter.section.groups) {
-                    val expandableGroup = group as? ExpandableGroup ?: return false
-                    val section = expandableGroup.getGroup(1) as? Section ?: return false
-
-                    if (fromSection == null) {
-                        val sourceIndex = section.groups.indexOf(sourceItem)
-                        if (sourceIndex != -1) {
-                            fromSection = section
-                        }
-                    }
-
-                    if (toSection == null) {
-                        targetIndex = section.groups.indexOf(targetItem)
-                        if (targetIndex != -1) {
-                            toSection = section
-                        }
-                    }
-                }
-
-                if (fromSection != null && toSection != null) {
-                    if (fromSection == toSection) {
-                        val items = fromSection.groups
-                        items.remove(sourceItem)
-                        items.add(targetIndex, sourceItem)
-                        fromSection.update(items)
-
-                        val sorter = adapter.taskView.sorter
-                        if (sorter is TaskReorderableSorter) {
-                            val toInd = sorter.taskUidList.indexOf(targetItem.task.uid)
-                            sorter.taskUidList.remove(sourceItem.task.uid)
-                            sorter.taskUidList.add(toInd, sourceItem.task.uid)
-                        }
-
-                        return true
+            for ((i, group) in rootSection.groups.withIndex()) {
+                if (group is ExpandableGroup) {
+                    if (group.getItem(0) == sourceItem) {
+                        fromGroup = group
+                        fromGroupIndex = i
+                    } else if (group.getItem(0) == targetItem) {
+                        toGroupIndex = i
                     }
                 }
             }
 
-            return false
-        }
+            if (toGroupIndex != -1 && fromGroup != null) {
+                val items = rootSection.groups
+                items.remove(fromGroup)
+                items.add(toGroupIndex, fromGroup)
+                rootSection.update(items)
+                Collections.swap(tasksData, fromGroupIndex, toGroupIndex)
+            }
+        } else if (sourceItem is TaskItem && targetItem is TaskItem) {
+            var fromSection: Section? = null
+            var toSection: Section? = null
 
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            throw NotImplementedError()
+            var sourceIndex = -1
+            var targetIndex = -1
+
+            var groupInd = -1
+            var currGroupInd = 0
+
+            for (group in rootSection.groups) {
+                val expandableGroup = group as? ExpandableGroup ?: return
+                val section = expandableGroup.getGroup(1) as? Section ?: return
+
+                if (fromSection == null) {
+                    sourceIndex = section.groups.indexOf(sourceItem)
+                    if (sourceIndex != -1) {
+                        fromSection = section
+                        groupInd = currGroupInd
+                    }
+                }
+
+                if (toSection == null) {
+                    targetIndex = section.groups.indexOf(targetItem)
+                    if (targetIndex != -1) {
+                        toSection = section
+                    }
+                }
+
+                currGroupInd++
+            }
+
+            if (fromSection != null && toSection != null) {
+                if (fromSection == toSection) {
+                    val items = fromSection.groups
+                    items.remove(sourceItem)
+                    items.add(targetIndex, sourceItem)
+                    fromSection.update(items)
+                    Collections.swap(tasksData[groupInd].tasks, sourceIndex, targetIndex)
+                }
+            }
         }
+    }
+
+    fun onGroupExpandedChanged(groupName: Any, expanded: Boolean) {
+        groupExpanded[groupName] = expanded
     }
 
 }

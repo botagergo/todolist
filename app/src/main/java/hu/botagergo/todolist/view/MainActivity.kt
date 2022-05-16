@@ -2,7 +2,6 @@ package hu.botagergo.todolist.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +14,6 @@ import hu.botagergo.todolist.Configuration
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.ActivityMainBinding
-import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.view_model.TaskListViewModel
 
 class MainActivity : AppCompatActivity() {

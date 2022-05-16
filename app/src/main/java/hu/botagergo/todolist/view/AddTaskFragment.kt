@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import hu.botagergo.todolist.Predefined
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.FragmentAddTaskBinding
-import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.view_model.TaskListViewModel
 import hu.botagergo.todolist.view_model.TaskViewModel
 import hu.botagergo.todolist.view_model.TaskViewModelFactory
