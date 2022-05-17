@@ -1,8 +1,6 @@
 package hu.botagergo.todolist.adapter.task_list
 
 import android.content.Context
-import com.xwray.groupie.Group
-import com.xwray.groupie.Section
 import hu.botagergo.todolist.group.Grouper
 import hu.botagergo.todolist.model.Task
 import java.util.*
@@ -23,7 +21,7 @@ class SimpleTaskListAdapter(
                 tasksData.addAll(value)
                 refresh()
             } else {
-                updateTasks(rootSection, tasksData[0].tasks, value[0].tasks)
+                updateTasks(rootSection, tasksData[0].items, value[0].items)
             }
         }
 
@@ -42,21 +40,10 @@ class SimpleTaskListAdapter(
     override fun refresh() {
         rootSection.clear()
         if (tasksData.size > 0) {
-            for (task in tasksData[0].tasks) {
+            for (task in tasksData[0].items) {
                 rootSection.add(TaskItem(this, task))
             }
         }
-    }
-
-    private fun getItemFromTask(task: Task): Pair<Section, TaskItem>? {
-        val group = getTopLevelGroup(0)
-        for (j in 0 until group.itemCount) {
-            val item = group.getItem(j) as? TaskItem
-            if (item?.task?.uid == task.uid) {
-                return Pair(group as Section, item)
-            }
-        }
-        return null
     }
 
     override fun moveItem(fromInd: Int, toInd: Int) {
@@ -69,7 +56,7 @@ class SimpleTaskListAdapter(
         items.add(targetIndex, item)
         rootSection.update(items)
 
-        Collections.swap(tasksData[0].tasks, fromInd, toInd)
+        Collections.swap(tasksData[0].items, fromInd, toInd)
     }
 
 }

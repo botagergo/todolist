@@ -41,7 +41,7 @@ class GroupedTaskListAdapter(
             if (taskGroups[taskGroupInd].name == newTaskGroups[newTaskGroupInd].name) {
                 updateTasks(
                     (section.getGroup(taskGroupInd) as ExpandableGroup).getGroup(1) as Section,
-                    taskGroups[taskGroupInd].tasks, newTaskGroups[newTaskGroupInd].tasks
+                    taskGroups[taskGroupInd].items, newTaskGroups[newTaskGroupInd].items
                 )
                 taskGroupInd++; newTaskGroupInd++
             } else {
@@ -72,7 +72,7 @@ class GroupedTaskListAdapter(
                             )
                         ).apply {
                             add(Section().apply {
-                                for (task in newTaskGroups[newTaskGroupInd].tasks) {
+                                for (task in newTaskGroups[newTaskGroupInd].items) {
                                     add(TaskItem(this@GroupedTaskListAdapter, task))
                                 }
                             })
@@ -104,7 +104,7 @@ class GroupedTaskListAdapter(
                     )
                 ).apply {
                     add(Section().apply {
-                        for (task in newTaskGroups[newTaskGroupInd].tasks) {
+                        for (task in newTaskGroups[newTaskGroupInd].items) {
                             add(TaskItem(this@GroupedTaskListAdapter, task))
                         }
                     })
@@ -139,7 +139,7 @@ class GroupedTaskListAdapter(
                     )
                 ).apply {
                     add(Section().apply {
-                        for (task in taskGroup.tasks) {
+                        for (task in taskGroup.items) {
                             add(TaskItem(this@GroupedTaskListAdapter, task))
                         }
                     })
@@ -213,7 +213,7 @@ class GroupedTaskListAdapter(
                     items.remove(sourceItem)
                     items.add(targetIndex, sourceItem)
                     fromSection.update(items)
-                    Collections.swap(tasksData[groupInd].tasks, sourceIndex, targetIndex)
+                    Collections.swap(tasksData[groupInd].items, sourceIndex, targetIndex)
                 }
             }
         }

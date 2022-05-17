@@ -1,28 +1,21 @@
 package hu.botagergo.todolist.util
 
 import androidx.room.TypeConverter
-import hu.botagergo.todolist.filter.Filter
 import hu.botagergo.todolist.filter.predicate.PredicateKind
 import hu.botagergo.todolist.log.logd
-import hu.botagergo.todolist.model.Task
 import java.io.Serializable
 import java.lang.IllegalArgumentException
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.reflect.KProperty1
 
-abstract class Property<T>(val value: Int, private val prop: KProperty1<T, Any?>): NamedByResource, UUIDOwner(), Serializable {
+abstract class Property<T>(override val name: Int, private val prop: KProperty1<T, Any?>): NamedByResource, UUIDOwner(), Serializable {
 
     fun <K> getValue(t: T): K {
         return prop.get(t) as K
     }
 
     abstract fun supportedPredicates(): Array<PredicateKind>
-
-    override fun getName(): Int {
-        logd(this, "value = $value")
-        return value
-    }
 
     abstract val comparable: Boolean
 
@@ -46,10 +39,10 @@ object EnumValueIntConverter {
 
 open class EnumValue internal constructor(val value: Int): NamedByResource, Serializable {
 
-    override fun getName(): Int = value
+    override val name: Int = value
 
     override fun equals(other: Any?): Boolean {
-        return getName() == (other as? EnumValue)?.getName()
+        return name == (other as? EnumValue)?.name
     }
 
     override fun hashCode(): Int {

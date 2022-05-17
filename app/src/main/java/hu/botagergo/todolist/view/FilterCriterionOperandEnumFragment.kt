@@ -1,20 +1,14 @@
 package hu.botagergo.todolist.view
 
-import hu.botagergo.todolist.log.logd
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
-import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.activityViewModels
 import hu.botagergo.todolist.R
-import hu.botagergo.todolist.databinding.ActivityEditTaskViewBinding
-import hu.botagergo.todolist.databinding.FragmentEditTaskBinding
 import hu.botagergo.todolist.databinding.FragmentFilterCriterionOperandEnumBinding
 import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.sorter.SortCriterion
 import hu.botagergo.todolist.util.EnumProperty
 import hu.botagergo.todolist.view_model.SimpleFilterCriterionViewModel
 
@@ -48,7 +42,7 @@ class FilterCriterionOperandEnumFragment : Fragment() {
         }
 
         val property = viewModel.property.value as EnumProperty<Task>
-        binding.editTextValue.hint = requireContext().getString(property.getName())
+        binding.editTextValue.hint = requireContext().getString(property.name)
         binding.editTextValue.setText(viewModel.operand.value as? String)
 
         return binding.root

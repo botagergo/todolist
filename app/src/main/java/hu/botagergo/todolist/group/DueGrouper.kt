@@ -5,6 +5,7 @@ import hu.botagergo.todolist.model.Task
 import java.time.LocalDate
 
 class DueGrouper : GrouperBase<Task>() {
+
     override fun key(item: Task): Any {
         if (item.dueDate != null) {
             val today = LocalDate.now().dayOfYear
@@ -28,6 +29,6 @@ class DueGrouper : GrouperBase<Task>() {
         return DueGrouper()
     }
 
-    override fun getName(): Int = R.string.due_date
+    override val name: Int = R.string.due_date
 
 }

@@ -28,7 +28,7 @@ class SimpleFilterCriterionItem(val taskPropertyFilter: PropertyFilter<Task>, va
         get() {
             val operand = taskPropertyFilter.operand
             return if (operand is NamedByResource) {
-                context.getString(operand.getName())
+                context.getString(operand.name)
             } else {
                 operand?.toString()
             }

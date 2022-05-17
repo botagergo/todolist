@@ -53,7 +53,7 @@ class SortCriterionListAdapter(
 
         override fun bind(viewBinding: ItemSortCriterionBinding, position: Int) {
             viewBinding.buttonSortSubject.text =
-                context.getText(sortCriterion.property.getName())
+                context.getText(sortCriterion.property.name)
             viewBinding.buttonSortSubject.setOnClickListener {
                 val dialog = SimpleSelectItemDialog(
                     context.getString(R.string.sort_by),
@@ -75,7 +75,7 @@ class SortCriterionListAdapter(
 
                         sortCriterion = sortCriterion.copy(property = dialog.selectedItem!!)
                         viewBinding.buttonSortSubject.text =
-                            context.getText(sortCriterion.property.getName())
+                            context.getText(sortCriterion.property.name)
                         adapter.onItemChanged(this)
 
                         listener?.onSortSubjectListChanged()

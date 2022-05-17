@@ -163,7 +163,7 @@ class EditTaskViewActivity : AppCompatActivity() {
             val item = dialog.selectedItem
             if (item != null) {
                 viewModel.grouper.value = item
-                binding.buttonGroup.setText(item.getName())
+                binding.buttonGroup.setText(item.name)
             }
         }
         dialog.show()
