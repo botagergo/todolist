@@ -1,6 +1,5 @@
 package hu.botagergo.todolist
 
-import hu.botagergo.todolist.model.Task
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Test
@@ -11,27 +10,16 @@ class TaskTest {
 
     @Test
     fun testEquals() {
-        assertEquals(exampleTask, exampleTask.copy())
-        assertNotEquals(exampleTask.copy(title="other title"), exampleTask)
-        assertNotEquals(exampleTask.copy(comments="other comments"), exampleTask)
-        assertNotEquals(exampleTask.copy(status=Predefined.TaskStatusValues.planning), exampleTask)
-        assertNotEquals(exampleTask.copy(context=Predefined.TaskContextValues.errands), exampleTask)
-        assertNotEquals(exampleTask.copy(startDate=LocalDate.of(2001, 4, 10)), exampleTask)
-        assertNotEquals(exampleTask.copy(startTime=LocalTime.of(17, 46)), exampleTask)
-        assertNotEquals(exampleTask.copy(dueDate=LocalDate.of(2001, 5, 10)), exampleTask)
-        assertNotEquals(exampleTask.copy(dueTime=LocalTime.of(6, 36)), exampleTask)
-        assertNotEquals(exampleTask.copy(done=false), exampleTask)
+        assertEquals(Util.task, Util.task.copy())
+        assertNotEquals(Util.task.copy(title="other title"), Util.task)
+        assertNotEquals(Util.task.copy(comments="other comments"), Util.task)
+        assertNotEquals(Util.task.copy(status=Predefined.TaskStatusValues.planning), Util.task)
+        assertNotEquals(Util.task.copy(context=Predefined.TaskContextValues.errands), Util.task)
+        assertNotEquals(Util.task.copy(startDate=LocalDate.of(2001, 4, 10)), Util.task)
+        assertNotEquals(Util.task.copy(startTime=LocalTime.of(17, 46)), Util.task)
+        assertNotEquals(Util.task.copy(dueDate=LocalDate.of(2001, 5, 10)), Util.task)
+        assertNotEquals(Util.task.copy(dueTime=LocalTime.of(6, 36)), Util.task)
+        assertNotEquals(Util.task.copy(done=false), Util.task)
     }
-
-    private val exampleTask = Task(
-        title="example task", comments="some comment",
-        context=Predefined.TaskContextValues.home,
-        status=Predefined.TaskStatusValues.nextAction,
-        startDate=LocalDate.of(2000, 4, 10),
-        startTime=LocalTime.of(14, 55),
-        dueDate=LocalDate.of(2000, 5, 11),
-        dueTime=LocalTime.of(16, 56),
-        done=true
-    )
 
 }

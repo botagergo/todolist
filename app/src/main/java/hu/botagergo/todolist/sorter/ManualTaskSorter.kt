@@ -15,7 +15,7 @@ class ManualTaskSorter(var uids: ArrayList<Long> = ArrayList()) : Sorter<Task> {
                 toRemove.add(uid)
             } else {
                 if (pos < ind) {
-                    Collections.swap(items, pos, ind)
+                    items.add(pos, items.removeAt(ind))
                 }
                 pos++
             }

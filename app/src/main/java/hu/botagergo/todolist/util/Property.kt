@@ -24,6 +24,8 @@ abstract class Property<T>(val value: Int, private val prop: KProperty1<T, Any?>
         return value
     }
 
+    abstract val comparable: Boolean
+
 }
 
 object EnumValueIntConverter {
@@ -84,31 +86,50 @@ class EnumProperty<T>(name: Int, prop: KProperty1<T, Any?>) : Property<T>(name, 
         PredicateKind.EXISTS, PredicateKind.EQUAL, PredicateKind.IN
     )
 
+    override val comparable: Boolean = false
+
 }
 
 class TextProperty<T>(value: Int, prop: KProperty1<T, String?>) : Property<T>(value, prop) {
+
     override fun supportedPredicates(): Array<PredicateKind> = arrayOf(
         PredicateKind.EQUAL, PredicateKind.IN, PredicateKind.CONTAINS, PredicateKind.LIKE, PredicateKind.REGEX
     )
+
+    override val comparable: Boolean = true
+
 }
 
 class BooleanProperty<T>(value: Int, prop: KProperty1<T, Boolean?>) : Property<T>(value, prop) {
+
     override fun supportedPredicates(): Array<PredicateKind> = arrayOf(PredicateKind.EQUAL)
+
+    override val comparable: Boolean = true
+
 }
 
 class DateProperty<T>(value: Int, prop: KProperty1<T, LocalDate?>) : Property<T>(value, prop) {
+
     override fun supportedPredicates(): Array<PredicateKind> = arrayOf(
         PredicateKind.EXISTS,
         PredicateKind.EQUAL, PredicateKind.LESS_EQUAL, PredicateKind.LESS,
         PredicateKind.GREATER, PredicateKind.GREATER_EQUAL,
         PredicateKind.IN, PredicateKind.BETWEEN
     )
+
+    override val comparable: Boolean = true
+
 }
 
 class TimeProperty<T>(value: Int, prop: KProperty1<T, LocalTime?>) : Property<T>(value, prop) {
+
     override fun supportedPredicates(): Array<PredicateKind> = arrayOf(
         PredicateKind.EXISTS,
         PredicateKind.EQUAL, PredicateKind.LESS_EQUAL, PredicateKind.LESS,
         PredicateKind.GREATER, PredicateKind.GREATER_EQUAL,
         PredicateKind.IN, PredicateKind.BETWEEN
-    )}
+    )
+
+    override val comparable: Boolean = true
+
+}

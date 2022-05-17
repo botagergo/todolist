@@ -8,8 +8,6 @@ import hu.botagergo.todolist.group.DueGrouper
 import hu.botagergo.todolist.group.Grouper
 import hu.botagergo.todolist.group.PropertyGrouper
 import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.sorter.PropertySortSubject
-import hu.botagergo.todolist.sorter.SortSubject
 import hu.botagergo.todolist.sorter.ManualTaskSorter
 import hu.botagergo.todolist.util.*
 import java.time.LocalDate
@@ -44,7 +42,7 @@ class Predefined {
 
         val list: Array<Property<Task>> = arrayOf(
             title, comments, status, context,
-            startDate, startTime, dueDate, dueTime
+            startDate, startTime, dueDate, dueTime, done
         )
 
     }
@@ -63,34 +61,11 @@ class Predefined {
         val errands = TaskProperty.context.valueOf(R.string.errands)
     }
 
-    object SortSubjects {
-
-        val title: PropertySortSubject<Task, String> by lazy {
-            PropertySortSubject(Task::title, R.string.title)
-        }
-
-        val startDate: PropertySortSubject<Task, LocalDate?> by lazy {
-            PropertySortSubject(Task::startDate, R.string.start_date)
-        }
-
-        val dueDate: PropertySortSubject<Task, LocalDate?> by lazy {
-            PropertySortSubject(Task::dueDate, R.string.due_date)
-        }
-
-        val list: Array<SortSubject<Task>> = arrayOf(title, startDate, dueDate)
-
-    }
-
     object GroupBy {
-
         val status: Grouper<Task> = PropertyGrouper(TaskProperty.status, "None")
-
         val context: Grouper<Task> = PropertyGrouper(TaskProperty.context, "None")
-
         val dueDate: Grouper<Task> = DueGrouper()
-
         val list: Array<Grouper<Task>> = arrayOf(status, context, dueDate)
-
     }
 
     object TaskView {

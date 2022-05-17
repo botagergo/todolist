@@ -11,12 +11,13 @@ import hu.botagergo.todolist.Predefined
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.ItemSortCriterionBinding
 import hu.botagergo.todolist.model.Task
+import hu.botagergo.todolist.sorter.PropertySortCriterion
 import hu.botagergo.todolist.sorter.SortCriterion
 import hu.botagergo.todolist.view.SimpleSelectItemDialog
 import java.util.*
 
 class SortCriterionListAdapter(
-    var sortCriteria: MutableList<SortCriterion<Task>>,
+    var sortCriteria: MutableList<PropertySortCriterion<Task>>,
     val context: Context
 ) : GroupieAdapter() {
 
@@ -33,7 +34,7 @@ class SortCriterionListAdapter(
         refresh()
     }
 
-    fun addCriterion(criterion: SortCriterion<Task>) {
+    fun addCriterion(criterion: PropertySortCriterion<Task>) {
         section.add(SortCriterionItem(criterion))
         sortCriteria.add(criterion)
     }
@@ -45,24 +46,24 @@ class SortCriterionListAdapter(
         }
     }
 
-    inner class SortCriterionItem(private val sortCriterion: SortCriterion<Task>) :
+    inner class SortCriterionItem(var sortCriterion: PropertySortCriterion<Task>) :
         BindableItem<ItemSortCriterionBinding>() {
 
         val adapter = this@SortCriterionListAdapter
 
         override fun bind(viewBinding: ItemSortCriterionBinding, position: Int) {
             viewBinding.buttonSortSubject.text =
-                context.getText(sortCriterion.getSubject().getName())
+                context.getText(sortCriterion.property.getName())
             viewBinding.buttonSortSubject.setOnClickListener {
                 val dialog = SimpleSelectItemDialog(
                     context.getString(R.string.sort_by),
-                    Predefined.SortSubjects.list,
+                    Predefined.TaskProperty.list,
                     context
                 )
                 dialog.setOnDismissListener {
                     if (dialog.selectedItem != null) {
                         val prevSortCriterionInd = sortCriteria.indexOfFirst {
-                            it.getSubject() == dialog.selectedItem
+                            it.property == dialog.selectedItem
                         }
                         if (prevSortCriterionInd != -1) {
                             val items = section.groups
@@ -72,9 +73,10 @@ class SortCriterionListAdapter(
                             sortCriteria.removeAt(prevSortCriterionInd)
                         }
 
-                        sortCriterion.setSubject(dialog.selectedItem!!)
+                        sortCriterion = sortCriterion.copy(property = dialog.selectedItem!!)
                         viewBinding.buttonSortSubject.text =
-                            context.getText(sortCriterion.getSubject().getName())
+                            context.getText(sortCriterion.property.getName())
+                        adapter.onItemChanged(this)
 
                         listener?.onSortSubjectListChanged()
                     }
@@ -82,7 +84,7 @@ class SortCriterionListAdapter(
                 dialog.show()
             }
 
-            viewBinding.buttonSortOrder.text = sortCriterion.getOrder().name
+            viewBinding.buttonSortOrder.text = sortCriterion.order.name
             viewBinding.buttonSortOrder.setOnClickListener {
                 val dialog = SimpleSelectItemDialog(
                     context.getString(R.string.sort_order),
@@ -91,8 +93,9 @@ class SortCriterionListAdapter(
                 )
                 dialog.setOnDismissListener {
                     if (dialog.selectedItem != null) {
-                        sortCriterion.setOrder(dialog.selectedItem!!)
-                        viewBinding.buttonSortOrder.text = sortCriterion.getOrder().name
+                        sortCriterion = sortCriterion.copy(order = dialog.selectedItem!!)
+                        viewBinding.buttonSortOrder.text = sortCriterion.order.name
+                        adapter.onItemChanged(this)
                     }
                 }
                 dialog.show()
@@ -109,6 +112,13 @@ class SortCriterionListAdapter(
         override fun getLayout(): Int = R.layout.item_sort_criterion
         override fun getDragDirs(): Int = ItemTouchHelper.UP or ItemTouchHelper.DOWN
 
+    }
+
+    fun onItemChanged(item: SortCriterionItem) {
+        val index = section.groups.indexOf(item)
+        if (index != -1) {
+            sortCriteria[index] = item.sortCriterion
+        }
     }
 
     fun getItemTouchHelper(): ItemTouchHelper {

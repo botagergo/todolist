@@ -15,10 +15,8 @@ import hu.botagergo.todolist.adapter.sort_criterion_list.SortCriterionListAdapte
 import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.ActivityEditTaskViewBinding
 import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.sorter.SimpleSorter
-import hu.botagergo.todolist.sorter.SortCriterion
-import hu.botagergo.todolist.sorter.SortSubject
-import hu.botagergo.todolist.sorter.ManualTaskSorter
+import hu.botagergo.todolist.sorter.*
+import hu.botagergo.todolist.util.Property
 import hu.botagergo.todolist.view_model.TaskViewViewModel
 import hu.botagergo.todolist.view_model.TaskViewViewModelFactory
 import java.util.*
@@ -35,7 +33,7 @@ class EditTaskViewActivity : AppCompatActivity() {
     private lateinit var sortAdapter: SortCriterionListAdapter
     private lateinit var filterAdapter: FilterCriterionListAdapter
 
-    private lateinit var availableSortSubjects: Array<SortSubject<Task>>
+    private lateinit var availableSortSubjects: Array<Property<Task>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,9 +50,9 @@ class EditTaskViewActivity : AppCompatActivity() {
         binding.imageButtonSelectName.setOnClickListener { onButtonSelectNameClicked() }
 
         val sorter = viewModel.sorter.value
-        sortAdapter = if (sorter is SimpleSorter<*>) {
+        sortAdapter = if (sorter is CompositeSorter<Task>) {
             binding.checkBoxManualOrder.isChecked = false
-            val sortCriteria = sorter.sortCriteria as MutableList<SortCriterion<Task>>
+            val sortCriteria = sorter.sortCriteria.map { it as PropertySortCriterion<Task> }.toMutableList()
             SortCriterionListAdapter(sortCriteria, this)
         } else {
             binding.checkBoxManualOrder.isChecked = true
@@ -125,8 +123,7 @@ class EditTaskViewActivity : AppCompatActivity() {
             this.setOnDismissListener {
                 if (this.selectedItem != null) {
                     val sortSubject = this.selectedItem!!
-                    val criterion = sortSubject.makeCriterion(SortCriterion.Order.ASCENDING)
-                    sortAdapter.addCriterion(criterion)
+                    sortAdapter.addCriterion(PropertySortCriterion(sortSubject))
                     updateAvailableSortSubjects()
                 }
             }
@@ -140,7 +137,7 @@ class EditTaskViewActivity : AppCompatActivity() {
             if (binding.checkBoxManualOrder.isChecked)
                 ManualTaskSorter()
             else
-                SimpleSorter(sortAdapter.sortCriteria)
+                CompositeSorter(sortAdapter.sortCriteria.toMutableList())
 
         config.taskViews.put(viewModel.taskView)
         super.onBackPressed()
@@ -152,9 +149,9 @@ class EditTaskViewActivity : AppCompatActivity() {
     }
 
     private fun updateAvailableSortSubjects() {
-        availableSortSubjects = Predefined.SortSubjects.list.filter { subject ->
-            sortAdapter.sortCriteria.find { criterion ->
-                criterion.getSubject() == subject
+        availableSortSubjects = Predefined.TaskProperty.list.filter { property ->
+            property.comparable && sortAdapter.sortCriteria.find { criterion ->
+                criterion.property == property
             } == null
         }.toTypedArray()
         updateAddSortSubjectButtonVisiblity()

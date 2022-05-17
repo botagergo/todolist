@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +22,7 @@ import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.model.TaskView
 import hu.botagergo.todolist.sorter.ManualTaskSorter
 import hu.botagergo.todolist.view_model.TaskListViewModel
+import kotlinx.coroutines.launch
 import java.util.*
 
 class TaskListFragment
