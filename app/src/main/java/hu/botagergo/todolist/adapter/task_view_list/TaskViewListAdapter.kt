@@ -28,8 +28,6 @@ class TaskViewListAdapter(
 
         add(TaskViewHeaderItem(context.resources.getString(R.string.task_view_all)))
         add(allSection)
-
-        refresh()
     }
 
     fun refresh() {

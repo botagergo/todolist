@@ -51,6 +51,9 @@ class TaskListMainFragment : Fragment() {
         if (config.hideViewTabsWhenOneSelected && config.activeTaskViews.size <= 1) {
             binding.tabLayout.visibility = View.GONE
         }
+
+        initViewPager()
+        initTabLayout()
     }
 
     private fun initViewPager() {
@@ -72,13 +75,6 @@ class TaskListMainFragment : Fragment() {
         binding.tabLayout.tabRippleColor = null
         binding.tabLayout.isLongClickable = false
         binding.tabLayout.setOnLongClickListener { false }
-    }
-
-    override fun onStart() {
-        logd(this, "onStart")
-        initViewPager()
-        initTabLayout()
-        super.onStart()
     }
 
     private inner class ScreenSlidePagerAdapter(fm: FragmentManager) :

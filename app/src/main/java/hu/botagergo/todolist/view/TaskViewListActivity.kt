@@ -39,11 +39,13 @@ class TaskViewListActivity
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         adapter.getItemTouchHelper().attachToRecyclerView(binding.recyclerView)
+
+        adapter.refresh()
     }
 
-    override fun onStart() {
+    override fun onRestart() {
         adapter.refresh()
-        super.onStart()
+        super.onRestart()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
