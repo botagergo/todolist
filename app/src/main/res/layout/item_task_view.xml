@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View"/>
+
         <variable
             name="data"
             type="hu.botagergo.todolist.adapter.task_view_list.TaskViewItem" />
@@ -18,21 +20,41 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView_viewName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="8dp"
+                    android:text="@{data.view.name}"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    style="?android:attr/borderlessButtonStyle"
+                    android:id="@+id/imageButton"
+                    android:visibility="@{data.buttonVisible?View.VISIBLE:View.INVISIBLE}"
+                    android:src="@{data.active?@drawable/ic_remove_dash:@drawable/ic_select}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/textView_viewName"
+                android:textColor="@color/light_gray_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@{data.view.name}"
-                android:textSize="20sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:visibility="@{data.view.description==null||data.view.description.empty?View.GONE:View.VISIBLE}"
+                android:text="@{data.view.description}"/>
 
         </LinearLayout>
+
     </com.google.android.material.card.MaterialCardView>
 </layout>

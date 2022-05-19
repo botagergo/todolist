@@ -2,7 +2,6 @@
 
 package hu.botagergo.todolist.adapter.task_view_list
 
-import android.app.Application
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -14,98 +13,119 @@ import hu.botagergo.todolist.model.TaskView
 import java.util.*
 
 class TaskViewListAdapter(
-    val app: Application,
     val context: Context
 ) : GroupieAdapter() {
 
-    private lateinit var section: Section
+    private val activeSection: Section = Section()
+    private val allSection: Section = Section()
 
-    lateinit var selectedViews: ArrayList<TaskView>
-    lateinit var availableViews: ArrayList<TaskView>
+    private val activeViews: ArrayList<TaskView> = ArrayList()
+    private val allViews: ArrayList<TaskView> = ArrayList()
 
     init {
+        add(TaskViewHeaderItem(context.resources.getString(R.string.task_view_active)))
+        add(activeSection)
+
+        add(TaskViewHeaderItem(context.resources.getString(R.string.task_view_all)))
+        add(allSection)
+
         refresh()
     }
 
     fun refresh() {
-        val adapter = this
-        this.clear()
+        activeSection.clear()
+        activeViews.clear()
 
-        selectedViews = ArrayList(config.selectedTaskViews.map {
-            config.taskViews[it]!!
-        })
+        allSection.clear()
+        allViews.clear()
 
-        availableViews = ArrayList(config.taskViews.values)
-
-        section = Section().apply {
-            this.add(TaskViewHeaderItem(app.resources.getString(R.string.task_view_selected)))
-            for (view in selectedViews) {
-                this.add(TaskViewItem(adapter, view, context))
-            }
-
-            this.add(TaskViewHeaderItem(app.resources.getString(R.string.task_view_available)))
-            for (view in availableViews) {
-                this.add(TaskViewItem(adapter, view, context))
+        config.activeTaskViews.forEach { uid ->
+            val taskView = config.taskViews[uid]
+            if (taskView != null) {
+                activeSection.add(TaskViewItem(this, taskView, true))
+                activeViews.add(taskView)
             }
         }
 
-        this.add(section)
+        config.taskViews.values.forEach { taskView ->
+            allSection.add(TaskViewItem(this, taskView, false).apply {
+                if (taskView in activeViews) {
+                    buttonVisible.set(false)
+                }
+            })
+            allViews.add(taskView)
+        }
+    }
+
+    private fun addActiveView(ind: Int, view: TaskView) {
+        activeSection.add(ind, TaskViewItem(this, view, true))
+        activeViews.add(view)
+        config.activeTaskViews.add(view.uuid)
+
+        val item = allSection.getItem(allViews.indexOf(view)) as TaskViewItem
+        item.buttonVisible.set(false)
+    }
+
+    private fun removeActiveView(viewItem: TaskViewItem) {
+        activeSection.remove(viewItem)
+        activeViews.remove(viewItem.view)
+        config.activeTaskViews.remove(viewItem.view.uuid)
+
+        val item = allSection.getItem(allViews.indexOf(viewItem.view)) as TaskViewItem
+        item.buttonVisible.set(true)
+    }
+
+    fun onButtonClicked(viewItem: TaskViewItem) {
+        if (viewItem.active) {
+            removeActiveView(viewItem)
+        } else {
+            addActiveView(activeViews.size, viewItem.view)
+        }
     }
 
     fun getItemTouchHelper(): ItemTouchHelper {
-        return ItemTouchHelper(MyTouchCallback())
-    }
+        return ItemTouchHelper(object: TouchCallback() {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                source: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val sourceIndex = source.bindingAdapterPosition
+                val targetIndex = target.bindingAdapterPosition
 
-    inner class MyTouchCallback : TouchCallback() {
+                if (sourceIndex == -1 || targetIndex == -1) {
+                    return false
+                }
 
-        override fun onMove(
-            recyclerView: RecyclerView,
-            source: RecyclerView.ViewHolder,
-            target: RecyclerView.ViewHolder
-        ): Boolean {
-            if (source.bindingAdapterPosition == -1 || target.bindingAdapterPosition == -1) {
-                return false
-            }
-            val adapter = this@TaskViewListAdapter
-            val sourceItem = adapter.getItem(source.bindingAdapterPosition)
+                val sourceItem = this@TaskViewListAdapter.getItem(sourceIndex)
 
-            if (target.bindingAdapterPosition == 0 || sourceItem !is TaskViewItem) {
-                return false
-            }
+                if (sourceItem !is TaskViewItem) {
+                    return false
+                }
 
-            val sourceIndex = source.bindingAdapterPosition
-            val targetIndex = target.bindingAdapterPosition
+                if (sourceIndex > activeViews.size+1 && targetIndex <= activeViews.size+1 && sourceItem.view !in activeViews) {
+                    addActiveView(activeViews.size, sourceItem.view)
+                } else if (sourceIndex < activeViews.size+1 && targetIndex > activeViews.size+1) {
+                    removeActiveView(sourceItem)
+                    source.itemView.visibility = View.GONE
+                } else if (sourceIndex < activeViews.size+1 && targetIndex < activeViews.size+1) {
+                    val groups = activeSection.groups
+                    groups.removeAt(sourceIndex-1)
+                    groups.add(targetIndex-1, sourceItem)
+                    Collections.swap(activeViews, sourceIndex-1, targetIndex-1)
+                    Collections.swap(config.activeTaskViews, sourceIndex-1, targetIndex-1)
+                    activeSection.update(groups)
+                } else {
+                    return false
+                }
 
-            if (sourceIndex == -1 || targetIndex == -1) {
-                return false
-            }
-
-            val items = adapter.section.groups
-
-            if (sourceIndex > selectedViews.size+1 && targetIndex <= selectedViews.size+1 && sourceItem.view !in selectedViews) {
-                items.add(targetIndex, TaskViewItem(adapter, sourceItem.view, context))
-                selectedViews.add(targetIndex - 1, sourceItem.view)
-                config.selectedTaskViews.add(targetIndex - 1, sourceItem.view.uuid)
-            } else if (sourceIndex < selectedViews.size+1 && targetIndex > selectedViews.size+1) {
-                items.remove(sourceItem)
-                source.itemView.visibility = View.GONE
-                selectedViews.remove(sourceItem.view)
-                config.selectedTaskViews.remove(sourceItem.view.uuid)
-            } else if (sourceIndex < selectedViews.size+1 && targetIndex < selectedViews.size+1) {
-                items.removeAt(sourceIndex)
-                items.add(targetIndex, sourceItem)
-                Collections.swap(selectedViews, sourceIndex-1, targetIndex-1)
-                Collections.swap(config.selectedTaskViews, sourceIndex-1, targetIndex-1)
+                return true
             }
 
-            adapter.section.update(items)
-
-            return true
-        }
-
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            throw NotImplementedError()
-        }
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                throw NotImplementedError()
+            }
+        })
     }
 
 }

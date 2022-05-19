@@ -24,7 +24,7 @@ class TaskListMainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setHasOptionsMenu(true)
 
-        config.selectedTaskViews.addOnListChangedCallback(
+        config.activeTaskViews.addOnListChangedCallback(
             object : ObservableListChangedCallback<UUID>() {
                 override fun onChanged(sender: ObservableList<UUID>?) {
                     onSelectedTaskViewsChanged(sender)
@@ -46,20 +46,20 @@ class TaskListMainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         logd(this, "onViewCreated")
 
-        if (config.hideViewTabsWhenOneSelected && config.selectedTaskViews.size <= 1) {
+        if (config.hideViewTabsWhenOneSelected && config.activeTaskViews.size <= 1) {
             binding.tabLayout.visibility = View.GONE
         }
     }
 
     private fun initViewPager() {
         binding.viewPager.adapter = ScreenSlidePagerAdapter(childFragmentManager)
-        binding.viewPager.offscreenPageLimit = config.selectedTaskViews.size
-        binding.viewPager.currentItem = config.selectedTaskViews.indexOfFirst {
+        binding.viewPager.offscreenPageLimit = config.activeTaskViews.size
+        binding.viewPager.currentItem = config.activeTaskViews.indexOfFirst {
             it == config.state.selectedTaskViewUuid
         }
         binding.viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
-                config.state.selectedTaskViewUuid = config.selectedTaskViews[position]
+                config.state.selectedTaskViewUuid = config.activeTaskViews[position]
                 super.onPageSelected(position)
             }
         })
@@ -81,16 +81,16 @@ class TaskListMainFragment : Fragment() {
 
     private inner class ScreenSlidePagerAdapter(fm: FragmentManager) :
         FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        override fun getCount(): Int = config.selectedTaskViews.size
+        override fun getCount(): Int = config.activeTaskViews.size
 
         override fun getItem(position: Int): Fragment {
             return TaskListFragment().apply {
-                arguments = bundleOf("uuid" to config.selectedTaskViews[position])
+                arguments = bundleOf("uuid" to config.activeTaskViews[position])
             }
         }
 
         override fun getPageTitle(position: Int): CharSequence {
-            return config.taskViews[config.selectedTaskViews[position]]!!.name
+            return config.taskViews[config.activeTaskViews[position]]!!.name
         }
 
     }

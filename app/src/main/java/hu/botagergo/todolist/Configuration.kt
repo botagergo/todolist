@@ -9,19 +9,17 @@ import android.content.Context
 import androidx.databinding.ObservableArrayList
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.log.logi
-import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.model.TaskView
 import hu.botagergo.todolist.util.UUIDObservableMap
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
 import java.util.*
-import kotlin.collections.HashSet
 
 class Configuration : Serializable {
 
     var taskViews: UUIDObservableMap<TaskView> = UUIDObservableMap()
-    var selectedTaskViews: ObservableArrayList<UUID> = ObservableArrayList()
+    var activeTaskViews: ObservableArrayList<UUID> = ObservableArrayList()
 
     class State : Serializable {
         var selectedTaskViewUuid: UUID? = null
@@ -71,7 +69,7 @@ class Configuration : Serializable {
                         )
                     }
 
-                    this.selectedTaskViews = ObservableArrayList<UUID>().apply {
+                    this.activeTaskViews = ObservableArrayList<UUID>().apply {
                         addAll(
                             listOf(
                                 Predefined.TaskView.allGroupedByStatus.uuid,

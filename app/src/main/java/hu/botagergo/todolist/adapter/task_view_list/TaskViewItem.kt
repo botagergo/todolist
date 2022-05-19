@@ -1,7 +1,7 @@
 package hu.botagergo.todolist.adapter.task_view_list
 
-import android.content.Context
 import android.content.Intent
+import androidx.databinding.ObservableBoolean
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.xwray.groupie.databinding.BindableItem
 import hu.botagergo.todolist.EXTRA_UUID
@@ -13,18 +13,25 @@ import hu.botagergo.todolist.view.EditTaskViewActivity
 class TaskViewItem(
     val adapter: TaskViewListAdapter,
     val view: TaskView,
-    val context: Context
+    val active: Boolean
 ) :
     BindableItem<ItemTaskViewBinding>() {
 
     override fun bind(viewBinding: ItemTaskViewBinding, position: Int) {
         viewBinding.data = this
         viewBinding.cardView.setOnClickListener {
-            val intent = Intent(context, EditTaskViewActivity::class.java)
-            intent.putExtra(EXTRA_UUID, view.uuid)
-            context.startActivity(intent)
+            adapter.context.startActivity(
+                Intent(adapter.context, EditTaskViewActivity::class.java).apply {
+                    putExtra(EXTRA_UUID, view.uuid)
+                }
+            )
+        }
+        viewBinding.imageButton.setOnClickListener {
+            adapter.onButtonClicked(this)
         }
     }
+
+    var buttonVisible: ObservableBoolean = ObservableBoolean(true)
 
     override fun getLayout() = R.layout.item_task_view
     override fun getDragDirs() = ItemTouchHelper.UP or ItemTouchHelper.DOWN

@@ -8,10 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.adapter.task_view_list.TaskViewListAdapter
-import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.ActivityTaskViewListBinding
-import hu.botagergo.todolist.log.logd
-import hu.botagergo.todolist.model.TaskView
 
 class TaskViewListActivity
     : AppCompatActivity() {
@@ -37,7 +34,7 @@ class TaskViewListActivity
         binding.toolbar.inflateMenu(R.menu.menu_task_view_list)
         binding.toolbar.setOnMenuItemClickListener { onOptionsItemSelected(it) }
 
-        adapter = TaskViewListAdapter(app, this)
+        adapter = TaskViewListAdapter(this)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         adapter.getItemTouchHelper().attachToRecyclerView(binding.recyclerView)
@@ -49,18 +46,20 @@ class TaskViewListActivity
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        logd(this, "onOptionsItemSelected")
-
-        if (item.itemId == android.R.id.home) {
-            onBackPressed()
-            return true
-        } else if (item.itemId == R.id.menu_item_add) {
-            val intent = Intent(applicationContext, EditTaskViewActivity::class.java)
-            startActivity(intent)
-            return true
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            R.id.menu_item_add -> {
+                val intent = Intent(applicationContext, EditTaskViewActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
-
-        return super.onOptionsItemSelected(item)
     }
 
 }

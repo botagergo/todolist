@@ -15,8 +15,8 @@
     <string name="reset_config">Reset config</string>
     <string name="start_date">Start Date</string>
     <string name="due_date">Due Date</string>
-    <string name="task_view_selected">Selected</string>
-    <string name="task_view_available">Available</string>
+    <string name="task_view_active">Active</string>
+    <string name="task_view_all">All</string>
     <string name="status">Status</string>
     <string name="sort_by">Sort By</string>
     <string name="sort_order">Sort Order</string>
