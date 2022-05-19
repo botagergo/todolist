@@ -8,27 +8,38 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import hu.botagergo.todolist.EXTRA_IS_EDIT
+import hu.botagergo.todolist.EXTRA_UID
 import hu.botagergo.todolist.Predefined
 import hu.botagergo.todolist.R
-import hu.botagergo.todolist.databinding.FragmentAddTaskBinding
+import hu.botagergo.todolist.databinding.FragmentTaskBinding
 import hu.botagergo.todolist.view_model.TaskListViewModel
 import hu.botagergo.todolist.view_model.TaskViewModel
 import hu.botagergo.todolist.view_model.TaskViewModelFactory
 import java.time.LocalDate
 import java.time.LocalTime
 
-class AddTaskFragment : Fragment() {
+class TaskFragment : Fragment() {
 
-    private lateinit var binding: FragmentAddTaskBinding
+    private lateinit var binding: FragmentTaskBinding
+
+    private val isEdit: Boolean by lazy {
+        requireArguments().getBoolean(EXTRA_IS_EDIT)
+    }
 
     private val viewModel: TaskViewModel by viewModels {
-        TaskViewModelFactory(requireActivity().application, 0)
+        TaskViewModelFactory(
+            requireActivity().application,
+            if (isEdit) requireArguments().getLong(EXTRA_UID) else 0
+        )
     }
 
     private val taskListViewModel: TaskListViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setHasOptionsMenu(true)
+        if (!isEdit) {
+            setHasOptionsMenu(true)
+        }
         super.onCreate(savedInstanceState)
     }
 
@@ -36,7 +47,7 @@ class AddTaskFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAddTaskBinding.inflate(inflater, container, false)
+        binding = FragmentTaskBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         binding.handlers = this
@@ -44,18 +55,31 @@ class AddTaskFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_add_task_fragment, menu)
+        inflater.inflate(R.menu.menu_task_fragment, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if ((item.itemId == android.R.id.home) or (item.itemId == R.id.menu_item_cancel)) {
-            findNavController().popBackStack()
-        } else if (item.itemId == R.id.menu_item_done) {
-            taskListViewModel.addTask(viewModel.task)
-            findNavController().popBackStack()
+        return when (item.itemId) {
+            android.R.id.home -> {
+                findNavController().popBackStack()
+            }
+            R.id.menu_item_save -> {
+                taskListViewModel.addTask(viewModel.task)
+                findNavController().popBackStack()
+                true
+            }
+            else -> {
+                false
+            }
         }
-        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStop() {
+        if (isEdit) {
+            taskListViewModel.updateTask(viewModel.task)
+        }
+        super.onStop()
     }
 
     fun onStatusClicked(@Suppress("UNUSED_PARAMETER") view: View) {

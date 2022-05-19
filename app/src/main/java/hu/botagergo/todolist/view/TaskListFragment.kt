@@ -13,10 +13,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.TouchCallback
-import hu.botagergo.todolist.R
-import hu.botagergo.todolist.ToDoListApplication
+import hu.botagergo.todolist.*
 import hu.botagergo.todolist.adapter.task_list.*
-import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.FragmentTaskListBinding
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.model.TaskView
@@ -43,9 +41,9 @@ class TaskListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         logd(this, "onCreate")
-        var uuid = savedInstanceState?.get("uuid") as? UUID
+        var uuid = savedInstanceState?.get(EXTRA_UUID) as? UUID
         if (uuid == null) {
-            uuid = arguments?.get("uuid") as UUID
+            uuid = arguments?.get(EXTRA_UUID) as UUID
         }
         viewUuid = uuid
         super.onCreate(savedInstanceState)
@@ -76,8 +74,13 @@ class TaskListFragment
         }
 
         adapter.setOnItemClickedListener {
-            val bundle = bundleOf("uid" to it.uid)
-            findNavController().navigate(R.id.action_taskListFragment_to_editTaskFragment, bundle)
+            findNavController().navigate(
+                R.id.action_taskListFragment_to_taskFragment,
+                bundleOf(
+                    EXTRA_UID to it.uid,
+                    EXTRA_IS_EDIT to true
+                )
+            )
         }
 
         adapter.setOnItemDeleteClickedListener {

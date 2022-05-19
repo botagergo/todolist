@@ -9,19 +9,16 @@
         android:name="hu.botagergo.todolist.view.TaskListMainFragment"
         android:label="Task Manager">
         <action
-            android:id="@+id/action_taskListFragment_to_addTaskFragment"
-            app:destination="@id/add_task_fragment" />
-        <action
-            android:id="@+id/action_taskListFragment_to_editTaskFragment"
-            app:destination="@id/editTaskFragment" />
+            android:id="@+id/action_taskListFragment_to_taskFragment"
+            app:destination="@id/task_fragment" />
     </fragment>
     <fragment
-        android:id="@+id/add_task_fragment"
-        android:name="hu.botagergo.todolist.view.AddTaskFragment"
+        android:id="@+id/task_fragment"
+        android:name="hu.botagergo.todolist.view.TaskFragment"
         android:label="Add task" />
     <fragment
         android:id="@+id/editTaskFragment"
-        android:name="hu.botagergo.todolist.view.EditTaskFragment"
+        android:name="hu.botagergo.todolist.view.TaskFragment"
         android:label="Edit task">
 
     </fragment>

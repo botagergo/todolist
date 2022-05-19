@@ -4,11 +4,12 @@ import android.content.Intent
 import androidx.databinding.ObservableBoolean
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.xwray.groupie.databinding.BindableItem
+import hu.botagergo.todolist.EXTRA_IS_EDIT
 import hu.botagergo.todolist.EXTRA_UUID
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.ItemTaskViewBinding
 import hu.botagergo.todolist.model.TaskView
-import hu.botagergo.todolist.view.EditTaskViewActivity
+import hu.botagergo.todolist.view.TaskViewActivity
 
 class TaskViewItem(
     val adapter: TaskViewListAdapter,
@@ -21,8 +22,9 @@ class TaskViewItem(
         viewBinding.data = this
         viewBinding.cardView.setOnClickListener {
             adapter.context.startActivity(
-                Intent(adapter.context, EditTaskViewActivity::class.java).apply {
+                Intent(adapter.context, TaskViewActivity::class.java).apply {
                     putExtra(EXTRA_UUID, view.uuid)
+                    putExtra(EXTRA_IS_EDIT, true)
                 }
             )
         }

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import hu.botagergo.todolist.EXTRA_IS_EDIT
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.adapter.task_view_list.TaskViewListAdapter
@@ -52,8 +53,11 @@ class TaskViewListActivity
                 true
             }
             R.id.menu_item_add -> {
-                val intent = Intent(applicationContext, EditTaskViewActivity::class.java)
-                startActivity(intent)
+                startActivity(
+                    Intent(applicationContext, TaskViewActivity::class.java).apply {
+                        putExtra(EXTRA_IS_EDIT, false)
+                    }
+                )
                 true
             }
             else -> {

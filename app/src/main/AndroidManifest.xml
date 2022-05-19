@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoList">
         <activity
-            android:name=".view.EditTaskViewActivity"
+            android:name=".view.TaskViewActivity"
             android:exported="true"
             android:label="@string/task_view"
             android:parentActivityName=".view.TaskViewListActivity" />
@@ -19,7 +19,7 @@
             android:name=".view.EditFilterCriterionActivity"
             android:exported="true"
             android:label="@string/edit_filter"
-            android:parentActivityName=".view.EditTaskViewActivity" />
+            android:parentActivityName=".view.TaskViewActivity" />
         <activity
             android:name=".view.TaskViewListActivity"
             android:label="@string/task_views"

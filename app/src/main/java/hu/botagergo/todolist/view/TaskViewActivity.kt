@@ -2,17 +2,15 @@ package hu.botagergo.todolist.view
 
 import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import hu.botagergo.todolist.EXTRA_UUID
-import hu.botagergo.todolist.Predefined
-import hu.botagergo.todolist.R
+import hu.botagergo.todolist.*
 import hu.botagergo.todolist.adapter.filter_criterion_list.FilterCriterionListAdapter
 import hu.botagergo.todolist.adapter.sort_criterion_list.SortCriterionListAdapter
-import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.ActivityEditTaskViewBinding
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.sorter.*
@@ -21,7 +19,7 @@ import hu.botagergo.todolist.view_model.TaskViewViewModel
 import hu.botagergo.todolist.view_model.TaskViewViewModelFactory
 import java.util.*
 
-class EditTaskViewActivity : AppCompatActivity() {
+class TaskViewActivity : AppCompatActivity() {
     val binding: ActivityEditTaskViewBinding by lazy {
         ActivityEditTaskViewBinding.inflate(layoutInflater)
     }
@@ -35,6 +33,10 @@ class EditTaskViewActivity : AppCompatActivity() {
 
     private lateinit var availableSortSubjects: Array<Property<Task>>
 
+    private val isEdit: Boolean by lazy {
+        intent.extras?.getSerializable(EXTRA_IS_EDIT) as Boolean
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -46,6 +48,11 @@ class EditTaskViewActivity : AppCompatActivity() {
         binding.toolbar.setTitle(R.string.task_view)
         binding.toolbar.setNavigationIcon(R.drawable.ic_back)
         binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+
+        if (!isEdit) {
+            binding.toolbar.inflateMenu(R.menu.menu_task_view_activity)
+            binding.toolbar.setOnMenuItemClickListener { onMenuItemClicked(it) }
+        }
 
         binding.imageButtonSelectName.setOnClickListener { onButtonSelectNameClicked() }
 
@@ -132,7 +139,7 @@ class EditTaskViewActivity : AppCompatActivity() {
 
     }
 
-    override fun onBackPressed() {
+    private fun saveTaskView() {
         viewModel.sorter.value =
             if (binding.checkBoxManualOrder.isChecked)
                 ManualTaskSorter()
@@ -140,7 +147,22 @@ class EditTaskViewActivity : AppCompatActivity() {
                 CompositeSorter(sortAdapter.sortCriteria.toMutableList())
 
         config.taskViews.put(viewModel.taskView)
+    }
+
+    override fun onBackPressed() {
+        if (isEdit) {
+            saveTaskView()
+        }
         super.onBackPressed()
+    }
+
+    private fun onMenuItemClicked(menuItem: MenuItem): Boolean {
+        return if (menuItem.itemId == R.id.menu_item_save) {
+            saveTaskView()
+            true
+        } else {
+            false
+        }
     }
 
     private fun updateAddSortSubjectButtonVisiblity() {

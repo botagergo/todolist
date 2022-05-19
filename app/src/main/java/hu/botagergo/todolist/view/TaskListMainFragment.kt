@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
+import hu.botagergo.todolist.EXTRA_IS_EDIT
+import hu.botagergo.todolist.EXTRA_UUID
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.FragmentTaskListMainBinding
@@ -85,7 +87,7 @@ class TaskListMainFragment : Fragment() {
 
         override fun getItem(position: Int): Fragment {
             return TaskListFragment().apply {
-                arguments = bundleOf("uuid" to config.activeTaskViews[position])
+                arguments = bundleOf(EXTRA_UUID to config.activeTaskViews[position])
             }
         }
 
@@ -102,7 +104,10 @@ class TaskListMainFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.menu_item_add) {
-            findNavController().navigate(R.id.action_taskListFragment_to_addTaskFragment)
+            findNavController().navigate(
+                R.id.action_taskListFragment_to_taskFragment,
+                bundleOf(EXTRA_IS_EDIT to false)
+            )
             return true
         }
         return false
