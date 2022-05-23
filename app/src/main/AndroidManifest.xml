@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ToDoListApplication">
 
     <application
         android:name=".ToDoListApplication"
@@ -16,7 +17,7 @@
             android:label="@string/task_view"
             android:parentActivityName=".view.TaskViewListActivity" />
         <activity
-            android:name=".view.EditFilterCriterionActivity"
+            android:name=".view.FilterCriterionActivity"
             android:exported="true"
             android:label="@string/edit_filter"
             android:parentActivityName=".view.TaskViewActivity" />

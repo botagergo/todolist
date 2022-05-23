@@ -136,6 +136,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/filter" />
 
+            <Button
+                android:text="Create criterion"
+                android:visibility="gone"
+                android:id="@+id/button_createCriterion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView_filterCriteria"
                 android:layout_width="match_parent"

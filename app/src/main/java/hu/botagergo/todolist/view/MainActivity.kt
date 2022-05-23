@@ -12,6 +12,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import hu.botagergo.todolist.Configuration
 import hu.botagergo.todolist.R
+import hu.botagergo.todolist.ToDoListApplication
 import hu.botagergo.todolist.config
 import hu.botagergo.todolist.databinding.ActivityMainBinding
 import hu.botagergo.todolist.view_model.TaskListViewModel
@@ -67,7 +68,8 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.menu_item_reset_config -> {
-                config = Configuration.defaultConfig
+                config = Configuration()
+                (application as ToDoListApplication).initConfig()
                 recreate()
                 true
             }

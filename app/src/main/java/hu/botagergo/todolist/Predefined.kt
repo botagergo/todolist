@@ -1,16 +1,18 @@
 package hu.botagergo.todolist
 
+import androidx.databinding.ObservableArrayList
 import hu.botagergo.todolist.filter.*
 import hu.botagergo.todolist.filter.predicate.Equals
-import hu.botagergo.todolist.filter.predicate.In
 import hu.botagergo.todolist.filter.predicate.LessEqual
 import hu.botagergo.todolist.group.DueGrouper
 import hu.botagergo.todolist.group.Grouper
 import hu.botagergo.todolist.group.PropertyGrouper
 import hu.botagergo.todolist.model.Task
+import hu.botagergo.todolist.model.TaskView
 import hu.botagergo.todolist.sorter.ManualTaskSorter
 import hu.botagergo.todolist.util.*
 import java.time.LocalDate
+import java.util.*
 
 class Predefined {
 
@@ -74,7 +76,7 @@ class Predefined {
             hu.botagergo.todolist.model.TaskView.Builder("Hotlist")
                 .filter(
                     ConjugateFilter(
-                        PropertyFilter(TaskProperty.done, Equals(), true),
+                        PropertyFilter(TaskProperty.done, Equals(), true).apply {  },
                         PropertyFilter(
                             TaskProperty.dueDate,
                             LessEqual(allowNull = true),
@@ -103,10 +105,19 @@ class Predefined {
                     ConjugateFilter(
                         PropertyFilter(
                             TaskProperty.status,
-                            In(),
-                            setOf(TaskStatusValues.nextAction)
+                            Equals(),
+                            TaskStatusValues.nextAction
                         ),
-                        PropertyFilter(TaskProperty.done, Equals(), true)
+                        PropertyFilter(TaskProperty.done, Equals(), true),
+                        ConjugateFilter(
+                            PropertyFilter(
+                                TaskProperty.status,
+                                Equals(),
+                                TaskStatusValues.nextAction
+                            ),
+                            PropertyFilter(TaskProperty.done, Equals(), true)
+                        )
+
                     )
                 )
                 .grouper(
@@ -130,5 +141,6 @@ class Predefined {
                 .build()
         }
     }
+
 
 }

@@ -1,17 +1,21 @@
 package hu.botagergo.todolist.view
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import hu.botagergo.todolist.*
 import hu.botagergo.todolist.adapter.filter_criterion_list.FilterCriterionListAdapter
 import hu.botagergo.todolist.adapter.sort_criterion_list.SortCriterionListAdapter
+import hu.botagergo.todolist.contract.SimpleFilterCriterionActivityContract
 import hu.botagergo.todolist.databinding.ActivityEditTaskViewBinding
+import hu.botagergo.todolist.filter.CompositeFilter
 import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.sorter.*
 import hu.botagergo.todolist.util.Property
@@ -20,6 +24,7 @@ import hu.botagergo.todolist.view_model.TaskViewViewModelFactory
 import java.util.*
 
 class TaskViewActivity : AppCompatActivity() {
+
     val binding: ActivityEditTaskViewBinding by lazy {
         ActivityEditTaskViewBinding.inflate(layoutInflater)
     }
@@ -35,6 +40,10 @@ class TaskViewActivity : AppCompatActivity() {
 
     private val isEdit: Boolean by lazy {
         intent.extras?.getSerializable(EXTRA_IS_EDIT) as Boolean
+    }
+
+    val editTaskFilterCriterion = registerForActivityResult(SimpleFilterCriterionActivityContract()) { uuid ->
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,12 +103,29 @@ class TaskViewActivity : AppCompatActivity() {
         binding.imageButtonCancelGroup.setOnClickListener { onButtonCancelGrouperClicked() }
 
         filterAdapter = FilterCriterionListAdapter(this)
+        filterAdapter.listener = object: FilterCriterionListAdapter.Listener {
+            override fun onAddSimpleFilterCriterionClicked(compositeFilter: CompositeFilter<Task>) {
+                editTaskFilterCriterion.launch(null)
+            }
+
+        }
         binding.recyclerViewFilterCriteria.layoutManager = LinearLayoutManager(this)
         binding.recyclerViewFilterCriteria.adapter = filterAdapter
 
         if (viewModel.filter.value != null) {
             filterAdapter.addCriterion(viewModel.filter.value!!)
+        } else {
+            binding.buttonCreateCriterion.visibility = View.VISIBLE
         }
+
+        binding.buttonCreateCriterion.setOnClickListener {
+            startActivity(
+                Intent(this, FilterCriterionActivity::class.java).apply {
+                    putExtra(EXTRA_TASK_VIEW_UUID, viewModel.uuid)
+                }
+            )
+        }
+
     }
 
     override fun onResume() {

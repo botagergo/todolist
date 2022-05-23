@@ -1,35 +1,30 @@
 package hu.botagergo.todolist.view
 
 import android.os.Bundle
-import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
-import hu.botagergo.todolist.EXTRA_UUID
-import hu.botagergo.todolist.Predefined
-import hu.botagergo.todolist.R
+import hu.botagergo.todolist.*
 import hu.botagergo.todolist.databinding.ActivitySimpleFilterCriterionBinding
-import hu.botagergo.todolist.filter.PropertyFilter
 import hu.botagergo.todolist.filter.predicate.Predicate
 import hu.botagergo.todolist.util.BooleanProperty
 import hu.botagergo.todolist.filter.predicate.PredicateKind
-import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.util.EnumProperty
 import hu.botagergo.todolist.util.TextProperty
 import hu.botagergo.todolist.view_model.SimpleFilterCriterionViewModel
 import hu.botagergo.todolist.view_model.SimpleFilterCriterionViewModelFactory
 import java.util.*
 
-class EditFilterCriterionActivity : AppCompatActivity() {
+class FilterCriterionActivity : AppCompatActivity() {
 
-    val uuid: UUID by lazy {
-        intent.extras?.getSerializable(EXTRA_UUID) as? UUID ?: throw IllegalArgumentException()
-    }
+    private val filterUuid by lazy { intent.extras?.getSerializable(EXTRA_UUID) as? UUID }
+    val parentFilterUuid by lazy { intent.extras?.getSerializable(EXTRA_PARENT_UUID) as? UUID }
+    val taskViewUuid by lazy { intent.extras?.getSerializable(EXTRA_TASK_VIEW_UUID) as? UUID }
 
     val viewModel: SimpleFilterCriterionViewModel by viewModels {
-        SimpleFilterCriterionViewModelFactory(application, uuid)
+        SimpleFilterCriterionViewModelFactory(application, filterUuid, taskViewUuid, parentFilterUuid)
     }
 
     val binding: ActivitySimpleFilterCriterionBinding by lazy {

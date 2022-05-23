@@ -10,11 +10,11 @@ import kotlin.collections.ArrayList
 import kotlin.collections.LinkedHashMap
 
 class TaskView(
-    val name: String,
-    val description: String?,
-    val filter: Filter<Task>?,
-    val grouper: Grouper<Task>?,
-    val sorter: Sorter<Task>?,
+    var name: String,
+    var description: String?,
+    var filter: Filter<Task>?,
+    var grouper: Grouper<Task>?,
+    var sorter: Sorter<Task>?,
     uuid: UUID
 ) : UUIDOwner(uuid), Serializable, Cloneable {
 

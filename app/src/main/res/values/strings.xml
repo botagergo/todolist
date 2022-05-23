@@ -51,4 +51,7 @@
     <string name="home">Home</string>
     <string name="work">Work</string>
     <string name="errands">Errands</string>
+    <string name="delete">Delete</string>
+    <string name="move_to">Move To</string>
+    <string name="clone">Clone</string>
 </resources>

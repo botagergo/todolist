@@ -7,8 +7,10 @@ package hu.botagergo.todolist
 
 import android.content.Context
 import androidx.databinding.ObservableArrayList
+import hu.botagergo.todolist.filter.Filter
 import hu.botagergo.todolist.log.logd
 import hu.botagergo.todolist.log.logi
+import hu.botagergo.todolist.model.Task
 import hu.botagergo.todolist.model.TaskView
 import hu.botagergo.todolist.util.UUIDObservableMap
 import java.io.ObjectInputStream
@@ -20,6 +22,8 @@ class Configuration : Serializable {
 
     var taskViews: UUIDObservableMap<TaskView> = UUIDObservableMap()
     var activeTaskViews: ObservableArrayList<UUID> = ObservableArrayList()
+
+    var taskFilters: UUIDObservableMap<Filter<Task>> = UUIDObservableMap()
 
     class State : Serializable {
         var selectedTaskViewUuid: UUID? = null
@@ -41,45 +45,21 @@ class Configuration : Serializable {
     companion object {
         const val configFileName: String = "config"
 
-        fun load(context: Context) {
+        fun load(context: Context): Boolean {
             logd(this, "load")
-            config = try {
+            return try {
                 val input = ObjectInputStream(
                     context.openFileInput(configFileName)
                 )
-                input.readObject() as Configuration
+                config = input.readObject() as Configuration
+                true
             } catch (e: Exception) {
-                logi(this, "Setting default config")
-                defaultConfig
+                logi(this, "Configuration file not found")
+                config = Configuration()
+                false
             }
         }
 
-        val defaultConfig: Configuration
-            get() {
-                return Configuration().apply {
-
-                    this.taskViews = UUIDObservableMap<TaskView>().apply {
-                        putAll(
-                            listOf(
-                                Predefined.TaskView.nextAction,
-                                Predefined.TaskView.allGroupedByStatus,
-                                Predefined.TaskView.done,
-                                Predefined.TaskView.hotlist
-                            )
-                        )
-                    }
-
-                    this.activeTaskViews = ObservableArrayList<UUID>().apply {
-                        addAll(
-                            listOf(
-                                Predefined.TaskView.allGroupedByStatus.uuid,
-                                Predefined.TaskView.hotlist.uuid,
-                                Predefined.TaskView.done.uuid
-                            )
-                        )
-                    }
-                }
-            }
     }
 }
 

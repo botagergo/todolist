@@ -13,21 +13,24 @@ import hu.botagergo.todolist.model.TaskView
 import java.lang.IllegalArgumentException
 import java.util.*
 
-class SimpleFilterCriterionViewModelFactory(val application: Application, val filter: PropertyFilter<Task>) :
-    ViewModelProvider.Factory {
+class SimpleFilterCriterionViewModelFactory(
+    val application: Application, val uuid: UUID?, taskViewUuid: UUID?, parentUuid: UUID?
+) : ViewModelProvider.Factory {
 
-    constructor(application: Application, uuid: UUID) : this(application, findFilter(uuid)) {}
+    val filter = if (uuid != null) findFilter(uuid) else null
+    val taskView = config.taskViews[taskViewUuid]
+    private val parentFilter = if (parentUuid != null) findFilter(parentUuid) else null
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return modelClass.getConstructor(Application::class.java, PropertyFilter::class.java)
-            .newInstance(application, filter)
+        return modelClass.getConstructor(Application::class.java, Filter::class.java, TaskView::class.java, CompositeFilter::class.java)
+            .newInstance(application, filter, taskView, parentFilter)
     }
 
     companion object {
-        private fun findFilter(uuid: UUID): PropertyFilter<Task> {
+        private fun findFilter(uuid: UUID): Filter<Task> {
             for (taskView in config.taskViews.values) {
                 if (taskView.filter != null) {
-                    val filter = findFilter(taskView.filter, uuid)
+                    val filter = findFilter(taskView.filter!!, uuid)
                     if (filter != null) {
                         return filter
                     }
@@ -36,9 +39,9 @@ class SimpleFilterCriterionViewModelFactory(val application: Application, val fi
             throw IllegalArgumentException()
         }
 
-        private fun findFilter(filter: Filter<Task>, uuid: UUID): PropertyFilter<Task>? {
-            if (filter is PropertyFilter<*> && filter.uuid == uuid) {
-                return filter as PropertyFilter<Task>
+        private fun findFilter(filter: Filter<Task>, uuid: UUID): Filter<Task>? {
+            if (filter.uuid == uuid) {
+                return filter
             } else if (filter is CompositeFilter<Task>) {
                 for (subFilter in filter.filters) {
                     findFilter(subFilter, uuid).also {
