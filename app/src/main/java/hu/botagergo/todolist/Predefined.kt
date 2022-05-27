@@ -1,18 +1,15 @@
 package hu.botagergo.todolist
 
-import androidx.databinding.ObservableArrayList
-import hu.botagergo.todolist.filter.*
-import hu.botagergo.todolist.filter.predicate.Equals
-import hu.botagergo.todolist.filter.predicate.LessEqual
-import hu.botagergo.todolist.group.DueGrouper
-import hu.botagergo.todolist.group.Grouper
-import hu.botagergo.todolist.group.PropertyGrouper
-import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.model.TaskView
-import hu.botagergo.todolist.sorter.ManualTaskSorter
-import hu.botagergo.todolist.util.*
+import hu.botagergo.todolist.core.util.*
+import hu.botagergo.todolist.feature_task_view.data.filter.*
+import hu.botagergo.todolist.feature_task_view.data.filter.predicate.Equals
+import hu.botagergo.todolist.feature_task_view.data.filter.predicate.LessEqual
+import hu.botagergo.todolist.feature_task_view.data.group.DueGrouper
+import hu.botagergo.todolist.feature_task_view.data.group.Grouper
+import hu.botagergo.todolist.feature_task_view.data.group.PropertyGrouper
+import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task_view.data.sorter.ManualTaskSorter
 import java.time.LocalDate
-import java.util.*
 
 class Predefined {
 
@@ -73,7 +70,7 @@ class Predefined {
     object TaskView {
 
         val hotlist by lazy {
-            hu.botagergo.todolist.model.TaskView.Builder("Hotlist")
+            hu.botagergo.todolist.feature_task_view.data.TaskView.Builder("Hotlist")
                 .filter(
                     ConjugateFilter(
                         PropertyFilter(TaskProperty.done, Equals(), true).apply {  },
@@ -87,7 +84,7 @@ class Predefined {
         }
 
         val allGroupedByStatus by lazy {
-            hu.botagergo.todolist.model.TaskView.Builder("All Tasks")
+            hu.botagergo.todolist.feature_task_view.data.TaskView.Builder("All Tasks")
                 .description("Show all tasks grouped by status")
                 .grouper(
                     GroupBy.status
@@ -99,7 +96,7 @@ class Predefined {
         }
 
         val nextAction by lazy {
-            hu.botagergo.todolist.model.TaskView.Builder("Next Action")
+            hu.botagergo.todolist.feature_task_view.data.TaskView.Builder("Next Action")
                 .description("Show tasks with status 'Next Action'")
                 .filter(
                     ConjugateFilter(
@@ -130,7 +127,7 @@ class Predefined {
         }
 
         val done by lazy {
-            hu.botagergo.todolist.model.TaskView.Builder("Done")
+            hu.botagergo.todolist.feature_task_view.data.TaskView.Builder("Done")
                 .description("Show completed tasks")
                 .filter(
                     PropertyFilter(TaskProperty.done, Equals(), false)

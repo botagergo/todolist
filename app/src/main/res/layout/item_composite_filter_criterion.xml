@@ -4,11 +4,11 @@
 
     <data>
 
-        <import type="hu.botagergo.todolist.adapter.filter_criterion_list.CompositeFilterCriterionItem" />
+        <import type="hu.botagergo.todolist.feature_task_view.presentation.task_view.adapter.CompositeFilterCriterionItem" />
 
         <variable
             name="data"
-            type="CompositeFilterCriterionItem" />
+            type="hu.botagergo.todolist.feature_task_view.presentation.task_view.adapter.CompositeFilterCriterionItem" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

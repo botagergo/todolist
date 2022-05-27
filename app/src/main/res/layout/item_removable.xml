@@ -4,11 +4,11 @@
 
     <data>
 
-        <import type="hu.botagergo.todolist.adapter.RemovableItem" />
+        <import type="hu.botagergo.todolist.core.adapter.RemovableItem" />
 
         <variable
             name="data"
-            type="hu.botagergo.todolist.adapter.RemovableItem" />
+            type="hu.botagergo.todolist.core.adapter.RemovableItem" />
 
     </data>
 

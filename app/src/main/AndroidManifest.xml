@@ -3,7 +3,7 @@
     package="ToDoListApplication">
 
     <application
-        android:name=".ToDoListApplication"
+        android:name="hu.botagergo.todolist.ToDoListApplication"
         android:allowBackup="true"
         android:appCategory="productivity"
         android:icon="@mipmap/ic_launcher"
@@ -12,22 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoList">
         <activity
-            android:name=".view.TaskViewActivity"
+            android:name="hu.botagergo.todolist.feature_task_view.presentation.task_view.TaskViewActivity"
             android:exported="true"
             android:label="@string/task_view"
-            android:parentActivityName=".view.TaskViewListActivity" />
+            android:parentActivityName="hu.botagergo.todolist.feature_task_view.presentation.task_view_list.TaskViewListActivity" />
         <activity
-            android:name=".view.FilterCriterionActivity"
+            android:name="hu.botagergo.todolist.feature_task_view.presentation.simple_filter_criterion.FilterCriterionActivity"
             android:exported="true"
             android:label="@string/edit_filter"
-            android:parentActivityName=".view.TaskViewActivity" />
+            android:parentActivityName="hu.botagergo.todolist.feature_task_view.presentation.task_view.TaskViewActivity" />
         <activity
-            android:name=".view.TaskViewListActivity"
+            android:name="hu.botagergo.todolist.feature_task_view.presentation.task_view_list.TaskViewListActivity"
             android:label="@string/task_views"
             android:exported="true"
-            android:parentActivityName=".view.MainActivity" />
+            android:parentActivityName="hu.botagergo.todolist.feature_task.presentation.task_list.TaskListActivity" />
         <activity
-            android:name=".view.MainActivity"
+            android:name="hu.botagergo.todolist.feature_task.presentation.task_list.TaskListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

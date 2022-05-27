@@ -5,9 +5,9 @@ import android.database.sqlite.SQLiteConstraintException
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.model.TaskDao
-import hu.botagergo.todolist.model.TaskDatabase
+import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.TaskDao
+import hu.botagergo.todolist.feature_task.data.TaskDatabase
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.Assert.*

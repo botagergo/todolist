@@ -5,11 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".view.FilterCriterionOperandBooleanFragment">
+    tools:context=".feature_task_view.presentation.simple_filter_criterion.FilterCriterionOperandBooleanFragment">
 
     <EditText
         android:id="@+id/editText_string"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:importantForAutofill="no"
+        android:inputType="none" />
 
 </LinearLayout>

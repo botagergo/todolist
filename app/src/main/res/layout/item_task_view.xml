@@ -9,7 +9,7 @@
 
         <variable
             name="data"
-            type="hu.botagergo.todolist.adapter.task_view_list.TaskViewItem" />
+            type="hu.botagergo.todolist.feature_task_view.presentation.task_view_list.adapter.TaskViewItem" />
 
     </data>
 

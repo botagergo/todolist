@@ -1,7 +1,7 @@
 package hu.botagergo.todolist
 
-import hu.botagergo.todolist.model.LocalDateConverter
-import hu.botagergo.todolist.model.LocalTimeConverter
+import hu.botagergo.todolist.feature_task.data.LocalDateConverter
+import hu.botagergo.todolist.feature_task.data.LocalTimeConverter
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDate

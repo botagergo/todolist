@@ -5,7 +5,7 @@
 
         <variable
             name="data"
-            type="hu.botagergo.todolist.adapter.task_list.TaskGroupHeaderItem" />
+            type="hu.botagergo.todolist.feature_task.presentation.task_list.adapter.TaskGroupHeaderItem" />
 
     </data>
 

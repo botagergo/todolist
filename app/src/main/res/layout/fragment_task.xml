@@ -5,7 +5,7 @@
     <data>
 
         <import type="android.view.View" />
-        <import type="hu.botagergo.todolist.model.Task" />
+        <import type="hu.botagergo.todolist.feature_task.data.Task" />
         <import type="java.time.LocalDate" />
         <import type="java.time.LocalTime" />
         <import type="java.time.ZoneId" />
@@ -15,11 +15,11 @@
 
         <variable
             name="viewModel"
-            type="hu.botagergo.todolist.view_model.TaskViewModel" />
+            type="hu.botagergo.todolist.feature_task.presentation.task.TaskViewModel" />
 
         <variable
             name="handlers"
-            type="hu.botagergo.todolist.view.TaskFragment" />
+            type="hu.botagergo.todolist.feature_task.presentation.task.TaskFragment" />
 
     </data>
 

@@ -7,12 +7,8 @@ package hu.botagergo.todolist
 
 import android.content.Context
 import androidx.databinding.ObservableArrayList
-import hu.botagergo.todolist.filter.Filter
-import hu.botagergo.todolist.log.logd
-import hu.botagergo.todolist.log.logi
-import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.model.TaskView
-import hu.botagergo.todolist.util.UUIDObservableMap
+import hu.botagergo.todolist.core.log.logd
+import hu.botagergo.todolist.core.log.logi
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
@@ -20,10 +16,7 @@ import java.util.*
 
 class Configuration : Serializable {
 
-    var taskViews: UUIDObservableMap<TaskView> = UUIDObservableMap()
     var activeTaskViews: ObservableArrayList<UUID> = ObservableArrayList()
-
-    var taskFilters: UUIDObservableMap<Filter<Task>> = UUIDObservableMap()
 
     class State : Serializable {
         var selectedTaskViewUuid: UUID? = null

@@ -3,13 +3,13 @@
 
     <data>
 
-        <import type="hu.botagergo.todolist.view_model.SimpleFilterCriterionViewModel" />
+        <import type="hu.botagergo.todolist.feature_task_view.presentation.simple_filter_criterion.SimpleFilterCriterionViewModel" />
 
         <import type="hu.botagergo.todolist.R" />
 
         <variable
             name="viewModel"
-            type="SimpleFilterCriterionViewModel" />
+            type="hu.botagergo.todolist.feature_task_view.presentation.simple_filter_criterion.SimpleFilterCriterionViewModel" />
     </data>
 
     <LinearLayout
@@ -45,7 +45,9 @@
                     android:layout_marginBottom="16dp"
                     android:hint="@string/task_property"
                     android:onClick="onPropertyClick"
-                    android:text="@{viewModel.property!=null?viewModel.property.name:R.string.empty}" />
+                    android:text="@{viewModel.property!=null?viewModel.property.name:R.string.empty}"
+                    android:inputType="none"
+                    android:importantForAutofill="no" />
 
                 <TextView
                     style="@style/PropertyTextView"
@@ -65,7 +67,9 @@
                         android:layout_weight="1"
                         android:hint="@string/operator"
                         android:onClick="onOperatorClick"
-                        android:text="@{viewModel.predicate.kind.value}" />
+                        android:text="@{viewModel.predicate.kind.value}"
+                        android:importantForAutofill="no"
+                        android:inputType="none" />
 
                     <CheckBox
                         android:id="@+id/checkBox_negate"

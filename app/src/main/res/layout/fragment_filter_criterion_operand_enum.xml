@@ -2,13 +2,13 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".view.FilterCriterionOperandBooleanFragment">
+    tools:context=".feature_task_view.presentation.simple_filter_criterion.FilterCriterionOperandBooleanFragment">
 
     <data>
-        <import type="hu.botagergo.todolist.view_model.SimpleFilterCriterionViewModel"/>
+        <import type="hu.botagergo.todolist.feature_task_view.presentation.simple_filter_criterion.SimpleFilterCriterionViewModel"/>
         <variable
             name="viewModel"
-            type="SimpleFilterCriterionViewModel" />
+            type="hu.botagergo.todolist.feature_task_view.presentation.simple_filter_criterion.SimpleFilterCriterionViewModel" />
     </data>
 
 <LinearLayout
@@ -23,7 +23,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:hint="@string/operator"
-        android:onClick="onOperatorClick" />
+        android:onClick="onOperatorClick"
+        android:importantForAutofill="no"
+        android:inputType="none" />
 
 </LinearLayout>
 </layout>

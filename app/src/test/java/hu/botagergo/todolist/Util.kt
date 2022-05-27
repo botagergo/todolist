@@ -1,6 +1,6 @@
 package hu.botagergo.todolist
 
-import hu.botagergo.todolist.model.Task
+import hu.botagergo.todolist.feature_task.data.Task
 import java.time.LocalDate
 import java.time.LocalTime
 

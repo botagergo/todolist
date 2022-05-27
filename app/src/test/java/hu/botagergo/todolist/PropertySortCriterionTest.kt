@@ -1,7 +1,7 @@
 package hu.botagergo.todolist
 
-import hu.botagergo.todolist.sorter.PropertySortCriterion
-import hu.botagergo.todolist.sorter.SortCriterion
+import hu.botagergo.todolist.feature_task_view.data.sorter.PropertySortCriterion
+import hu.botagergo.todolist.feature_task_view.data.sorter.SortCriterion
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.LocalDate

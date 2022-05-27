@@ -1,8 +1,8 @@
 package hu.botagergo.todolist
 
-import hu.botagergo.todolist.model.Task
-import hu.botagergo.todolist.sorter.CompositeSorter
-import hu.botagergo.todolist.sorter.PropertySortCriterion
+import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task_view.data.sorter.CompositeSorter
+import hu.botagergo.todolist.feature_task_view.data.sorter.PropertySortCriterion
 import org.junit.Assert.*
 import org.junit.Test
 import java.time.LocalTime

@@ -3,11 +3,11 @@
 
     <data>
 
-        <import type="hu.botagergo.todolist.adapter.filter_criterion_list.SimpleFilterCriterionItem" />
+        <import type="hu.botagergo.todolist.feature_task_view.presentation.task_view.adapter.SimpleFilterCriterionItem" />
 
         <variable
             name="data"
-            type="SimpleFilterCriterionItem" />
+            type="hu.botagergo.todolist.feature_task_view.presentation.task_view.adapter.SimpleFilterCriterionItem" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

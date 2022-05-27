@@ -1,6 +1,6 @@
 package hu.botagergo.todolist
 
-import hu.botagergo.todolist.sorter.ManualTaskSorter
+import hu.botagergo.todolist.feature_task_view.data.sorter.ManualTaskSorter
 import org.junit.Assert.*
 import org.junit.Test
 import java.util.*

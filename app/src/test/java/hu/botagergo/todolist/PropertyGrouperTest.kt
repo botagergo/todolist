@@ -1,8 +1,8 @@
 package hu.botagergo.todolist
 
-import hu.botagergo.todolist.group.Grouper
-import hu.botagergo.todolist.group.PropertyGrouper
-import hu.botagergo.todolist.model.Task
+import hu.botagergo.todolist.feature_task_view.data.group.Grouper
+import hu.botagergo.todolist.feature_task_view.data.group.PropertyGrouper
+import hu.botagergo.todolist.feature_task.data.Task
 import org.junit.Test
 import org.junit.Assert.assertEquals
 import java.lang.RuntimeException

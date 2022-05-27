@@ -8,13 +8,13 @@
 
         <import type="android.view.View" />
 
-        <import type="hu.botagergo.todolist.model.Task" />
+        <import type="hu.botagergo.todolist.feature_task.data.Task" />
 
         <import type="hu.botagergo.todolist.R" />
 
         <variable
             name="data"
-            type="hu.botagergo.todolist.adapter.task_list.TaskItem" />
+            type="hu.botagergo.todolist.feature_task.presentation.task_list.adapter.TaskItem" />
 
     </data>
 
@@ -28,7 +28,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context="hu.botagergo.todolist.view.MainActivity">
+            tools:context="hu.botagergo.todolist.feature_task.presentation.task_list.TaskListActivity">
 
             <TextView
                 app:layout_constraintStart_toStartOf="parent"
