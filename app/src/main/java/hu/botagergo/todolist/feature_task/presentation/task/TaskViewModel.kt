@@ -1,55 +1,82 @@
 package hu.botagergo.todolist.feature_task.presentation.task
 
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import hu.botagergo.todolist.EXTRA_IS_EDIT
+import hu.botagergo.todolist.EXTRA_UID
 import hu.botagergo.todolist.feature_task.data.Task
 import hu.botagergo.todolist.core.util.EnumValue
-import hu.botagergo.todolist.feature_task.domain.repository.TaskRepository
+import hu.botagergo.todolist.feature_task.domain.use_case.TaskUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.IllegalArgumentException
 import java.time.LocalDate
 import java.time.LocalTime
+import javax.inject.Inject
 
-class TaskViewModel(private val taskRepo: TaskRepository, taskUid: Long) : ViewModel() {
+@HiltViewModel
+class TaskViewModel @Inject constructor(
+    private val taskUseCase: TaskUseCase,
+    savedStateHandle: SavedStateHandle
+    ) : ViewModel() {
 
-    val title: MutableLiveData<String> = MutableLiveData("")
-    val comments: MutableLiveData<String> = MutableLiveData("")
-    val status: MutableLiveData<EnumValue?> = MutableLiveData(null)
-    val context: MutableLiveData<EnumValue?> = MutableLiveData(null)
-    val startDate: MutableLiveData<LocalDate?> = MutableLiveData()
-    val startTime: MutableLiveData<LocalTime?> = MutableLiveData()
-    val dueDate: MutableLiveData<LocalDate?> = MutableLiveData()
-    val dueTime: MutableLiveData<LocalTime?> = MutableLiveData()
-    val done: MutableLiveData<Boolean> = MutableLiveData(false)
-    val uid: MutableLiveData<Long> = MutableLiveData()
+    val title: MutableState<String> = mutableStateOf("")
+    val comments: MutableState<String> = mutableStateOf("")
+    val status: MutableState<EnumValue?> = mutableStateOf(null)
+    val context: MutableState<EnumValue?> = mutableStateOf(null)
+    val startDate: MutableState<LocalDate?> = mutableStateOf(null)
+    val startTime: MutableState<LocalTime?> = mutableStateOf(null)
+    val dueDate: MutableState<LocalDate?> = mutableStateOf(null)
+    val dueTime: MutableState<LocalTime?> = mutableStateOf(null)
+
+    private var done: Boolean = false
+    private var uid: Long = 0
+
+    private var isEdit = savedStateHandle.get<Boolean>(EXTRA_IS_EDIT) ?: throw IllegalArgumentException()
 
     init {
-        if (taskUid != 0L) {
-            viewModelScope.launch(Dispatchers.Main) {
-                val task = taskRepo.get(taskUid)
-                title.value = task.title
-                comments.value = task.comments
-                status.value = task.status
-                context.value = task.context
-                startDate.value = task.startDate
-                startTime.value = task.startTime
-                dueDate.value = task.dueDate
-                dueTime.value = task.dueTime
-                done.value = task.done
-                uid.value = task.uid
+        savedStateHandle.get<Long>(EXTRA_UID).let { uid ->
+            if (uid != null) {
+                this.uid = uid
+
+                viewModelScope.launch(Dispatchers.Main) {
+                    val task = taskUseCase.getTask(uid)
+                    title.value = task.title
+                    comments.value = task.comments
+                    status.value = task.status
+                    context.value = task.context
+                    startDate.value = task.startDate
+                    startTime.value = task.startTime
+                    dueDate.value = task.dueDate
+                    dueTime.value = task.dueTime
+                    done = task.done
+                }
             }
-        } else {
-            uid.value = 0L
         }
     }
 
-    val task: Task
+    fun save() {
+        if (isEdit) {
+            viewModelScope.launch {
+                taskUseCase.updateTask(task)
+            }
+        } else {
+            viewModelScope.launch {
+                taskUseCase.insertTask(task)
+            }
+        }
+    }
+
+    private val task: Task
         get() {
             return Task(
-                title.value?:"", comments.value?:"", status.value, context.value,
+                title.value, comments.value, status.value, context.value,
                 startDate.value, startTime.value, dueDate.value, dueTime.value,
-                done.value?:false, uid.value!!
+                done, uid
             )
         }
 

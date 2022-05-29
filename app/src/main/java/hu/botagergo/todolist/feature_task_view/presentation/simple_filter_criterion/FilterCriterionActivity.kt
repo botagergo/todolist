@@ -8,13 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import dagger.hilt.android.AndroidEntryPoint
 import hu.botagergo.todolist.*
-import hu.botagergo.todolist.databinding.ActivitySimpleFilterCriterionBinding
-import hu.botagergo.todolist.feature_task_view.data.filter.predicate.Predicate
 import hu.botagergo.todolist.core.util.BooleanProperty
-import hu.botagergo.todolist.feature_task_view.data.filter.predicate.PredicateKind
-import hu.botagergo.todolist.feature_task.presentation.SimpleSelectItemDialog
 import hu.botagergo.todolist.core.util.EnumProperty
 import hu.botagergo.todolist.core.util.TextProperty
+import hu.botagergo.todolist.databinding.ActivitySimpleFilterCriterionBinding
+import hu.botagergo.todolist.feature_task.presentation.SimpleSelectItemDialog
+import hu.botagergo.todolist.feature_task_view.data.filter.predicate.Predicate
+import hu.botagergo.todolist.feature_task_view.data.filter.predicate.PredicateKind
 import hu.botagergo.todolist.feature_task_view.domain.TaskViewRepository
 import java.util.*
 import javax.inject.Inject
@@ -74,16 +74,10 @@ class FilterCriterionActivity : AppCompatActivity() {
             this.getString(R.string.operator),
             operators,
             this
-        ).apply {
-            this.setOnDismissListener {
-                val item = this.selectedItem
-                if (item != null) {
-                    viewModel.predicate.value = Predicate.create(item)
-                    refreshOperandFragment()
-                }
-            }
-            this.show()
-        }
+        ) {
+            viewModel.predicate.value = Predicate.create(it)
+            refreshOperandFragment()
+        }.show()
     }
 
     override fun onBackPressed() {

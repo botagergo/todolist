@@ -52,7 +52,9 @@ class AppModule {
         taskRepo: TaskRepository
     ): TaskUseCase {
         return TaskUseCase(
+            getTask = GetTask(taskRepo),
             getTaskGroups = GetTaskGroups(taskRepo),
+            insertTask = InsertTask(taskRepo),
             updateTask = UpdateTask(taskRepo),
             deleteTask = DeleteTask(taskRepo)
         )

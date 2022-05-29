@@ -4,37 +4,49 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.*
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import hu.botagergo.todolist.*
-import hu.botagergo.todolist.databinding.FragmentTaskBinding
-import hu.botagergo.todolist.feature_task.domain.repository.TaskRepository
+import hu.botagergo.todolist.EXTRA_IS_EDIT
+import hu.botagergo.todolist.Predefined
+import hu.botagergo.todolist.R
+import hu.botagergo.todolist.core.util.EnumValue
 import hu.botagergo.todolist.feature_task.presentation.SimpleSelectItemDialog
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
-import javax.inject.Inject
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @AndroidEntryPoint
 class TaskFragment : Fragment() {
-
-    @Inject lateinit var taskRepo: TaskRepository
-
-    private lateinit var binding: FragmentTaskBinding
 
     private val isEdit: Boolean by lazy {
         requireArguments().getBoolean(EXTRA_IS_EDIT)
     }
 
-    private val viewModel: TaskViewModel by viewModels {
-        TaskViewModelFactory(
-            taskRepo,
-            if (isEdit) requireArguments().getLong(EXTRA_UID) else 0
-        )
-    }
+    private val viewModel: TaskViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (!isEdit) {
@@ -47,11 +59,11 @@ class TaskFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentTaskBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
-        binding.handlers = this
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                TaskScreen(viewModel)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -66,7 +78,7 @@ class TaskFragment : Fragment() {
             }
             R.id.menu_item_save -> {
                 lifecycleScope.launch {
-                    taskRepo.insert(viewModel.task)
+                    viewModel.save()
                 }
                 findNavController().popBackStack()
                 true
@@ -80,117 +92,213 @@ class TaskFragment : Fragment() {
     override fun onStop() {
         if (isEdit) {
             lifecycleScope.launch {
-                taskRepo.update(viewModel.task)
+                viewModel.save()
             }
         }
         super.onStop()
     }
+}
 
-    fun onStatusClicked(@Suppress("UNUSED_PARAMETER") view: View) {
-        val dialog = SimpleSelectItemDialog(
-            getString(R.string.status),
-            Predefined.TaskProperty.status.values(),
-            requireContext()
-        )
-        dialog.setOnDismissListener {
-            val item = dialog.selectedItem
-            if (item != null) {
-                viewModel.status.value = item
-            }
-        }
-        dialog.show()
-    }
-
-    fun onCancelStatusClicked(@Suppress("UNUSED_PARAMETER") view: View) {
-        viewModel.status.value = null
-    }
-
-    fun onContextClicked(@Suppress("UNUSED_PARAMETER") view: View) {
-        val dialog = SimpleSelectItemDialog(
-            getString(R.string.context),
-            Predefined.TaskProperty.context.values(),
-            requireContext()
-        )
-        dialog.setOnDismissListener {
-            val item = dialog.selectedItem
-            if (item != null) {
-                viewModel.context.value = item
-            }
-        }
-        dialog.show()
-    }
-
-    fun onCancelContextClicked(@Suppress("UNUSED_PARAMETER") view: View) {
-        viewModel.context.value = null
-    }
-
-    fun onStartDateClicked(view: View) {
-        showDatePickerDialog(view, true)
-    }
-
-    fun onStartTimeClicked(view: View) {
-        showTimePickerDialog(view, true)
-    }
-
-    fun onDueDateClicked(view: View) {
-        showDatePickerDialog(view, false)
-    }
-
-    fun onDueTimeClicked(view: View) {
-        showTimePickerDialog(view, false)
-    }
-
-    private fun showDatePickerDialog(view: View, start: Boolean) {
-        val dateNow = LocalDate.now()
-        val dialog = DatePickerDialog(
-            view.context, R.style.DateTimePickerDialogTheme,
-            { _, p1, p2, p3 ->
-                val selectedDate = LocalDate.of(
-                    p1,
-                    p2 + 1,
-                    p3
-                ) // In the dialog month numbering starts from 0 but 1 in LocalDate
-                if (start) {
-                    viewModel.startDate.value = selectedDate
-                } else {
-                    viewModel.dueDate.value = selectedDate
-                }
+@Composable
+fun TaskScreen(viewModel: TaskViewModel) {
+    val context = LocalContext.current
+    Column(
+        modifier = Modifier.padding(20.dp)
+    ) {
+        OutlinedTextField(
+            value = viewModel.title.value,
+            label = {
+                Text(stringResource(R.string.title))
             },
-            dateNow.year, dateNow.monthValue-1, dateNow.dayOfMonth)
-        dialog.show()
-    }
-
-    private fun showTimePickerDialog(view: View, start: Boolean) {
-        val timeNow = LocalTime.now()
-        val dialog = TimePickerDialog(
-            view.context, R.style.DateTimePickerDialogTheme,
-            { _, p1, p2 ->
-                val selectedTime = LocalTime.of(p1, p2)
-                if (start) {
-                    viewModel.startTime.value = selectedTime
-                } else {
-                    viewModel.dueTime.value = selectedTime
-                }
+            onValueChange = {
+                viewModel.title.value = it
             },
-            timeNow.hour, timeNow.minute, true)
-        dialog.show()
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = TextStyle(fontSize = 26.sp, color = Color.Black),
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Sentences
+            )
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        OutlinedTextField(
+            value = viewModel.comments.value,
+            label = {
+                Text(stringResource(R.string.comments))
+            },
+            onValueChange = {
+                viewModel.comments.value = it
+            },
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = TextStyle(fontSize = 20.sp, color = Color.Black),
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Sentences
+            )
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        CancelableEnumTextField(
+            value = viewModel.status,
+            label = R.string.status,
+            toResourceId = { status: EnumValue ->
+                status.value
+            },
+            onClick = {
+                SimpleSelectItemDialog(
+                    R.string.status,
+                    Predefined.TaskProperty.status.values(),
+                    context
+                ) {
+                    viewModel.status.value = it
+                }.show()
+            }
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        CancelableEnumTextField(
+            value = viewModel.context,
+            label = R.string.context,
+            toResourceId = { context: EnumValue ->
+                context.value
+            },
+            onClick = {
+                SimpleSelectItemDialog(
+                    R.string.context,
+                    Predefined.TaskProperty.context.values(),
+                    context
+                ) {
+                    viewModel.context.value = it
+                }.show()
+            }
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        CancelableEnumTextField(
+            value = viewModel.startDate,
+            label = R.string.start_date,
+            toString = {
+                DateTimeFormatter.ofLocalizedDate(
+                    FormatStyle.FULL
+                ).format(it)
+            },
+            onClick = {
+                val dateNow = LocalDate.now()
+                DatePickerDialog(
+                    context, R.style.DateTimePickerDialogTheme,
+                    { _, p1, p2, p3 ->
+                        viewModel.startDate.value = LocalDate.of(p1, p2 + 1, p3)
+                    },
+                    dateNow.year, dateNow.monthValue - 1, dateNow.dayOfMonth
+                ).show()
+            },
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        CancelableEnumTextField(
+            value = viewModel.startTime,
+            label = R.string.start_time,
+            toString = {
+                DateTimeFormatter
+                    .ofLocalizedTime(FormatStyle.FULL)
+                    .withZone(ZoneId.systemDefault()).format(it)
+            },
+            onClick = {
+                val timeNow = LocalTime.now()
+                TimePickerDialog(
+                    context, R.style.DateTimePickerDialogTheme,
+                    { _, p1, p2 ->
+                        viewModel.startTime.value = LocalTime.of(p1, p2)
+                    },
+                    timeNow.hour, timeNow.minute, true
+                ).show()
+            },
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        CancelableEnumTextField(
+            value = viewModel.dueDate,
+            label = R.string.due_date,
+            toString = {
+                DateTimeFormatter.ofLocalizedDate(
+                    FormatStyle.FULL
+                ).format(it)
+            },
+            onClick = {
+                val dateNow = LocalDate.now()
+                DatePickerDialog(
+                    context, R.style.DateTimePickerDialogTheme,
+                    { _, p1, p2, p3 ->
+                        viewModel.dueDate.value = LocalDate.of(p1, p2 + 1, p3)
+                    },
+                    dateNow.year, dateNow.monthValue - 1, dateNow.dayOfMonth
+                ).show()
+            },
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        CancelableEnumTextField(
+            value = viewModel.dueTime,
+            label = R.string.due_time,
+            toString = {
+                DateTimeFormatter
+                    .ofLocalizedTime(FormatStyle.FULL)
+                    .withZone(ZoneId.systemDefault()).format(it)
+            },
+            onClick = {
+                val timeNow = LocalTime.now()
+                TimePickerDialog(
+                    context, R.style.DateTimePickerDialogTheme,
+                    { _, p1, p2 ->
+                        viewModel.dueTime.value = LocalTime.of(p1, p2)
+                    },
+                    timeNow.hour, timeNow.minute, true
+                ).show()
+            },
+        )
     }
+}
 
-    fun onCancelDateClicked(view: View) {
-        when (view.id) {
-            R.id.imageButton_cancelStartDate -> {
-                viewModel.startDate.value = null
-            }
-            R.id.imageButton_cancelStartTime -> {
-                viewModel.startTime.value = null
-            }
-            R.id.imageButton_cancelDueDate -> {
-                viewModel.dueDate.value = null
-            }
-            R.id.imageButton_cancelDueTime -> {
-                viewModel.dueTime.value = null
+@Composable
+fun <T> CancelableEnumTextField(
+    value: MutableState<T?>,
+    label: Int,
+    onClick: () -> Unit,
+    toString: ((T) -> String)? = null,
+    toResourceId: ((T) -> Int)? = null
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedTextField(
+            value = if (value.value != null) {
+                if (toString != null)
+                    toString(value.value!!)
+                else if (toResourceId != null)
+                    stringResource(toResourceId(value.value!!))
+                else
+                    value.value!!.toString()
+            } else {
+                ""
+            },
+            label = {
+                Text(stringResource(label))
+            },
+            textStyle = TextStyle(fontSize = 22.sp, color = Color.Black),
+            onValueChange = {},
+            enabled = false,
+
+            modifier = Modifier
+                .clickable {
+                    onClick()
+                }
+                .weight(1.0f),
+            singleLine = true
+        )
+        if (value.value != null) {
+            IconButton(onClick = {
+                value.value = null
+            }) {
+                Icon(
+                    Icons.Filled.Clear,
+                    tint = Color.Red,
+                    contentDescription = "Remove"
+                )
             }
         }
     }
-
 }

@@ -1,8 +1,9 @@
 package hu.botagergo.todolist.feature_task_view.data.filter.predicate
 
+import java.io.Serializable
 import java.lang.IllegalArgumentException
 
-abstract class Predicate(val kind: PredicateKind) {
+abstract class Predicate(val kind: PredicateKind): Serializable {
     abstract fun evaluate(op1: Any?, op2: Any?): Boolean
 
     companion object {
