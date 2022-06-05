@@ -5,12 +5,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import hu.botagergo.todolist.EXTRA_UUID
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.ItemSimpleFilterCriterionBinding
-import hu.botagergo.todolist.feature_task_view.data.filter.PropertyFilter
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task_view.domain.model.filter.PropertyFilter
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import hu.botagergo.todolist.core.util.NamedByResource
 import hu.botagergo.todolist.feature_task_view.presentation.simple_filter_criterion.FilterCriterionActivity
 
-class SimpleFilterCriterionItem(val taskPropertyFilter: PropertyFilter<Task>, adapter: FilterCriterionListAdapter) :
+class SimpleFilterCriterionItem(val taskPropertyFilter: PropertyFilter<TaskEntity>, adapter: FilterCriterionListAdapter) :
     FilterCriterionItem<ItemSimpleFilterCriterionBinding>(adapter) {
 
     override fun bind(viewBinding: ItemSimpleFilterCriterionBinding, position: Int) {

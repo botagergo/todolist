@@ -1,4 +1,4 @@
-package hu.botagergo.todolist.feature_task.data
+package hu.botagergo.todolist.feature_task.data.model
 
 import androidx.room.TypeConverter
 import java.time.LocalDate
@@ -6,10 +6,8 @@ import java.time.LocalDate
 object LocalDateConverter {
     @TypeConverter
     fun toDate(dateString: String?): LocalDate? {
-        return if (dateString == null) {
-            null
-        } else {
-            LocalDate.parse(dateString)
+        return dateString?.let {
+            LocalDate.parse(it)
         }
     }
 

@@ -7,9 +7,9 @@ abstract class GrouperBase<T> : Grouper<T> {
             Grouper.Group(entry.key, entry.value.toMutableList())
         }.toMutableList()
 
-        return if (order != null) {
+        return order?.let { it ->
             val finalGroups = mutableListOf<Grouper.Group<T>>()
-            for (groupName in order) {
+            for (groupName in it) {
                 val ind = groups.indexOfFirst { it.name == groupName }
                 if (ind != -1) {
                     finalGroups.add(groups[ind])
@@ -22,9 +22,7 @@ abstract class GrouperBase<T> : Grouper<T> {
             }
 
             finalGroups
-        } else {
-            groups
-        }
+        } ?: groups
     }
 
 }

@@ -10,14 +10,14 @@ import com.xwray.groupie.databinding.BindableItem
 import hu.botagergo.todolist.Predefined
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.ItemSortCriterionBinding
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import hu.botagergo.todolist.feature_task_view.data.sorter.PropertySortCriterion
 import hu.botagergo.todolist.feature_task_view.data.sorter.SortCriterion
 import hu.botagergo.todolist.feature_task.presentation.SimpleSelectItemDialog
 import java.util.*
 
 class SortCriterionListAdapter(
-    var sortCriteria: MutableList<PropertySortCriterion<Task>>,
+    var sortCriteria: MutableList<PropertySortCriterion<TaskEntity>>,
     val context: Context
 ) : GroupieAdapter() {
 
@@ -34,7 +34,7 @@ class SortCriterionListAdapter(
         refresh()
     }
 
-    fun addCriterion(criterion: PropertySortCriterion<Task>) {
+    fun addCriterion(criterion: PropertySortCriterion<TaskEntity>) {
         section.add(SortCriterionItem(criterion))
         sortCriteria.add(criterion)
     }
@@ -46,7 +46,7 @@ class SortCriterionListAdapter(
         }
     }
 
-    inner class SortCriterionItem(var sortCriterion: PropertySortCriterion<Task>) :
+    inner class SortCriterionItem(var sortCriterion: PropertySortCriterion<TaskEntity>) :
         BindableItem<ItemSortCriterionBinding>() {
 
         val adapter = this@SortCriterionListAdapter

@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import hu.botagergo.todolist.*
 import hu.botagergo.todolist.databinding.FragmentTaskListBinding
 import hu.botagergo.todolist.core.log.logd
-import hu.botagergo.todolist.feature_task_view.data.TaskView
+import hu.botagergo.todolist.feature_task_view.data.model.TaskView
 import hu.botagergo.todolist.feature_task_view.domain.TaskViewRepository
 import hu.botagergo.todolist.feature_task_view.data.sorter.ManualTaskSorter
 import hu.botagergo.todolist.feature_task.domain.use_case.TaskUseCase
@@ -26,6 +26,7 @@ import hu.botagergo.todolist.feature_task.presentation.task_list.adapter.Grouped
 import hu.botagergo.todolist.feature_task.presentation.task_list.adapter.SimpleTaskListAdapter
 import hu.botagergo.todolist.feature_task.presentation.task_list.adapter.TaskListAdapter
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -45,17 +46,11 @@ class TaskListFragment
     private lateinit var binding: FragmentTaskListBinding
 
     private lateinit var viewUuid: UUID
-
-    private val taskView: TaskView by lazy {
-        taskViewRepo.get(viewUuid)
-    }
+    private lateinit var taskView: TaskView
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        var uuid = savedInstanceState?.get(EXTRA_UUID) as? UUID
-        if (uuid == null) {
-            uuid = arguments?.get(EXTRA_UUID) as UUID
-        }
-        viewUuid = uuid
+        viewUuid = savedInstanceState?.get(EXTRA_UUID) as? UUID
+            ?: arguments?.get(EXTRA_UUID) as UUID
         super.onCreate(savedInstanceState)
     }
 
@@ -72,12 +67,13 @@ class TaskListFragment
         logd(this, "onViewCreated")
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = if (taskView.grouper != null) {
+        taskView = taskViewRepo.get(viewUuid)
+
+        adapter = taskView.grouper?.let {
             GroupedTaskListAdapter(this.requireActivity().application as ToDoListApplication,
                 config.state.taskGroupExpanded.getOrPut(taskView.uuid) { mutableMapOf() })
-        } else {
-            SimpleTaskListAdapter(this.requireActivity().application as ToDoListApplication)
-        }
+        } ?: SimpleTaskListAdapter(this.requireActivity().application as ToDoListApplication)
+
 
         adapter.setOnItemDoneClickedListener {
             lifecycleScope.launch {
@@ -123,18 +119,18 @@ class TaskListFragment
             val adapter = recyclerView.adapter as TaskListAdapter
             adapter.moveItem(source.bindingAdapterPosition, target.bindingAdapterPosition)
 
-            if (manualTaskSorter != null) {
+            manualTaskSorter?.let { sorter ->
                 val fromTask = adapter.taskAt(source.bindingAdapterPosition) ?: return true
                 val toTask = adapter.taskAt(target.bindingAdapterPosition) ?: return true
 
-                val fromInd = manualTaskSorter.uids.indexOfFirst { it == fromTask.uid }
-                val toInd = manualTaskSorter.uids.indexOfFirst { it == toTask.uid }
+                val fromInd = sorter.uids.indexOfFirst { it == fromTask.uid }
+                val toInd = sorter.uids.indexOfFirst { it == toTask.uid }
 
                 if (fromInd == -1 || toInd == -1) {
                     return true
                 }
 
-                Collections.swap(manualTaskSorter.uids, fromInd, toInd)
+                Collections.swap(sorter.uids, fromInd, toInd)
             }
 
             return true
@@ -143,6 +139,17 @@ class TaskListFragment
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             throw NotImplementedError()
         }
+    }
+
+    override fun onStart() {
+        val newTaskView = taskViewRepo.get(viewUuid)
+        if (newTaskView != taskView) {
+            lifecycleScope.launchWhenStarted {
+                adapter.tasks = taskUseCase.getTaskGroups(newTaskView).last().toMutableList()
+                taskView = newTaskView
+            }
+        }
+        super.onStart()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

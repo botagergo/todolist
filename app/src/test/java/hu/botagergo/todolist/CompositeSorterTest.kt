@@ -1,6 +1,6 @@
 package hu.botagergo.todolist
 
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import hu.botagergo.todolist.feature_task_view.data.sorter.CompositeSorter
 import hu.botagergo.todolist.feature_task_view.data.sorter.PropertySortCriterion
 import org.junit.Assert.*
@@ -12,7 +12,7 @@ class CompositeSorterTest {
     @Test
     fun testEmptyCriterionList() {
         try {
-            CompositeSorter<Task>(
+            CompositeSorter<TaskEntity>(
                 mutableListOf()
             )
             assert(false)
@@ -59,7 +59,7 @@ class CompositeSorterTest {
 
     @Test
     fun testSortEmpty() {
-        val tasks = arrayListOf<Task>()
+        val tasks = arrayListOf<TaskEntity>()
         val sorter = CompositeSorter(
             mutableListOf(
                 PropertySortCriterion(Predefined.TaskProperty.done),

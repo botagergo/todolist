@@ -9,13 +9,13 @@ data class PropertySortCriterion<T>(
     val nullsLast: Boolean = true
 ) : SortCriterion<T>, Serializable {
 
+    @Transient
     override val comparator: Comparator<T> = run {
         var comparator = Comparator.naturalOrder<Comparable<Any?>>()
         if (order == SortCriterion.Order.DESCENDING)
             comparator = comparator.reversed()
         comparator = if (nullsLast) nullsLast(comparator) else nullsFirst(comparator)
         Comparator.comparing({ property.getValue(it) }, comparator)
-
     }
 
 }

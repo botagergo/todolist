@@ -1,4 +1,4 @@
-package hu.botagergo.todolist.feature_task.data
+package hu.botagergo.todolist.feature_task.data.model
 
 import androidx.room.TypeConverter
 import java.time.LocalTime
@@ -6,10 +6,8 @@ import java.time.LocalTime
 object LocalTimeConverter {
     @TypeConverter
     fun toTime(timeString: String?): LocalTime? {
-        return if (timeString == null) {
-            null
-        } else {
-            LocalTime.parse(timeString)
+        return timeString?.let {
+            LocalTime.parse(it)
         }
     }
 

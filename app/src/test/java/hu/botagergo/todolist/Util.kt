@@ -1,12 +1,12 @@
 package hu.botagergo.todolist
 
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import java.time.LocalDate
 import java.time.LocalTime
 
 object Util {
     
-    val task = Task(
+    val task = TaskEntity(
         title="example task", comments="some comment",
         context=Predefined.TaskContextValues.home,
         status=Predefined.TaskStatusValues.nextAction,

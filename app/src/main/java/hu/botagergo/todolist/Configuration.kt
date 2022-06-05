@@ -9,9 +9,7 @@ import android.content.Context
 import androidx.databinding.ObservableArrayList
 import hu.botagergo.todolist.core.log.logd
 import hu.botagergo.todolist.core.log.logi
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
-import java.io.Serializable
+import java.io.*
 import java.util.*
 
 class Configuration : Serializable {
@@ -39,21 +37,21 @@ class Configuration : Serializable {
         const val configFileName: String = "config"
 
         fun load(context: Context): Boolean {
-            logd(this, "load")
             return try {
                 val input = ObjectInputStream(
                     context.openFileInput(configFileName)
                 )
                 config = input.readObject() as Configuration
                 true
-            } catch (e: Exception) {
+            } catch (e: FileNotFoundException) {
                 logi(this, "Configuration file not found")
                 config = Configuration()
+                config.store(context)
                 false
             }
         }
-
     }
+
 }
 
 lateinit var config: Configuration

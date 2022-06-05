@@ -2,13 +2,12 @@ package hu.botagergo.todolist.feature_task_view.data.repository
 
 import android.content.Context
 import hu.botagergo.todolist.Predefined
-import hu.botagergo.todolist.feature_task_view.data.TaskView
+import hu.botagergo.todolist.feature_task_view.data.model.TaskView
 import hu.botagergo.todolist.feature_task_view.domain.TaskViewNotFoundException
 import hu.botagergo.todolist.feature_task_view.domain.TaskViewRepository
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import java.io.*
 import java.util.*
 
 class TaskViewRepositoryImpl(private var context: Context) : TaskViewRepository {
@@ -20,7 +19,7 @@ class TaskViewRepositoryImpl(private var context: Context) : TaskViewRepository 
         try {
             taskViews =
                 ObjectInputStream(context.openFileInput(configFileName)).readObject() as HashMap<UUID, TaskView>
-        } catch (e: Exception) {
+        } catch (e: FileNotFoundException) {
             taskViews = HashMap()
             insertAll(
                 listOf(
@@ -41,13 +40,17 @@ class TaskViewRepositoryImpl(private var context: Context) : TaskViewRepository 
         return taskViews.values.toList()
     }
 
-    override fun insert(taskView: TaskView) {
+    private fun doInsert(taskView: TaskView) {
         taskViews[taskView.uuid] = taskView
+    }
+
+    override fun insert(taskView: TaskView) {
+        doInsert(taskView)
         MainScope().launch { store() }
     }
 
     override fun insertAll(taskViews: Iterable<TaskView>) {
-        taskViews.forEach { insert(it) }
+        taskViews.forEach { doInsert(it) }
         MainScope().launch { store() }
     }
 
@@ -56,6 +59,7 @@ class TaskViewRepositoryImpl(private var context: Context) : TaskViewRepository 
             context.openFileOutput(configFileName, 0)
         )
         output.writeObject(taskViews)
+        output.close()
     }
 
 }

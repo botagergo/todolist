@@ -265,16 +265,13 @@ fun <T> CancelableEnumTextField(
         verticalAlignment = Alignment.CenterVertically
     ) {
         OutlinedTextField(
-            value = if (value.value != null) {
-                if (toString != null)
-                    toString(value.value!!)
-                else if (toResourceId != null)
-                    stringResource(toResourceId(value.value!!))
-                else
-                    value.value!!.toString()
-            } else {
-                ""
-            },
+            value = value.value?.let { value ->
+                toString?.let {
+                    toString(value)
+                } ?: toResourceId?.let {
+                    stringResource(toResourceId(value))
+                } ?: value.toString()
+            } ?: "",
             label = {
                 Text(stringResource(label))
             },
@@ -289,7 +286,7 @@ fun <T> CancelableEnumTextField(
                 .weight(1.0f),
             singleLine = true
         )
-        if (value.value != null) {
+        value.value?.let {
             IconButton(onClick = {
                 value.value = null
             }) {

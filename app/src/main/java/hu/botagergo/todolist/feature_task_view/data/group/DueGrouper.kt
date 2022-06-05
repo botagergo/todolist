@@ -1,15 +1,15 @@
 package hu.botagergo.todolist.feature_task_view.data.group
 
 import hu.botagergo.todolist.R
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import java.time.LocalDate
 
-class DueGrouper : GrouperBase<Task>() {
+class DueGrouper : GrouperBase<TaskEntity>() {
 
-    override fun key(item: Task): Any {
-        if (item.dueDate != null) {
+    override fun key(item: TaskEntity): Any {
+        return item.dueDate?.let {
             val today = LocalDate.now().dayOfYear
-            val due = item.dueDate.dayOfYear
+            val due = it.dayOfYear
             when {
                 due == today -> {
                     return "Due today"
@@ -20,12 +20,12 @@ class DueGrouper : GrouperBase<Task>() {
                 due < today + 7 -> {
                     return "Due in the next week"
                 }
+                else -> "Due later"
             }
-        }
-        return "Due later"
+        } ?: "Due later"
     }
 
-    override fun clone(): Grouper<Task> {
+    override fun clone(): Grouper<TaskEntity> {
         return DueGrouper()
     }
 

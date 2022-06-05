@@ -1,6 +1,6 @@
 package hu.botagergo.todolist.feature_task_view.domain
 
-import hu.botagergo.todolist.feature_task_view.data.TaskView
+import hu.botagergo.todolist.feature_task_view.data.model.TaskView
 import java.util.*
 
 interface TaskViewRepository {

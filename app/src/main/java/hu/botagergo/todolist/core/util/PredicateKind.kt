@@ -1,6 +1,7 @@
-package hu.botagergo.todolist.feature_task_view.data.filter.predicate
+package hu.botagergo.todolist.core.util
 
-enum class PredicateKind(val value: String) {
+enum class
+PredicateKind(val value: String) {
 
     EXISTS("Exists"),
     EQUAL("="),

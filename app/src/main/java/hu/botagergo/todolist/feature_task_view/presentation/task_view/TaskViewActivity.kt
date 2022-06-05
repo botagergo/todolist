@@ -14,7 +14,7 @@ import hu.botagergo.todolist.*
 import hu.botagergo.todolist.feature_task_view.presentation.task_view.adapter.FilterCriterionListAdapter
 import hu.botagergo.todolist.feature_task_view.presentation.task_view.adapter.SortCriterionListAdapter
 import hu.botagergo.todolist.databinding.ActivityTaskViewBinding
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import hu.botagergo.todolist.feature_task_view.data.sorter.*
 import hu.botagergo.todolist.feature_task.presentation.SimpleSelectItemDialog
 import hu.botagergo.todolist.feature_task_view.presentation.simple_filter_criterion.FilterCriterionActivity
@@ -40,7 +40,7 @@ class TaskViewActivity : AppCompatActivity() {
     private lateinit var sortAdapter: SortCriterionListAdapter
     private lateinit var filterAdapter: FilterCriterionListAdapter
 
-    private lateinit var availableSortSubjects: Array<Property<Task>>
+    private lateinit var availableSortSubjects: Array<Property<TaskEntity>>
 
     private val isEdit: Boolean by lazy {
         intent.extras?.getSerializable(EXTRA_IS_EDIT) as Boolean
@@ -66,9 +66,9 @@ class TaskViewActivity : AppCompatActivity() {
         binding.imageButtonSelectName.setOnClickListener { onButtonSelectNameClicked() }
 
         val sorter = viewModel.sorter.value
-        sortAdapter = if (sorter is CompositeSorter<Task>) {
+        sortAdapter = if (sorter is CompositeSorter<TaskEntity>) {
             binding.checkBoxManualOrder.isChecked = false
-            val sortCriteria = sorter.sortCriteria.map { it as PropertySortCriterion<Task> }.toMutableList()
+            val sortCriteria = sorter.sortCriteria.map { it as PropertySortCriterion<TaskEntity> }.toMutableList()
             SortCriterionListAdapter(sortCriteria, this)
         } else {
             binding.checkBoxManualOrder.isChecked = true
@@ -180,6 +180,7 @@ class TaskViewActivity : AppCompatActivity() {
     private fun onMenuItemClicked(menuItem: MenuItem): Boolean {
         return if (menuItem.itemId == R.id.menu_item_save) {
             saveTaskView()
+            onBackPressed()
             true
         } else {
             false

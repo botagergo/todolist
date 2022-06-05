@@ -8,12 +8,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hu.botagergo.todolist.EXTRA_IS_EDIT
 import hu.botagergo.todolist.EXTRA_UID
-import hu.botagergo.todolist.feature_task.data.Task
 import hu.botagergo.todolist.core.util.EnumValue
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import hu.botagergo.todolist.feature_task.domain.use_case.TaskUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.IllegalArgumentException
 import java.time.LocalDate
 import java.time.LocalTime
 import javax.inject.Inject
@@ -39,22 +38,20 @@ class TaskViewModel @Inject constructor(
     private var isEdit = savedStateHandle.get<Boolean>(EXTRA_IS_EDIT) ?: throw IllegalArgumentException()
 
     init {
-        savedStateHandle.get<Long>(EXTRA_UID).let { uid ->
-            if (uid != null) {
-                this.uid = uid
+        savedStateHandle.get<Long>(EXTRA_UID)?.let { uid ->
+            this.uid = uid
 
-                viewModelScope.launch(Dispatchers.Main) {
-                    val task = taskUseCase.getTask(uid)
-                    title.value = task.title
-                    comments.value = task.comments
-                    status.value = task.status
-                    context.value = task.context
-                    startDate.value = task.startDate
-                    startTime.value = task.startTime
-                    dueDate.value = task.dueDate
-                    dueTime.value = task.dueTime
-                    done = task.done
-                }
+            viewModelScope.launch(Dispatchers.Main) {
+                val task = taskUseCase.getTask(uid)
+                title.value = task.title
+                comments.value = task.comments
+                status.value = task.status
+                context.value = task.context
+                startDate.value = task.startDate
+                startTime.value = task.startTime
+                dueDate.value = task.dueDate
+                dueTime.value = task.dueTime
+                done = task.done
             }
         }
     }
@@ -71,9 +68,9 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    private val task: Task
+    private val task: TaskEntity
         get() {
-            return Task(
+            return TaskEntity(
                 title.value, comments.value, status.value, context.value,
                 startDate.value, startTime.value, dueDate.value, dueTime.value,
                 done, uid

@@ -8,7 +8,7 @@
 
         <import type="android.view.View" />
 
-        <import type="hu.botagergo.todolist.feature_task.data.Task" />
+        <import type="hu.botagergo.todolist.feature_task.data.model.TaskEntity" />
 
         <import type="hu.botagergo.todolist.R" />
 

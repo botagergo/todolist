@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.xwray.groupie.*
 import hu.botagergo.todolist.R
-import hu.botagergo.todolist.feature_task_view.data.TaskView
+import hu.botagergo.todolist.feature_task_view.data.model.TaskView
 import hu.botagergo.todolist.feature_task.domain.use_case.TaskViewUseCase
 import java.util.*
 

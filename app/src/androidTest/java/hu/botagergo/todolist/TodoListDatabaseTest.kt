@@ -5,9 +5,9 @@ import android.database.sqlite.SQLiteConstraintException
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import hu.botagergo.todolist.feature_task.data.Task
-import hu.botagergo.todolist.feature_task.data.TaskDao
-import hu.botagergo.todolist.feature_task.data.TaskDatabase
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
+import hu.botagergo.todolist.data.TodoListDao
+import hu.botagergo.todolist.data.TodoListDatabase
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.Assert.*
@@ -16,17 +16,17 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @RunWith(AndroidJUnit4::class)
-class TaskDatabaseTest {
+class TodoListDatabaseTest {
 
     private lateinit var context: Context
-    private lateinit var db: TaskDatabase
-    private lateinit var taskDao: TaskDao
+    private lateinit var db: TodoListDatabase
+    private lateinit var todoListDao: TodoListDao
 
     @Before
     fun initDb() {
         context = ApplicationProvider.getApplicationContext()
-        db = Room.inMemoryDatabaseBuilder(context, TaskDatabase::class.java).build()
-        taskDao = db.taskDao()
+        db = Room.inMemoryDatabaseBuilder(context, TodoListDatabase::class.java).build()
+        todoListDao = db.todoListDao()
     }
 
     @After
@@ -45,9 +45,9 @@ class TaskDatabaseTest {
     fun testInsert() = runBlocking {
         insert("test1")
         insert("test2")
-        assertEquals(2, taskDao.getAll().size)
+        assertEquals(2, todoListDao.getTasks().size)
         insert("test3")
-        assertEquals(3, taskDao.getAll().size)
+        assertEquals(3, todoListDao.getTasks().size)
     }
 
     @Test
@@ -73,10 +73,10 @@ class TaskDatabaseTest {
         val task2 = insert("test2")
 
         delete(task2)
-        assertEquals(1, taskDao.getAll().size)
+        assertEquals(1, todoListDao.getTasks().size)
 
         delete(task1)
-        assertEquals(0, taskDao.getAll().size)
+        assertEquals(0, todoListDao.getTasks().size)
     }
 
     @Test
@@ -110,40 +110,40 @@ class TaskDatabaseTest {
         assertEquals(getAll().size, 0)
     }
 
-    private fun createTask(title: String, uid: Long=0): Task {
-        return Task(
+    private fun createTask(title: String, uid: Long=0): TaskEntity {
+        return TaskEntity(
             title, "", null, null,
             null, null, null, null,
             false, uid)
     }
 
-    private suspend fun insert(title: String, uid: Long=0): Task {
+    private suspend fun insert(title: String, uid: Long=0): TaskEntity {
         val task = createTask(title, uid)
         return insert(task)
     }
 
-    private suspend fun insert(task: Task): Task {
-        val newUid = taskDao.insert(task)
+    private suspend fun insert(task: TaskEntity): TaskEntity {
+        val newUid = todoListDao.insertTask(task)
         return task.copy(uid=newUid)
     }
 
-    private suspend fun update(task: Task) {
-        taskDao.update(task)
+    private suspend fun update(task: TaskEntity) {
+        todoListDao.updateTask(task)
     }
 
-    private suspend fun get(uid: Long): Task {
-        return taskDao.get(uid)
+    private suspend fun get(uid: Long): TaskEntity {
+        return todoListDao.getTask(uid)
     }
 
-    private suspend fun getAll(): List<Task> {
-        return taskDao.getAll()
+    private suspend fun getAll(): List<TaskEntity> {
+        return todoListDao.getTasks()
     }
 
-    private suspend fun delete(task: Task) {
-        taskDao.delete(task)
+    private suspend fun delete(task: TaskEntity) {
+        todoListDao.deleteTask(task)
     }
 
-    private val exampleTask = Task(
+    private val exampleTask = TaskEntity(
         title="example task", comments="some comment",
         context=Predefined.TaskContextValues.home,
         status=Predefined.TaskStatusValues.nextAction,

@@ -7,10 +7,10 @@ import com.xwray.groupie.databinding.BindableItem
 import hu.botagergo.todolist.Predefined
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.ItemTaskBinding
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import java.time.LocalDate
 
-class TaskItem(private val adapter: TaskListAdapter, var task: Task) : BindableItem<ItemTaskBinding>() {
+class TaskItem(private val adapter: TaskListAdapter, var task: TaskEntity) : BindableItem<ItemTaskBinding>() {
 
     var selected: Boolean = false
 
@@ -28,10 +28,10 @@ class TaskItem(private val adapter: TaskListAdapter, var task: Task) : BindableI
         }
 
     val statusString: String
-        get() = if (task.status == null) "" else "@" + adapter.context.getString(task.status!!.value)
+        get() = task.status?.let { "@" + adapter.context.getString(task.status!!.value) } ?: ""
 
     val contextString: String
-        get() = if (task.context == null) "" else "@" + adapter.context.getString(task.context!!.value)
+        get() = task.context?.let { "@" + adapter.context.getString(task.context!!.value) } ?: ""
 
     val doneIcon: Drawable?
         get() {

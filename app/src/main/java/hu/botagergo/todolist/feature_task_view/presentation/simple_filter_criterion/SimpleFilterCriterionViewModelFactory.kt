@@ -3,10 +3,10 @@ package hu.botagergo.todolist.feature_task_view.presentation.simple_filter_crite
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import hu.botagergo.todolist.feature_task_view.data.filter.CompositeFilter
-import hu.botagergo.todolist.feature_task_view.data.filter.Filter
-import hu.botagergo.todolist.feature_task.data.Task
-import hu.botagergo.todolist.feature_task_view.data.TaskView
+import hu.botagergo.todolist.feature_task_view.domain.model.filter.CompositeFilter
+import hu.botagergo.todolist.feature_task_view.domain.model.filter.Filter
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
+import hu.botagergo.todolist.feature_task_view.data.model.TaskView
 import hu.botagergo.todolist.feature_task_view.domain.TaskViewRepository
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -25,7 +25,7 @@ class SimpleFilterCriterionViewModelFactory(
     }
 
     companion object {
-        private fun findFilter(taskViewRepo: TaskViewRepository, uuid: UUID): Filter<Task> {
+        fun findFilter(taskViewRepo: TaskViewRepository, uuid: UUID): Filter<TaskEntity> {
             for (taskView in taskViewRepo.getAll()) {
                 if (taskView.filter != null) {
                     val filter = findFilter(taskView.filter!!, uuid)
@@ -37,10 +37,10 @@ class SimpleFilterCriterionViewModelFactory(
             throw IllegalArgumentException()
         }
 
-        private fun findFilter(filter: Filter<Task>, uuid: UUID): Filter<Task>? {
+        fun findFilter(filter: Filter<TaskEntity>, uuid: UUID): Filter<TaskEntity>? {
             if (filter.uuid == uuid) {
                 return filter
-            } else if (filter is CompositeFilter<Task>) {
+            } else if (filter is CompositeFilter<TaskEntity>) {
                 for (subFilter in filter.filters) {
                     findFilter(subFilter, uuid).also {
                         if (it != null) {

@@ -1,7 +1,7 @@
 package hu.botagergo.todolist.feature_task.domain.use_case
 
 import hu.botagergo.todolist.config
-import hu.botagergo.todolist.feature_task_view.data.TaskView
+import hu.botagergo.todolist.feature_task_view.data.model.TaskView
 
 class AddActiveTaskView() {
 

@@ -1,6 +1,6 @@
-package hu.botagergo.todolist.feature_task_view.data.filter
+package hu.botagergo.todolist.feature_task_view.domain.model.filter
 
-class ConjugateFilter<T>(vararg filters: Filter<T>) : CompositeFilter<T>(*filters) {
+class AndFilter<T>(id: Long, vararg filters: Filter<T>) : CompositeFilter<T>(id, *filters) {
 
     override val filters: MutableList<Filter<T>> = filters.toMutableList()
 
@@ -11,7 +11,7 @@ class ConjugateFilter<T>(vararg filters: Filter<T>) : CompositeFilter<T>(*filter
     }
 
     override fun clone(): Filter<T> {
-        return ConjugateFilter(*filters.map { it.clone() }.toTypedArray())
+        return AndFilter(id, *filters.map { it.clone() }.toTypedArray())
     }
 
     override fun addFilter(filter: Filter<T>) {

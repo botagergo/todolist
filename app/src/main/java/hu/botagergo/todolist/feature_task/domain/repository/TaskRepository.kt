@@ -1,6 +1,6 @@
 package hu.botagergo.todolist.feature_task.domain.repository
 
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.Task
 import kotlinx.coroutines.flow.Flow
 
 interface TaskRepository {

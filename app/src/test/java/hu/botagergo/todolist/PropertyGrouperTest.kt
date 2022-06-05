@@ -2,7 +2,7 @@ package hu.botagergo.todolist
 
 import hu.botagergo.todolist.feature_task_view.data.group.Grouper
 import hu.botagergo.todolist.feature_task_view.data.group.PropertyGrouper
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import org.junit.Test
 import org.junit.Assert.assertEquals
 import java.lang.RuntimeException
@@ -13,7 +13,7 @@ class PropertyGrouperTest {
 
     @Test
     fun testEmptyGroup() {
-        val tasks = mutableListOf<Task>()
+        val tasks = mutableListOf<TaskEntity>()
         val grouper = PropertyGrouper(Predefined.TaskProperty.title)
         val groups = grouper.group(tasks)
         assertEquals(0, groups.size)
@@ -109,7 +109,7 @@ class PropertyGrouperTest {
         }
 
         grouper = PropertyGrouper(Predefined.TaskProperty.context, "none")
-        val groups: List<Grouper.Group<Task>> = grouper.group(tasks)
+        val groups: List<Grouper.Group<TaskEntity>> = grouper.group(tasks)
 
         assertEquals(2, groups.size)
 

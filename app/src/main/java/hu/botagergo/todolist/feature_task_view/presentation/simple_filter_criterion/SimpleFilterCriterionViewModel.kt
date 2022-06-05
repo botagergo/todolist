@@ -3,27 +3,25 @@ package hu.botagergo.todolist.feature_task_view.presentation.simple_filter_crite
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import hu.botagergo.todolist.feature_task_view.data.filter.*
-import hu.botagergo.todolist.feature_task_view.data.filter.predicate.Predicate
-import hu.botagergo.todolist.feature_task.data.Task
-import hu.botagergo.todolist.feature_task_view.data.TaskView
+import hu.botagergo.todolist.feature_task_view.domain.model.filter.*
+import hu.botagergo.todolist.feature_task_view.domain.model.filter.predicate.Predicate
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import hu.botagergo.todolist.core.util.Property
 import java.lang.IllegalArgumentException
 import java.util.*
 
 class SimpleFilterCriterionViewModel(
-    val app: Application, val filter: Filter<Task>?,
-    val taskView: TaskView?, private val parentFilter: CompositeFilter<Task>?
+    val app: Application, filter: Filter<TaskEntity>?, private val parentFilter: CompositeFilter<TaskEntity>?
     ) : ViewModel() {
 
-    val property: MutableLiveData<Property<Task>?> = MutableLiveData()
+    val property: MutableLiveData<Property<TaskEntity>?> = MutableLiveData()
     val predicate: MutableLiveData<Predicate?> = MutableLiveData()
     val operand: MutableLiveData<Any?> = MutableLiveData()
     val negate: MutableLiveData<Boolean> = MutableLiveData(false)
     val uuid: UUID? = filter?.uuid
 
     init {
-        if (filter is PropertyFilter<Task>) {
+        if (filter is PropertyFilter<TaskEntity>) {
             property.value = filter.property
             predicate.value = filter.predicate
             operand.value = filter.operand
@@ -31,24 +29,14 @@ class SimpleFilterCriterionViewModel(
         }
     }
 
-    fun save() {
-        if (property.value == null
-            || predicate.value == null) {
-            throw IllegalArgumentException()
-        }
+    val filter: PropertyFilter<TaskEntity>
+        get() {
+            if (property.value == null
+                || predicate.value == null) {
+                throw IllegalArgumentException()
+            }
 
-        if (filter is PropertyFilter<Task>) {
-            filter.property = property.value!!
-            filter.predicate = predicate.value!!
-            filter.operand = operand.value
-            filter.negate = negate.value!!
+            return PropertyFilter(property.value!!, predicate.value!!, operand.value)
         }
-
-        parentFilter?.filters?.add(filter!!)
-
-        if (taskView != null) {
-            taskView.filter = filter
-        }
-    }
 
 }

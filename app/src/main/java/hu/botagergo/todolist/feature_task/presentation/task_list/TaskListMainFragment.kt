@@ -54,6 +54,8 @@ class TaskListMainFragment : Fragment() {
             binding.tabLayout.visibility = View.GONE
         }
 
+        taskViewRepo.getAll()
+
         initViewPager()
         initTabLayout()
     }

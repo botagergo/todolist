@@ -1,78 +1,163 @@
 package hu.botagergo.todolist
 
 import hu.botagergo.todolist.core.util.*
-import hu.botagergo.todolist.feature_task_view.data.filter.*
-import hu.botagergo.todolist.feature_task_view.data.filter.predicate.Equals
-import hu.botagergo.todolist.feature_task_view.data.filter.predicate.LessEqual
+import hu.botagergo.todolist.feature_task_view.domain.model.filter.*
+import hu.botagergo.todolist.feature_task_view.domain.model.filter.predicate.Equals
+import hu.botagergo.todolist.feature_task_view.domain.model.filter.predicate.LessEqual
 import hu.botagergo.todolist.feature_task_view.data.group.DueGrouper
 import hu.botagergo.todolist.feature_task_view.data.group.Grouper
 import hu.botagergo.todolist.feature_task_view.data.group.PropertyGrouper
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
+import hu.botagergo.todolist.feature_task.data.model.TaskEnumPropertyValueEntity
+import hu.botagergo.todolist.feature_task.data.model.PropertyEntity
+import hu.botagergo.todolist.feature_task.domain.repository.TaskEnumPropertyValueRepository
+import hu.botagergo.todolist.feature_task.domain.repository.TaskPropertyRepository
 import hu.botagergo.todolist.feature_task_view.data.sorter.ManualTaskSorter
+import hu.botagergo.todolist.feature_task_view.domain.TaskFilterRepository
 import java.time.LocalDate
+import javax.inject.Inject
 
 class Predefined {
 
+    @Inject lateinit var taskPropertyRepository: TaskPropertyRepository
+    @Inject lateinit var taskEnumPropertyValueRepository: TaskEnumPropertyValueRepository
+    @Inject lateinit var taskFilterRepository: TaskFilterRepository
+
     object TaskProperty {
-        val title: TextProperty<Task> = TextProperty(R.string.title, Task::title)
-        val comments: TextProperty<Task> = TextProperty(R.string.comments, Task::comments)
-        val status: EnumProperty<Task> = EnumProperty(R.string.status, Task::status).apply {
-            this.registerValues(
-                R.string.next_action,
-                R.string.waiting,
-                R.string.on_hold,
-                R.string.someday,
-                R.string.planning,
-            )
-        }
-        val context: EnumProperty<Task> = EnumProperty(R.string.context, Task::context).apply {
-            this.registerValues(
-                R.string.home,
-                R.string.work,
-                R.string.errands,
-            )
-        }
-        val startDate: DateProperty<Task> = DateProperty(R.string.start_date, Task::startDate)
-        val startTime: TimeProperty<Task> = TimeProperty(R.string.start_time, Task::startTime)
-        val dueDate: DateProperty<Task> = DateProperty(R.string.due_date, Task::dueDate)
-        val dueTime: TimeProperty<Task> = TimeProperty(R.string.due_time, Task::dueTime)
-
-        val done: BooleanProperty<Task> = BooleanProperty(R.string.done, Task::done)
-
-        val list: Array<Property<Task>> = arrayOf(
-            title, comments, status, context,
-            startDate, startTime, dueDate, dueTime, done
+        val title = PropertyEntity(
+            "title", "title",
+            PropertyEntity.TaskPropertyType.STRING
         )
 
+        val comments = PropertyEntity(
+            "comments", "comments",
+            PropertyEntity.TaskPropertyType.STRING
+        )
+
+        val status = PropertyEntity(
+            "status", "status",
+            PropertyEntity.TaskPropertyType.ENUM
+        )
+
+        val context = PropertyEntity(
+            "context", "context",
+            PropertyEntity.TaskPropertyType.ENUM
+        )
+
+        val startDate = PropertyEntity(
+            "startDate", "start_date",
+            PropertyEntity.TaskPropertyType.DATE
+        )
+
+        val startTime = PropertyEntity(
+            "startTime", "start_time",
+            PropertyEntity.TaskPropertyType.TIME
+        )
+
+        val dueDate = PropertyEntity(
+            "dueDate", "due_date",
+            PropertyEntity.TaskPropertyType.DATE
+        )
+
+        val dueTime = PropertyEntity(
+            "dueTime", "due_time",
+            PropertyEntity.TaskPropertyType.TIME
+        )
+
+        val done = PropertyEntity(
+            "done", "done",
+            PropertyEntity.TaskPropertyType.BOOLEAN
+        )
+
+        val list = listOf(
+            title, comments, status, context,
+            startDate, startTime, dueDate, dueTime,
+            done
+        )
     }
 
     object TaskStatusValues {
-        val nextAction = TaskProperty.status.valueOf(R.string.next_action)
-        val waiting = TaskProperty.status.valueOf(R.string.waiting)
-        val onHold = TaskProperty.status.valueOf(R.string.on_hold)
-        val someday = TaskProperty.status.valueOf(R.string.someday)
-        val planning = TaskProperty.status.valueOf(R.string.planning)
+        val nextAction = TaskEnumPropertyValueEntity(
+            "status",
+            TaskEnumPropertyValueEntity.ValueType.RESOURCE,
+            "next_action"
+        )
+
+        val waiting = TaskEnumPropertyValueEntity(
+            "status",
+            TaskEnumPropertyValueEntity.ValueType.RESOURCE,
+            "waiting"
+        )
+
+        val onHold = TaskEnumPropertyValueEntity(
+            "status",
+            TaskEnumPropertyValueEntity.ValueType.RESOURCE,
+            "on_hold"
+        )
+
+        val someday = TaskEnumPropertyValueEntity(
+            "status",
+            TaskEnumPropertyValueEntity.ValueType.RESOURCE,
+            "someday"
+        )
+
+        val planning = TaskEnumPropertyValueEntity(
+            "status",
+            TaskEnumPropertyValueEntity.ValueType.RESOURCE,
+            "planning"
+        )
+
+        val list = listOf(
+            nextAction, waiting, onHold, someday, planning
+        )
     }
 
     object TaskContextValues {
-        val home = TaskProperty.context.valueOf(R.string.home)
-        val work = TaskProperty.context.valueOf(R.string.work)
-        val errands = TaskProperty.context.valueOf(R.string.errands)
+        val home = TaskEnumPropertyValueEntity(
+            "status",
+            TaskEnumPropertyValueEntity.ValueType.RESOURCE,
+            "home"
+        )
+
+        val errands = TaskEnumPropertyValueEntity(
+            "status",
+            TaskEnumPropertyValueEntity.ValueType.RESOURCE,
+            "errands"
+        )
+
+        val work = TaskEnumPropertyValueEntity(
+            "status",
+            TaskEnumPropertyValueEntity.ValueType.RESOURCE,
+            "work"
+        )
+
+        val list = listOf(
+            home, errands, work
+        )
+    }
+
+    suspend fun init() {
+        TaskProperty.list.forEach { taskPropertyRepository.insertTaskProperty(it) }
+        TaskStatusValues.list.forEach {taskEnumPropertyValueRepository.insertTaskEnumPropertyValue(it) }
+        TaskContextValues.list.forEach {taskEnumPropertyValueRepository.insertTaskEnumPropertyValue(it) }
+
+        taskFilterRepository
+
     }
 
     object GroupBy {
-        val status: Grouper<Task> = PropertyGrouper(TaskProperty.status, "None")
-        val context: Grouper<Task> = PropertyGrouper(TaskProperty.context, "None")
-        val dueDate: Grouper<Task> = DueGrouper()
-        val list: Array<Grouper<Task>> = arrayOf(status, context, dueDate)
+        val status: Grouper<TaskEntity> = PropertyGrouper(TaskProperty.status, "None")
+        val context: Grouper<TaskEntity> = PropertyGrouper(TaskProperty.context, "None")
+        val dueDate: Grouper<TaskEntity> = DueGrouper()
+        val list: Array<Grouper<TaskEntity>> = arrayOf(status, context, dueDate)
     }
 
     object TaskView {
 
         val hotlist by lazy {
-            hu.botagergo.todolist.feature_task_view.data.TaskView.Builder("Hotlist")
+            hu.botagergo.todolist.feature_task_view.data.model.TaskView.Builder("Hotlist")
                 .filter(
-                    ConjugateFilter(
+                    AndFilter(
                         PropertyFilter(TaskProperty.done, Equals(), true).apply {  },
                         PropertyFilter(
                             TaskProperty.dueDate,
@@ -84,7 +169,7 @@ class Predefined {
         }
 
         val allGroupedByStatus by lazy {
-            hu.botagergo.todolist.feature_task_view.data.TaskView.Builder("All Tasks")
+            hu.botagergo.todolist.feature_task_view.data.model.TaskView.Builder("All Tasks")
                 .description("Show all tasks grouped by status")
                 .grouper(
                     GroupBy.status
@@ -96,17 +181,17 @@ class Predefined {
         }
 
         val nextAction by lazy {
-            hu.botagergo.todolist.feature_task_view.data.TaskView.Builder("Next Action")
+            hu.botagergo.todolist.feature_task_view.data.model.TaskView.Builder("Next Action")
                 .description("Show tasks with status 'Next Action'")
                 .filter(
-                    ConjugateFilter(
+                    AndFilter(
                         PropertyFilter(
                             TaskProperty.status,
                             Equals(),
                             TaskStatusValues.nextAction
                         ),
                         PropertyFilter(TaskProperty.done, Equals(), true),
-                        ConjugateFilter(
+                        AndFilter(
                             PropertyFilter(
                                 TaskProperty.status,
                                 Equals(),
@@ -127,7 +212,7 @@ class Predefined {
         }
 
         val done by lazy {
-            hu.botagergo.todolist.feature_task_view.data.TaskView.Builder("Done")
+            hu.botagergo.todolist.feature_task_view.data.model.TaskView.Builder("Done")
                 .description("Show completed tasks")
                 .filter(
                     PropertyFilter(TaskProperty.done, Equals(), false)

@@ -1,17 +1,17 @@
-package hu.botagergo.todolist.feature_task_view.data.filter
+package hu.botagergo.todolist.feature_task_view.domain.model.filter
 
-import hu.botagergo.todolist.feature_task_view.data.filter.predicate.Predicate
+import hu.botagergo.todolist.feature_task_view.domain.model.filter.predicate.Predicate
 import hu.botagergo.todolist.core.util.Property
 import java.io.Serializable
 import java.util.*
 
 class PropertyFilter<T>(
-    var property: Property<T>,
-    var predicate: Predicate,
-    var operand: Any?,
-    var negate: Boolean=false,
-    uuid: UUID?=null
-) : Filter<T>(uuid), Serializable, Cloneable {
+    val property: Property<T>,
+    val predicate: Predicate,
+    val operand: Any?,
+    val negate: Boolean=false,
+    id: Long
+) : Filter<T>(id), Serializable, Cloneable {
 
     override fun include(t: T): Boolean {
         val func = operand as? (() -> Any?)
@@ -20,7 +20,7 @@ class PropertyFilter<T>(
     }
 
     override fun clone(): Filter<T> {
-        return PropertyFilter(property, predicate, operand, negate, uuid)
+        return PropertyFilter(property, predicate, operand, negate, id)
     }
 
 }

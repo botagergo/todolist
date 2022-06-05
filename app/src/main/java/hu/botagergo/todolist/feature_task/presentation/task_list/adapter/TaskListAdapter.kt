@@ -4,17 +4,17 @@ import android.content.Context
 import com.xwray.groupie.GroupieAdapter
 import com.xwray.groupie.Section
 import hu.botagergo.todolist.feature_task_view.data.group.Grouper
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 
 abstract class TaskListAdapter(
     val context: Context
 ) : GroupieAdapter() {
 
-    protected val tasksData: MutableList<Grouper.Group<Task>> = mutableListOf()
+    protected val tasksData: MutableList<Grouper.Group<TaskEntity>> = mutableListOf()
 
     val rootSection = Section().apply { this@TaskListAdapter.add(this) }
 
-    abstract var tasks: MutableList<Grouper.Group<Task>>?
+    abstract var tasks: MutableList<Grouper.Group<TaskEntity>>?
 
     abstract fun refresh()
     abstract fun onItemSelected(taskItem: TaskItem)
@@ -22,8 +22,8 @@ abstract class TaskListAdapter(
 
     protected fun updateTasks(
         section: Section,
-        tasks: MutableList<Task>,
-        newTasks: MutableList<Task>
+        tasks: MutableList<TaskEntity>,
+        newTasks: MutableList<TaskEntity>
     ) {
         var taskInd = 0
         var newTaskInd = 0
@@ -85,22 +85,22 @@ abstract class TaskListAdapter(
         }
     }
 
-    fun taskAt(bindingAdapterPosition: Int): Task? {
+    fun taskAt(bindingAdapterPosition: Int): TaskEntity? {
         return (getItem(bindingAdapterPosition) as? TaskItem)?.task
     }
 
-    private var onItemDoneClicked: ((Task) -> Unit)? = null
-    fun setOnItemDoneClickedListener(listener: (Task) -> Unit) {
+    private var onItemDoneClicked: ((TaskEntity) -> Unit)? = null
+    fun setOnItemDoneClickedListener(listener: (TaskEntity) -> Unit) {
         onItemDoneClicked = listener
     }
 
-    private var onItemDeleteClicked: ((Task) -> Unit)? = null
-    fun setOnItemDeleteClickedListener(listener: (Task) -> Unit) {
+    private var onItemDeleteClicked: ((TaskEntity) -> Unit)? = null
+    fun setOnItemDeleteClickedListener(listener: (TaskEntity) -> Unit) {
         onItemDeleteClicked = listener
     }
 
-    private var onItemClicked: ((Task) -> Unit)? = null
-    fun setOnItemClickedListener(listener: (Task) -> Unit) {
+    private var onItemClicked: ((TaskEntity) -> Unit)? = null
+    fun setOnItemClickedListener(listener: (TaskEntity) -> Unit) {
         onItemClicked = listener
     }
 

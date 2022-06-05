@@ -4,15 +4,15 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.ItemCompositeFilterCriterionBinding
-import hu.botagergo.todolist.feature_task_view.data.filter.*
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task_view.domain.model.filter.*
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 
-class CompositeFilterCriterionItem(private val compositeFilter: CompositeFilter<Task>, adapter: FilterCriterionListAdapter) :
+class CompositeFilterCriterionItem(private val compositeFilter: CompositeFilter<TaskEntity>, adapter: FilterCriterionListAdapter) :
     FilterCriterionItem<ItemCompositeFilterCriterionBinding>(adapter) {
 
     override fun bind(viewBinding: ItemCompositeFilterCriterionBinding, position: Int) {
         viewBinding.data = this
-        if (compositeFilter is ConjugateFilter) {
+        if (compositeFilter is AndFilter) {
             viewBinding.textViewTitle.text = "AND"
         }
 

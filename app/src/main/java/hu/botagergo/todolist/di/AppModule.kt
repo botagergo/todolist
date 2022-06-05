@@ -7,8 +7,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import hu.botagergo.todolist.feature_task.data.TaskDao
-import hu.botagergo.todolist.feature_task.data.TaskDatabase
+import hu.botagergo.todolist.data.TodoListDao
+import hu.botagergo.todolist.data.TodoListDatabase
 import hu.botagergo.todolist.feature_task.data.repository.TaskRepositoryImpl
 import hu.botagergo.todolist.feature_task_view.data.repository.TaskViewRepositoryImpl
 import hu.botagergo.todolist.feature_task.domain.repository.TaskRepository
@@ -24,18 +24,18 @@ class AppModule {
     @Provides
     fun provideTaskDao(
         @ApplicationContext context: Context
-    ): TaskDao {
+    ): TodoListDao {
         return Room.databaseBuilder(
-            context, TaskDatabase::class.java, "task"
-        ).fallbackToDestructiveMigration().build().taskDao()
+            context, TodoListDatabase::class.java, "task"
+        ).fallbackToDestructiveMigration().build().todoListDao()
     }
 
     @Singleton
     @Provides
     fun provideTaskRepository(
-        taskDao: TaskDao
+        todoListDao: TodoListDao
     ): TaskRepository {
-        return TaskRepositoryImpl(taskDao)
+        return TaskRepositoryImpl(todoListDao)
     }
 
     @Singleton

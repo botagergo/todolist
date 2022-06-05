@@ -10,11 +10,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import hu.botagergo.todolist.*
 import hu.botagergo.todolist.core.util.BooleanProperty
 import hu.botagergo.todolist.core.util.EnumProperty
-import hu.botagergo.todolist.core.util.TextProperty
+import hu.botagergo.todolist.core.util.StringProperty
 import hu.botagergo.todolist.databinding.ActivitySimpleFilterCriterionBinding
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import hu.botagergo.todolist.feature_task.presentation.SimpleSelectItemDialog
-import hu.botagergo.todolist.feature_task_view.data.filter.predicate.Predicate
-import hu.botagergo.todolist.feature_task_view.data.filter.predicate.PredicateKind
+import hu.botagergo.todolist.feature_task_view.domain.model.filter.CompositeFilter
+import hu.botagergo.todolist.feature_task_view.domain.model.filter.predicate.Predicate
+import hu.botagergo.todolist.core.util.PredicateKind
 import hu.botagergo.todolist.feature_task_view.domain.TaskViewRepository
 import java.util.*
 import javax.inject.Inject
@@ -28,8 +30,10 @@ class FilterCriterionActivity : AppCompatActivity() {
     val parentFilterUuid by lazy { intent.extras?.getSerializable(EXTRA_PARENT_UUID) as? UUID }
     val taskViewUuid by lazy { intent.extras?.getSerializable(EXTRA_TASK_VIEW_UUID) as? UUID }
 
+    val parentFilter by lazy { parentFilterUuid?.let {SimpleFilterCriterionViewModelFactory.findFilter(taskViewRepo, it) as CompositeFilter<TaskEntity> } }
+
     val viewModel: SimpleFilterCriterionViewModel by viewModels {
-        SimpleFilterCriterionViewModelFactory(application, taskViewRepo, filterUuid, taskViewUuid, parentFilterUuid)
+        SimpleFilterCriterionViewModelFactory(application, taskViewRepo, filterUuid, taskViewUuid)
     }
 
     val binding: ActivitySimpleFilterCriterionBinding by lazy {
@@ -81,6 +85,7 @@ class FilterCriterionActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
+        parentFilter?.filters?.add(viewModel.filter)
         viewModel.save()
         super.onBackPressed()
     }
@@ -111,7 +116,7 @@ class FilterCriterionActivity : AppCompatActivity() {
     private fun getOperandFragment(): Fragment {
         return if (viewModel.property.value is BooleanProperty && viewModel.predicate.value?.kind == PredicateKind.EQUAL) {
             FilterCriterionOperandBooleanFragment()
-        } else if (viewModel.property.value is TextProperty && viewModel.predicate.value?.kind == PredicateKind.EQUAL) {
+        } else if (viewModel.property.value is StringProperty && viewModel.predicate.value?.kind == PredicateKind.EQUAL) {
             FilterCriterionOperandStringFragment()
         } else if (viewModel.property.value is EnumProperty && viewModel.predicate.value?.kind == PredicateKind.EQUAL) {
             FilterCriterionOperandEnumFragment()

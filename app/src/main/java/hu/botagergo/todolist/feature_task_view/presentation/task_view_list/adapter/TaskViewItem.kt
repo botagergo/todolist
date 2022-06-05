@@ -8,7 +8,7 @@ import hu.botagergo.todolist.EXTRA_IS_EDIT
 import hu.botagergo.todolist.EXTRA_UUID
 import hu.botagergo.todolist.R
 import hu.botagergo.todolist.databinding.ItemTaskViewBinding
-import hu.botagergo.todolist.feature_task_view.data.TaskView
+import hu.botagergo.todolist.feature_task_view.data.model.TaskView
 import hu.botagergo.todolist.feature_task_view.presentation.task_view.TaskViewActivity
 
 class TaskViewItem(

@@ -5,7 +5,7 @@ import com.xwray.groupie.ExpandableGroup
 import com.xwray.groupie.Group
 import com.xwray.groupie.Section
 import hu.botagergo.todolist.feature_task_view.data.group.Grouper
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import java.util.*
 
 class GroupedTaskListAdapter(
@@ -15,7 +15,7 @@ class GroupedTaskListAdapter(
 
     private var selectedItem: TaskItem? = null
 
-    override var tasks: MutableList<Grouper.Group<Task>>?
+    override var tasks: MutableList<Grouper.Group<TaskEntity>>?
         get() = tasksData
         set(value) {
             if (value == null || value.size == 0) {
@@ -31,8 +31,8 @@ class GroupedTaskListAdapter(
 
     private fun updateTaskGroups(
         section: Section,
-        taskGroups: MutableList<Grouper.Group<Task>>,
-        newTaskGroups: MutableList<Grouper.Group<Task>>
+        taskGroups: MutableList<Grouper.Group<TaskEntity>>,
+        newTaskGroups: MutableList<Grouper.Group<TaskEntity>>
     ) {
         var taskGroupInd = 0
         var newTaskGroupInd = 0

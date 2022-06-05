@@ -2,7 +2,7 @@ package hu.botagergo.todolist.feature_task.presentation.task_list.adapter
 
 import android.content.Context
 import hu.botagergo.todolist.feature_task_view.data.group.Grouper
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import java.util.*
 
 class SimpleTaskListAdapter(
@@ -11,7 +11,7 @@ class SimpleTaskListAdapter(
 
     private var selectedItem: TaskItem? = null
 
-    override var tasks: MutableList<Grouper.Group<Task>>?
+    override var tasks: MutableList<Grouper.Group<TaskEntity>>?
         get() = tasksData
         set(value) {
             if (value == null || value.size == 0) {

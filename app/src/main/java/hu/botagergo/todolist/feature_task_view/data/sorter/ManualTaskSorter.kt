@@ -1,11 +1,11 @@
 package hu.botagergo.todolist.feature_task_view.data.sorter
 
-import hu.botagergo.todolist.feature_task.data.Task
+import hu.botagergo.todolist.feature_task.data.model.TaskEntity
 import java.util.*
 
-class ManualTaskSorter(var uids: ArrayList<Long> = ArrayList()) : Sorter<Task> {
+class ManualTaskSorter(var uids: ArrayList<Long> = ArrayList()) : Sorter<TaskEntity> {
 
-    override fun sort(items: ArrayList<Task>) {
+    override fun sort(items: ArrayList<TaskEntity>) {
         var pos = 0
         val toRemove = ArrayList<Long>()
 
@@ -29,7 +29,7 @@ class ManualTaskSorter(var uids: ArrayList<Long> = ArrayList()) : Sorter<Task> {
         uids.removeAll(toRemove.toSet())
     }
 
-    override fun clone(): Sorter<Task> {
+    override fun clone(): Sorter<TaskEntity> {
         return ManualTaskSorter(uids)
     }
 }
